@@ -3,10 +3,9 @@
 {% load i18n %}
 {% load allauth account %}
 
-{% block title %}
-Login
-{% endblock title %}
-
+{% block head_title %}
+    Address
+{% endblock head_title %}
 {% block content %}
 <body>
 	<!-- Start Banner Area -->
@@ -46,7 +45,7 @@ Login
 											<div class="form-group row justify-content-center">
                                                 <label class="col-sm-2 control-label text-right">Last Name </label>
 												<div class="col-sm-6">
-													<input class="form-control text-center"  type="text" placeholder="Last Name" value="{{ user.last_name }}">
+													<input class="form-control text-center" type="text" placeholder="Last Name" value="{{ user.last_name }}">
 												</div>
 											</div>
 											<div class="form-group row justify-content-center">
@@ -64,12 +63,26 @@ Login
 													<input class="form-control text-center" type="text" name="username" placeholder="{{ user.username }}" value="{{ user.username }}">
 												</div>
 											</div>
-                                            <div class="form-group row justify-content-center">
-												<label class="col-sm-2 control-label text-right">Date Of Birth</label>
+
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Department</label>
 												<div class="col-sm-6">
-													<input class="form-control text-center" type="date" name="date"  value="date">
+													<input class="form-control text-center" type="text" name="department" placeholder="Department" value="{{ user.profile.department }}">
 												</div>
 											</div>
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Title</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="title" placeholder="Title" value="{{ user.profile.title }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Start Date</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="startDate" placeholder="Start Date" value="{{ user.profile.start_date }}">
+												</div>
+											</div>
+
 											<div class="form-group row justify-content-center">
 												<label class="col-sm-2 control-label text-right">Phone</label>
 												<div class="col-sm-6">

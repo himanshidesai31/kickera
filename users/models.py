@@ -18,3 +18,13 @@ class Address(models.Model):
     town = models.CharField(max_length=100)
     area = models.TextField(max_length=100)
     pincode = models.CharField(max_length=100)
+
+
+class Profile(models.Model):
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField() #read only do not update this
+    username = models.CharField(max_length=150) #read only do not update this
+    dob = models.DateField()
+    phone_number = models.CharField(max_length=150)
+

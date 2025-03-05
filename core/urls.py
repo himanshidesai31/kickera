@@ -11,7 +11,7 @@ from core.views import (
     ElementPageView,
     AboutPageView,
     WishlistPageView,
-    UserProfilePageView,
+    UserProfilePageView
 )
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('about/', AboutPageView.as_view(), name='about'),
     path('wishlist/', WishlistPageView.as_view(), name='wishlist'),
     path('profile/', UserProfilePageView.as_view(), name='profile'),
+
 ]

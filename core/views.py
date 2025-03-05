@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.views.generic import TemplateView
-from core.models import Product, Banner, Category, Deal, Brand
+from core.models import Product, Banner, Deal, Brand
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
@@ -9,7 +8,7 @@ class HomePageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
         context['banners'] = Banner.objects.all().order_by('sort_order')
-        context['categories'] = Category.objects.all()
+        # context['categories'] = Category.objects.all()
         context['products_latest'] = Product.objects.filter(product_type='latest')
         context['products_coming'] = Product.objects.filter(product_type='coming')
         context['deals'] = Deal.objects.all()

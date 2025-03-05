@@ -7,3 +7,5 @@ from users.models import Address
 class UserAddressView(TemplateView):
     model = Address
     template_name = 'user/profile.html'
+
+
