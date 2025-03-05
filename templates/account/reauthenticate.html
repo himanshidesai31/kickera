@@ -1,0 +1,37 @@
+{% extends "navbar.html" %}
+{% load allauth %}
+{% load i18n %}
+{% block title %}
+    Reauthenticate
+{% endblock title %}
+{% block content %}
+     <section class="login_box_area section_gap" style="padding-top: 180px;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 order-sm-first">
+                    <div class="login_form_inner">
+                        {% block reauthenticate_content %}
+                                {% element p %}
+                                    {% blocktranslate %}Enter your password:{% endblocktranslate %}
+                                {% endelement %}
+                                {% url 'account_reauthenticate' as action_url %}
+                                {% element form form=form method="post" action=action_url %}
+                                    {% slot body %}
+                                        {% csrf_token %}
+                                        {% element fields form=form unlabeled=True %}
+                                        {% endelement %}
+                                        {{ redirect_field }}
+                                    {% endslot %}
+                                    {% slot actions %}
+                                        {% element button type="submit" tags="primary,reauthenticate" %}
+                                            {% trans "Confirm" %}
+                                        {% endelement %}
+                                    {% endslot %}
+                                {% endelement %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

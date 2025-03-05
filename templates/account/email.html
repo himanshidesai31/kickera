@@ -1,0 +1,79 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% load i18n %}
+{% load account %}
+{% load allauth %}
+
+{% block head_title %}
+    {% trans 'Email Address' %}
+{% endblock head_title %}
+
+{% block content %}
+<body>
+	<section class="login_box_area section_gap" style="padding-top: 180px;">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="card shadow-lg p-4">
+						<div class="card-body">
+							<h3 class="text-center">{% trans "Email Addresses" %}</h3>
+
+							{% if emailaddresses %}
+								<p class="text-muted text-center">{% trans 'The following email addresses are associated with your account:' %}</p>
+								{% url 'account_email' as email_url %}
+
+								<form method="post" action="{{ email_url }}">
+									{% csrf_token %}
+
+									<div class="list-group">
+										{% for radio in emailaddress_radios %}
+											{% with emailaddress=radio.emailaddress %}
+												<label class="list-group-item d-flex align-items-center">
+													<input class="form-check-input me-2" type="radio" name="email" value="{{ emailaddress.email }}" id="{{ radio.id }}" {% if radio.checked %}checked{% endif %}>
+													<strong>{{ emailaddress.email }}</strong>
+													{% if emailaddress.verified %}
+														<span class="badge bg-success ms-2">{% trans "Verified" %}</span>
+													{% else %}
+														<span class="badge bg-warning ms-2">{% trans "Unverified" %}</span>
+													{% endif %}
+													{% if emailaddress.primary %}
+														<span class="badge bg-primary ms-2">{% trans "Primary" %}</span>
+													{% endif %}
+												</label>
+											{% endwith %}
+										{% endfor %}
+									</div>
+
+									<div class="d-flex justify-content-between mt-4">
+										<button class="btn btn-primary" type="submit" name="action_primary">{% trans 'Make Primary' %}</button>
+										<button class="btn btn-secondary" type="submit" name="action_send">{% trans 'Re-send Verification' %}</button>
+										<button class="btn btn-danger" type="submit" name="action_remove" onclick="return confirm('{% trans 'Do you really want to remove the selected email address?' %}')">{% trans 'Remove' %}</button>
+									</div>
+								</form>
+							{% else %}
+								<div class="alert alert-warning text-center">{% include "account/snippets/warn_no_email.html" %}</div>
+							{% endif %}
+
+							{% if can_add_email %}
+								<h4 class="mt-4 text-center">{% trans "Add Email Address" %}</h4>
+								{% url 'account_email' as action_url %}
+
+								<form method="post" action="{{ action_url }}">
+									{% csrf_token %}
+									<div class="mb-3">
+										<label class="form-label">{% trans "New Email" %}</label>
+										{{ form.email }}
+									</div>
+									<div class="text-center">
+										<button class="btn btn-success w-100" type="submit" name="action_add">{% trans "Add Email" %}</button>
+									</div>
+								</form>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+{% endblock content %}

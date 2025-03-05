@@ -1,0 +1,110 @@
+{% extends 'navbar.html' %}{# templates/account/login.html #}
+{% load static %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% block content %}
+<body>
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Profile Page</h1>
+					<nav class="d-flex align-items-center">
+						<a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="{% url 'profile' %}">Profile Page</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+
+	<section class="login_box_area section_gap">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-8 order-sm-first">
+					<div class="login_form_inner">
+						<div class="container">
+                            <h2 style="text-align: center">User Profile</h2>
+							<div class="panel panel-default panel-info Profile">
+								<div class="panel-body">
+									<div class="form-horizontal">
+
+										<form class="center" method="post" >
+											<div class="form-group row justify-content-center">
+                                                <label class="col-sm-2 control-label text-right">First Name </label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" placeholder="First Name" value="{{ user.first_name }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+                                                <label class="col-sm-2 control-label text-right">Last Name </label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" placeholder="Last Name" value="{{ user.last_name }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+                                                {% if user.email %}
+												<label class="col-sm-2 control-label text-right">Email</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="email" placeholder="{{ user.email }}" value="{{ user.email }}">
+												</div>
+                                                {% endif %}
+											</div>
+
+                                            <div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">User Name </label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="username" placeholder="{{ user.username }}" value="{{ user.username }}">
+												</div>
+											</div>
+
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Department</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="department" placeholder="Department" value="{{ user.profile.department }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Title</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="title" placeholder="Title" value="{{ user.profile.title }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Start Date</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="startDate" placeholder="Start Date" value="{{ user.profile.start_date }}">
+												</div>
+											</div>
+
+											<div class="form-group row justify-content-center">
+												<label class="col-sm-2 control-label text-right">Phone</label>
+												<div class="col-sm-6">
+													<input class="form-control text-center" type="text" name="phone" placeholder="xxx-xxx-xxxx" value="{{ user.profile.phone }}">
+												</div>
+											</div>
+											<div class="form-group row justify-content-center">
+												<div class="col-sm-8 ">
+													<button class="btn btn-primary  text-center" type="submit">Update Profile</button>
+												</div>
+											</div>
+										</form>
+									</div>  <!-- end form-horizontal -->
+								</div> <!-- end panel-body -->
+							</div> <!-- end panel -->
+						</div> <!-- end container -->
+					</div> <!-- end login_form_inner -->
+				</div> <!-- end col-lg-8 -->
+			</div> <!-- end row -->
+		</div> <!-- end container -->
+	</section>
+
+</body>
+{% endblock content %}
