@@ -2,29 +2,36 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class Address(models.Model):
+    WORK = 'work'
+    HOME = 'home'
+    OTHER = 'other'
+
+    ADDRESS_TYPES = [
+        (WORK, 'Work'),
+        (HOME, 'Home'),
+        (OTHER, 'Other'),
+    ]
+
+    name = models.CharField(max_length=100)
+    mobile = models.CharField(max_length=15)  # Removed `unique=True`
+    address_type = models.CharField(max_length=10, choices=ADDRESS_TYPES, default=WORK)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)  # Limited length for real pincodes
+
+    def __str__(self):
+        return f"{self.name} - {self.address_type} ({self.city})"
+
+#User model
 class User(AbstractUser):
-    mobile = models.CharField(max_length=120, unique=True  ,null=True)
-    address = models.ForeignKey('Address', null=True, blank=True, on_delete=models.CASCADE)
-    picture = models.ImageField(null=True)
-    gender = models.CharField(max_length=100, null=True)
+    mobile = models.CharField(max_length=15, unique=True, null=True)
+    address = models.ForeignKey(
+        Address, null=True, on_delete=models.SET_NULL, related_name="users"
+    )
+    picture = models.ImageField(upload_to='profile_pics/', null=True)
+    gender = models.CharField(max_length=50, null=True)
     birth_date = models.DateField(null=True)
 
-
-class Address(models.Model):
-    name = models.CharField(max_length=150)
-    mobile = models.CharField(max_length=100, unique=True)
-    state = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    town = models.CharField(max_length=100)
-    area = models.TextField(max_length=100)
-    pincode = models.CharField(max_length=100)
-
-
-class Profile(models.Model):
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    email = models.EmailField() #read only do not update this
-    username = models.CharField(max_length=150) #read only do not update this
-    dob = models.DateField()
-    phone_number = models.CharField(max_length=150)
-
+    def __str__(self):
+        return f"{self.username}:{self.email}"

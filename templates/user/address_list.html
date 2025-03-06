@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Addresses</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Addresses</h2>
+        <a href="{% url 'add_address' %}"><button>+ ADD A NEW ADDRESS</button></a>
+        <div class="address-list">
+            {% for address in addresses %}
+            <div class="address">
+                <span class="tag">{{ address.address_type }}</span>
+                <h3>{{ address.name }} <span>{{ address.phone }}</span></h3>
+                <p>{{ address.address_line }}, {{ address.city }}, {{ address.state }} - <b>{{ address.pincode }}</b></p>
+            </div>
+            {% empty %}
+            <p>No addresses found. <a href="{% url 'add_address' %}">Add one here</a>.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

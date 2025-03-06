@@ -17,14 +17,20 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-
 from kickera import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('accounts/',include('allauth.urls')),
-    path('',include('product.urls'))
+    path('product/',include('product.urls')),
+    path('user/', include('users.urls')),
+
+    path('vendor/', include('vendor.urls')),
+
+    path('payment/', include('payment.urls')),
+
+    path('oders/', include('orders.urls')),
 ]
 
 if settings.DEBUG:

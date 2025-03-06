@@ -1,96 +1,78 @@
-{% extends 'navbar.html' %}{# templates/account/login.html #}
+{% extends 'navbar.html' %}
 {% load static %}
 {% load i18n %}
 {% load allauth account %}
 
-{% block title %}
-Login
-{% endblock title %}
+{% block title %}Profile{% endblock title %}
 
-{% block content %}
 <body>
-	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb">
+{% block content %}
+	<section class="profile_box_area section_gap">
 		<div class="container">
-			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
-					<h1>Profile Page</h1>
-					<nav class="d-flex align-items-center">
-						<a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="{% url 'profile' %}">Profile Page</a>
-					</nav>
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="card shadow-lg border-0 rounded p-4">
+						<h2 class="text-center mb-4 text-primary">User Profile</h2>
+
+
+
+                        {% if messages %}
+                            <div class="alert alert-success">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+						<form method="post" action="" class="form-horizontal">
+							{% csrf_token %}
+
+							<div class="form-group">
+								<label class="font-weight-bold">First Name</label>
+								<input class="form-control" type="text" name="first_name" value="{{ form.first_name.value }}">
+                                <p> {{ form.first_name.errors }}</p>
+
+							</div>
+							<div class="form-group">
+								<label class="font-weight-bold">Last Name</label>
+								<input class="form-control" type="text" name="last_name" value="{{ form.last_name.value }}">
+                                <p>{{ form.last_name.errors }}</p>
+
+							</div>
+							<div class="form-group">
+								<label class="font-weight-bold">Email</label>
+								<input class="form-control" type="email" name="email" value="{{ form.email.value }}" readonly>
+							</div>
+
+							<div class="form-group">
+								<label class="font-weight-bold">Username</label>
+								<input class="form-control" type="text" name="username" value="{{ user.username }}" readonly>
+							</div>
+
+							<!-- Date of Birth -->
+							<div class="form-group">
+								<label class="font-weight-bold">Date of Birth</label>
+								<input class="form-control" type="date" name="birth_date" value="{{ user.birth_date|date:'Y-m-d' }}">
+                                <p> {{ form.birth_date.errors }}</p>
+							</div>
+
+							<!-- Phone Number -->
+							<div class="form-group">
+								<label class="font-weight-bold">Phone</label>
+								<input class="form-control" type="text" name="mobile" value="{{ form.mobile.value }}">
+                                <p> {{ form.mobile.errors }}</p>
+							</div>
+
+							<!-- Submit Button -->
+							<div class="text-center">
+								<button class="btn btn-primary btn-lg btn-block" type="submit">Update Profile</button>
+							</div>
+						</form>
+
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-	<!-- End Banner Area -->
-
-	<section class="login_box_area section_gap">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-8 order-sm-first">
-					<div class="login_form_inner">
-						<div class="container">
-                            <h2 style="text-align: center">User Profile</h2>
-							<div class="panel panel-default panel-info Profile">
-								<div class="panel-body">
-									<div class="form-horizontal">
-
-										<form class="center" method="post" >
-											<div class="form-group row justify-content-center">
-                                                <label class="col-sm-2 control-label text-right">First Name </label>
-												<div class="col-sm-6">
-													<input class="form-control text-center" type="text" placeholder="First Name" value="{{ user.first_name }}">
-												</div>
-											</div>
-											<div class="form-group row justify-content-center">
-                                                <label class="col-sm-2 control-label text-right">Last Name </label>
-												<div class="col-sm-6">
-													<input class="form-control text-center"  type="text" placeholder="Last Name" value="{{ user.last_name }}">
-												</div>
-											</div>
-											<div class="form-group row justify-content-center">
-                                                {% if user.email %}
-												<label class="col-sm-2 control-label text-right">Email</label>
-												<div class="col-sm-6">
-													<input class="form-control text-center" type="text" name="email" placeholder="{{ user.email }}" value="{{ user.email }}">
-												</div>
-                                                {% endif %}
-											</div>
-
-                                            <div class="form-group row justify-content-center">
-												<label class="col-sm-2 control-label text-right">User Name </label>
-												<div class="col-sm-6">
-													<input class="form-control text-center" type="text" name="username" placeholder="{{ user.username }}" value="{{ user.username }}">
-												</div>
-											</div>
-                                            <div class="form-group row justify-content-center">
-												<label class="col-sm-2 control-label text-right">Date Of Birth</label>
-												<div class="col-sm-6">
-													<input class="form-control text-center" type="date" name="date"  value="date">
-												</div>
-											</div>
-											<div class="form-group row justify-content-center">
-												<label class="col-sm-2 control-label text-right">Phone</label>
-												<div class="col-sm-6">
-													<input class="form-control text-center" type="text" name="phone" placeholder="xxx-xxx-xxxx" value="{{ user.profile.phone }}">
-												</div>
-											</div>
-											<div class="form-group row justify-content-center">
-												<div class="col-sm-8 ">
-													<button class="btn btn-primary  text-center" type="submit">Update Profile</button>
-												</div>
-											</div>
-										</form>
-									</div>  <!-- end form-horizontal -->
-								</div> <!-- end panel-body -->
-							</div> <!-- end panel -->
-						</div> <!-- end container -->
-					</div> <!-- end login_form_inner -->
-				</div> <!-- end col-lg-8 -->
-			</div> <!-- end row -->
-		</div> <!-- end container -->
-	</section>
-
-</body>
 {% endblock content %}
+</body>

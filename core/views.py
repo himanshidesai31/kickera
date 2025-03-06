@@ -54,12 +54,3 @@ class AboutPageView(LoginRequiredMixin, TemplateView):
 
 class WishlistPageView(LoginRequiredMixin, TemplateView):
     template_name = 'products/wishlist.html'
-
-
-class UserProfilePageView(LoginRequiredMixin, TemplateView):
-    template_name = 'user/profile.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        return context
