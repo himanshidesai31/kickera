@@ -11,7 +11,6 @@ from core.views import (
     ElementPageView,
     AboutPageView,
     WishlistPageView,
-
 )
 
 urlpatterns = [

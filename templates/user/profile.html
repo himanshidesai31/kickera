@@ -7,72 +7,95 @@
 
 <body>
 {% block content %}
-	<section class="profile_box_area section_gap">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-8">
-					<div class="card shadow-lg border-0 rounded p-4">
-						<h2 class="text-center mb-4 text-primary">User Profile</h2>
-
-
+    <section class="profile_box_area section_gap">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg border-0 rounded p-4">
+                        <h2 class="text-center mb-4 text-primary">User Profile</h2>
 
                         {% if messages %}
-                            <div class="alert alert-success">
-                                {% for message in messages %}
+                            {% for message in messages %}
+                                <div class="alert
+                                    {% if message.tags == 'error' %}
+                                    alert-danger
+                                    {% else %}
+                                    alert-success
+                                    {% endif %}
+                                ">
                                     {{ message }}
-                                {% endfor %}
-                            </div>
+                                </div>
+                            {% endfor %}
                         {% endif %}
 
-						<form method="post" action="" class="form-horizontal">
-							{% csrf_token %}
+                        <form method="post" action="{% url 'profile' pk=user.id %}" class="form-horizontal needs-validation" novalidate enctype="multipart/form-data">
+                            {% csrf_token %}
 
-							<div class="form-group">
-								<label class="font-weight-bold">First Name</label>
-								<input class="form-control" type="text" name="first_name" value="{{ form.first_name.value }}">
-                                <p> {{ form.first_name.errors }}</p>
+                            <div class="form-group">
+                                <label class="font-weight-bold">First Name</label>
+                                <input class="form-control" type="text" name="first_name" value="{{ form.first_name.value }}" required>
+                                <p class="text-danger"> {{ form.first_name.errors }}</p>
+                            </div>
 
-							</div>
-							<div class="form-group">
-								<label class="font-weight-bold">Last Name</label>
-								<input class="form-control" type="text" name="last_name" value="{{ form.last_name.value }}">
-                                <p>{{ form.last_name.errors }}</p>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Last Name</label>
+                                <input class="form-control" type="text" name="last_name" value="{{ form.last_name.value }}" required>
+                                <p class="text-danger"> {{ form.last_name.errors }}</p>
+                            </div>
 
-							</div>
-							<div class="form-group">
-								<label class="font-weight-bold">Email</label>
-								<input class="form-control" type="email" name="email" value="{{ form.email.value }}" readonly>
-							</div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Email</label>
+                                <input class="form-control" type="email" name="email" value="{{ user.email }}" readonly>
+                            </div>
 
-							<div class="form-group">
-								<label class="font-weight-bold">Username</label>
-								<input class="form-control" type="text" name="username" value="{{ user.username }}" readonly>
-							</div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Username</label>
+                                <input class="form-control" type="text" name="username" value="{{ user.username }}" readonly>
+                            </div>
 
-							<!-- Date of Birth -->
-							<div class="form-group">
-								<label class="font-weight-bold">Date of Birth</label>
-								<input class="form-control" type="date" name="birth_date" value="{{ user.birth_date|date:'Y-m-d' }}">
-                                <p> {{ form.birth_date.errors }}</p>
-							</div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Date of Birth</label>
+                                <input class="form-control" type="date" name="birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}" required>
+                                <p class="text-danger"> {{ form.birth_date.errors }}</p>
+                            </div>
 
-							<!-- Phone Number -->
-							<div class="form-group">
-								<label class="font-weight-bold">Phone</label>
-								<input class="form-control" type="text" name="mobile" value="{{ form.mobile.value }}">
-                                <p> {{ form.mobile.errors }}</p>
-							</div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Phone</label>
+                                <input class="form-control" type="number" name="mobile" value="{{ form.mobile.value }}" required pattern="^\+?[0-9]{10,15}$">
+                                <p class="text-danger"> {{ form.mobile.errors }}</p>
+                            </div>
 
-							<!-- Submit Button -->
-							<div class="text-center">
-								<button class="btn btn-primary btn-lg btn-block" type="submit">Update Profile</button>
-							</div>
-						</form>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Picture</label>
+                                <input class="form-control" type="file" name="picture" required>
+                                <p class="text-danger"> {{ form.picture.errors }}</p>
+                                {% if user.profile.picture %}
+                                    <img src="{{ user.profile.picture.url }}" alt="Profile Picture" class="img-thumbnail mt-2" width="150">
+                                {% endif %}
+                            </div>
 
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Gender</label><br>
+                                <input type="radio" name="gender" value="male" {% if form.gender.value == 'male' %}checked{% endif %}> Male
+                                <input type="radio" name="gender" value="female" {% if form.gender.value == 'female' %}checked{% endif %}> Female
+                                <p class="text-danger"> {{ form.gender.errors }}</p>
+                            </div>
+
+{#                            <div class="form-group">#}
+{#                                <label class="font-weight-bold">Address</label>#}
+{#                                <input class="form-control" type="text" name="address" value="{{ form.address.value }}" required>#}
+{#                                <p class="text-danger"> {{ form.address.errors }}</p>#}
+{#                            </div>#}
+
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-lg btn-block" type="submit">Update Profile</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock content %}
 </body>

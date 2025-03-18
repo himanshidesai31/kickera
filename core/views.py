@@ -7,7 +7,9 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
-        context['banners'] = Banner.objects.all().order_by('sort_order')
+        banners = Banner.objects.all().order_by('sort_order')
+        print(banners)  # Debugging statement
+        context['banners'] = banners
         # context['categories'] = Category.objects.all()
         context['products_latest'] = Product.objects.filter(product_type='latest')
         context['products_coming'] = Product.objects.filter(product_type='coming')
@@ -54,3 +56,4 @@ class AboutPageView(LoginRequiredMixin, TemplateView):
 
 class WishlistPageView(LoginRequiredMixin, TemplateView):
     template_name = 'products/wishlist.html'
+

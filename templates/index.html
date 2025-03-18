@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block content %}
-
 <!-- Banner Area (Dynamic Banner Slider) -->
 <section class="banner-area">
     <div class="container">
@@ -83,28 +82,73 @@
 </section>
 <!-- End Features Area -->
 
-<!-- Start Category Area (Dynamic Categories) -->
+<!-- Start Category Area () -->
 <section class="category-area">
-    <div class="container">
-        <div class="row justify-content-center">
-            {% for category in categories %}
-            <div class="col-lg-4 col-md-6">
-                <div class="single-deal">
-                    <div class="overlay">
-                        {% if category.image %}
-                        <img class="img-fluid" src="{{ category.image.url }}" alt="{{ category.name }}">
-                        {% else %}
-                        <img class="img-fluid" src="{% static 'img/product/default.jpg' %}" alt="{{ category.name }}">
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-md-12">
+				<div class="row">
+					<div class="col-lg-8 col-md-8">
+						<div class="single-deal">
+							<div class="overlay"></div>
+							<img class="img-fluid w-100" src="{% static 'img/category/c1.jpg' %}" alt="">
+							<a href="{% static 'img/category/c1.jpg' %}" class="img-pop-up" target="_blank"></a>
+								<div class="deal-details">
+									<h6 class="deal-title">Sneaker for Sports</h6>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4">
+						<div class="single-deal">
+							<div class="overlay"></div>
+							<img class="img-fluid w-100" src="{% static 'img/category/c2.jpg' %}" alt="">
+							<a href="{% static 'img/category/c2.jpg' %}" class="img-pop-up" target="_blank"></a>
+								<div class="deal-details">
+									<h6 class="deal-title">Sneaker for Sports</h6>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4">
+						<div class="single-deal">
+							<div class="overlay"></div>
+							<img class="img-fluid w-100" src="{% static 'img/category/c3.jpg' %}" alt="">
+							<a href="{% static 'img/category/c3.jpg' %}" class="img-pop-up" target="_blank"></a>
+								<div class="deal-details">
+									<h6 class="deal-title">Product for Couple</h6>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-8 col-md-8">
+						<div class="single-deal">
+							<div class="overlay"></div>
+							<img class="img-fluid w-100" src="{% static 'img/category/c4.jpg' %}" alt="">
+							<a href="{% static 'img/category/c4.jpg' %}" class="img-pop-up" target="_blank"></a>
+								<div class="deal-details">
+									<h6 class="deal-title">Sneaker for Sports</h6>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="single-deal">
+					<div class="overlay"></div>
+					<img class="img-fluid w-100" src="{% static 'img/category/c5.jpg' %}" alt="">
+					<a href="{% static 'img/category/c5.jpg' %}" class="img-pop-up" target="_blank"></a>
+						<div class="deal-details">
+							<h6 class="deal-title">Sneaker for Sports</h6>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 <!-- End Category Area -->
-
 
 <!-- Start Product Area -->
 <section class="owl-carousel active-product-area section_gap">
@@ -132,6 +176,7 @@
                             <h6>{{ product.name }}</h6>
                             <div class="price">
                                 <h6>${{ product.price }}</h6>
+                                <h6 class="l-through">${{ product.original_price }}</h6>
                             </div>
                             <div class="prd-bottom">
                                 <a href="#" class="social-info">
@@ -183,6 +228,7 @@
                             <h6>{{ product.name }}</h6>
                             <div class="price">
                                 <h6>${{ product.price }}</h6>
+                                <h6 class="l-through">${{ product.original_price }}</h6>
                             </div>
                             <div class="prd-bottom">
                                 <a href="#" class="social-info">

@@ -26,17 +26,18 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Name</label>
-                                <input class="form-control" type="text" name="name" placeholder="Enter Your Full Name" required>
+                                <input class="form-control" type="text" name="name" value="{{ form.name.value }}" required>
                                 <div class="text-danger"> {{ form.name.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Mobile</label>
-                                <input class="form-control" type="number" placeholder="Enter Your Mobile Number" name="mobile"  required>
+                                <input class="form-control" type="number" name="mobile" value="{{ form.mobile.value }}" required>
                                 <div class="text-danger"> {{ form.mobile.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Address Type</label>
                                 <select class="form-select" name="address_type">
+                                    <option value="{{ form.address_type.value }}">{{ form.address_type.value }}</option>
                                     <option value="home">{% trans "Home" %}</option>
                                     <option value="work">{% trans "Work" %}</option>
                                     <option value="other">{% trans "Other" %}</option>
@@ -44,31 +45,31 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Country</label>
-                                <input class="form-control" type="text" name="country"  placeholder="Enter your County Name" required>
+                                <input class="form-control" type="text" name="country" value="{{ form.country.value }}" required>
                                 <div class="text-danger"> {{ form.country.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">State</label>
-                                <input class="form-control" type="text" name="state" placeholder="Enter Your State Name" required>
+                                <input class="form-control" type="text" name="state" value="{{ form.state.value }}" required>
                                 <div class="text-danger"> {{ form.state.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">City</label>
-                                <input class="form-control" type="text" name="city" placeholder="Enter Your City Name" required>
+                                <input class="form-control" type="text" name="city" value="{{ form.city.value }}" required>
                                 <div class="text-danger"> {{ form.city.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Address</label>
-                                <input class="form-control" type="text" name="Address" placeholder="Enter Your Address Area " required>
+                                <input class="form-control" type="text" name="Address" value="{{ form.Address.value }}" required>
                                 <div class="text-danger"> {{ form.Address.errors }}</div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-weight-bold">Pincode</label>
-                                <input class="form-control" type="text" name="pincode" placeholder="Enter Pincode Number" required>
+                                <input class="form-control" type="text" name="pincode" value="{{ form.pincode.value }}" required>
                                 <div class="text-danger"> {{ form.pincode.errors }}</div>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Add New</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
                                 <a href="{% url 'address_list_view' %}" class="btn btn-secondary">Cancel</a>
                             </div>
                         </form>
