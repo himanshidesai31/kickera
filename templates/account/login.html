@@ -44,7 +44,8 @@ Login
                 <div class="col-lg-6">
                     <div class="login_form_inner">
                         <h3>Log in to enter</h3>
-
+                      
+                        <!-- Django's Login Form Integration -->
                         <form class="row login_form" action="{% url 'account_login' %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
 
@@ -54,10 +55,10 @@ Login
                                 {% if form.login.errors %}
                                     <ul class="errorlist">
                                         {% for error in form.login.errors %}
-                                            <li>{{ error }}</li>
+                                            <li class="text-danger">{{ error }}</li>
                                         {% endfor %}
                                     </ul>
-                                {% endif %}
+                                {% endif %} 
                             </div>
 
                             <!-- Password Field -->
@@ -66,7 +67,7 @@ Login
                                {% if form.password.errors %}
                                    <ul class="errorlist">
                                        {% for error in form.password.errors %}
-                                           <li>{{ error }}</li>
+                                           <li class="text-danger">{{ error }}</li>
                                        {% endfor %}
                                    </ul>
                                {% endif %}

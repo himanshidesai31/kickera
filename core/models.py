@@ -48,3 +48,12 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+
+# class PasswordChangeFormModel(models.Model):
+#     old_password = models.CharField(max_length=255)
+#     new_password = models.CharField(max_length=255)
+#     confirm_password = models.CharField(max_length=255)
+
+#     def __str__(self):
+#         return self.old_password
+        

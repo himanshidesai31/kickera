@@ -2,68 +2,110 @@
 {% load static %}
 {% load allauth %}
 
-{% block title %}
-Sign Up
-{% endblock title %}
+{% block title %} Sign Up {% endblock title %}
 
 {% block content %}
-<body>
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Register Page</h1>
-                    <nav class="d-flex align-items-center">
-                        <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="{% url 'account_login' %}">Login<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="{% url 'account_signup' %}">Register</a>
-                    </nav>
-                </div>
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">Create Your Account</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-secondary">Home 
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'account_login' %}" class="text-decoration-none text-secondary">Login 
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'account_signup' %}" class="text-decoration-none text-secondary">Register</a>
+                </nav>
             </div>
         </div>
-    </section>
-    <!-- End Banner Area -->
+    </div>
+</section>
+<!-- End Banner Area -->
 
-    <!--================Login Box Area =================-->
-    <section class="login_box_area section_gap">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 order-sm-first">
-                    <div class="login_form_inner">
-                        <h3>Register</h3>
+<!-- Signup Box Area -->
+<section class="login_box_area section_gap">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-body p-4">
+                        
+                        <!-- Header -->
+                        <h2 class="text-center mb-3 font-weight-bold text-dark">Sign Up</h2>
+                        <p class="text-muted text-center mb-4">Join us and start shopping now!</p>
+
+                        <!-- Error Messages -->
                         {% if form.errors %}
-                        <p>There is a problem with your form submission.</p>
+                        <div class="alert alert-danger d-flex align-items-center text-center" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            There was an issue with your form submission. Please check your details.
+                        </div>
                         {% endif %}
 
                         {% if user.is_authenticated %}
-                        <p>User already exists, please go to the Login Page.</p>
+                        <div class="alert alert-warning text-center">
+                            You are already logged in. Please <a href="{% url 'account_login' %}" class="text-decoration-none fw-bold">Log in</a>.
+                        </div>
                         {% endif %}
 
-                        <form class="row login_form" method="POST" autocomplete="off" action="{% url 'account_signup' %}">
+                        <!-- Signup Form -->
+                        <form method="POST" action="{% url 'account_signup' %}" autocomplete="off">
                             {% csrf_token %}
-                            {% for field in form %}
-                            <div class="col-md-12 form-group">
-                                {{ field.label_tag }}
-                                {{ field }}
-                                {% for error in field.errors %}
-                                <small style="color: red;">{{ error }}</small>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="id_email" class="form-label fw-bold">Email Address</label>
+                                <input type="email" class="form-control shadow-sm" name="email" id="id_email" 
+                                       placeholder="Enter your email" required>
+                                {% for error in form.email.errors %}
+                                <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                            {% endfor %}
 
-                            <div class="col-md-12 form-group">
-                                <button class="primary-btn">Sign Up</button>
-                                <br>
-                                <p>Already a user?</p>
-                                <a style="color:white" class="primary-btn" href="{% url 'account_login' %}">Log in</a>
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label fw-bold">Password</label>
+                                <input type="password" class="form-control shadow-sm" name="password1" id="id_password1" 
+                                       placeholder="Create a password" required>
+                                {% for error in form.password1.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label fw-bold">Confirm Password</label>
+                                <input type="password" class="form-control shadow-sm" name="password2" id="id_password2" 
+                                       placeholder="Confirm your password" required>
+                                {% for error in form.password2.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Signup Button -->
+                            <div class="d-grid mt-4 text-center">
+                                <button class="btn btn-lg fw-bold text-white btn-primary" type="submit"
+                                        >
+                                    Sign Up
+                                </button>
+                            </div>
+
+                            <!-- Login Redirect -->
+                            <div class="text-center mt-4">
+                                <p class="mb-2 text-dark">Already have an account?</p>
+                                <a class="btn btn-link text-primary fw-bold" href="{% url 'account_login' %}">Log in</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!--================End Login Box Area =================-->
-</body>
+    </div>
+</section>
+<!-- End Signup Box Area -->
+
 {% endblock content %}

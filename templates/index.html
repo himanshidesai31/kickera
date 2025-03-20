@@ -1,8 +1,9 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% block title %}
-    Home
-{% endblock %}
+{% load i18n %}
+   {% block title %}
+       {% trans 'Home' %}
+   {% endblock title%}
 
 {% block content %}
 <!-- Banner Area (Dynamic Banner Slider) -->

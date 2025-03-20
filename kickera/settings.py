@@ -3,6 +3,7 @@ Django settings for kickera project.
 """
 import os
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,6 +107,12 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 LOGIN_REDIRECT_URL = '/' #redirect after login
 
 
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
+# ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
+# ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL ="account_change_password_done"
+
+
+
 # Password Validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -146,6 +153,7 @@ EMAIL_HOST_USER = 'chaudharykamlesh185@gmail.com'
 EMAIL_HOST_PASSWORD = 'ejxwnmlcknlsfrqq'  # Use an App Password, NOT your Gmail password!,create app and there password paste here
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
 #csrf token related configration
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]
 CORS_ALLOWED_ORIGINS = [
@@ -180,3 +188,11 @@ ACCOUNT_FORMS = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+
+
+
+MESSAGE_TAGS = {
+    messages.SUCCESS: 'alert-success',
+    messages.ERROR: 'alert-danger',
+}

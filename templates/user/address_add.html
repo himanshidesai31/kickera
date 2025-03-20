@@ -8,7 +8,7 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h2 class="mb-4 text-center" style="font-weight: 600;">{% trans "Edit Address" %}</h2>
+                        <h2 class="mb-4 text-center" style="font-weight: 600;">{% trans "Add New Address" %}</h2>
                         {% if messages %}
                             {% for message in messages %}
                                 <div class="alert
@@ -25,17 +25,17 @@
                         <form method="POST">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Name</label>
-                                <input class="form-control" type="text" name="name" placeholder="Enter Your Full Name" required>
+                                <label class="form-label font-weight-bold">{% trans "Name" %}</label>
+                                <input class="form-control" type="text" name="name" placeholder="{% trans "Enter Your Full Name" %}" required>
                                 <div class="text-danger"> {{ form.name.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Mobile</label>
-                                <input class="form-control" type="number" placeholder="Enter Your Mobile Number" name="mobile"  required>
+                                <label class="form-label font-weight-bold">{% trans "Mobile" %}</label>
+                                <input class="form-control" type="number" placeholder="{% trans "Enter Your Mobile Number" %}" name="mobile" required>
                                 <div class="text-danger"> {{ form.mobile.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Address Type</label>
+                                <label class="form-label font-weight-bold">{% trans "Address Type" %}</label>
                                 <select class="form-select" name="address_type">
                                     <option value="home">{% trans "Home" %}</option>
                                     <option value="work">{% trans "Work" %}</option>
@@ -43,33 +43,33 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Country</label>
-                                <input class="form-control" type="text" name="country"  placeholder="Enter your County Name" required>
+                                <label class="form-label font-weight-bold">{% trans "Country" %}</label>
+                                <input class="form-control" type="text" name="country" placeholder="{% trans "Enter your Country Name" %}" required>
                                 <div class="text-danger"> {{ form.country.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">State</label>
-                                <input class="form-control" type="text" name="state" placeholder="Enter Your State Name" required>
+                                <label class="form-label font-weight-bold">{% trans "State" %}</label>
+                                <input class="form-control" type="text" name="state" placeholder="{% trans "Enter Your State Name" %}" required>
                                 <div class="text-danger"> {{ form.state.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">City</label>
-                                <input class="form-control" type="text" name="city" placeholder="Enter Your City Name" required>
+                                <label class="form-label font-weight-bold">{% trans "City" %}</label>
+                                <input class="form-control" type="text" name="city" placeholder="{% trans "Enter Your City Name" %}" required>
                                 <div class="text-danger"> {{ form.city.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Address</label>
-                                <input class="form-control" type="text" name="Address" placeholder="Enter Your Address Area " required>
+                                <label class="form-label font-weight-bold">{% trans "Address" %}</label>
+                                <input class="form-control" type="text" name="Address" placeholder="{% trans "Enter Your Address Area" %}" required>
                                 <div class="text-danger"> {{ form.Address.errors }}</div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-weight-bold">Pincode</label>
-                                <input class="form-control" type="text" name="pincode" placeholder="Enter Pincode Number" required>
+                                <label class="form-label font-weight-bold">{% trans "Pincode" %}</label>
+                                <input class="form-control" type="text" name="pincode" placeholder="{% trans "Enter Pincode Number" %}" required>
                                 <div class="text-danger"> {{ form.pincode.errors }}</div>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Add New</button>
-                                <a href="{% url 'address_list_view' %}" class="btn btn-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">{% trans "Add New" %}</button>
+                                <a href="{% url 'address_list_view' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
                             </div>
                         </form>
                     </div>

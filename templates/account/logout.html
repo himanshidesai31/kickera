@@ -6,25 +6,39 @@
 {% endblock head_title %}
 
 {% block content %}
-<section class="login_box_area section_gap" style="padding-top: 200px;">
+<section class="login_box_area section_gap" style="padding-top: 180px;">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-4">
-                <div class="login_form_inner text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); padding: 30px; border-radius: 10px;">
-                    <h3 class="mb-3" style="font-weight: 600;">{% trans "Sign Out" %}</h3>
-                    <p>{% trans "Are you sure you want to sign out?" %}</p>
-                    {% url 'account_logout' as action_url %}
-                    <form method="post" action="{{ action_url }}">
-                        {% csrf_token %}
-                        {{ redirect_field }}
-                        <button type="submit" class="btn btn-primary w-100" style="background: linear-gradient(to right, #FFA500, #FF4500); border: none; padding: 12px; font-weight: 600;">
-                            {% trans "Sign Out" %}
-                        </button>
-                    </form>
-                    <div class="mt-3">
-                        <a href="{% url 'account_email' %}" class="d-block">{% trans "Change Email" %}</a>
-                        <a href="{% url 'account_change_password' %}" class="d-block">{% trans "Change Password" %}</a>
-{#                        <a href="#" class="d-block">{% trans "Account Connections" %}</a>#}
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-body p-4 text-center">
+                        
+                        <!-- Sign Out Header -->
+                        <h3 class="mb-3 fw-bold text-dark">{% trans "Sign Out" %}</h3>
+                        <p class="text-muted">{% trans "Are you sure you want to sign out?" %}</p>
+                        
+                        <!-- Sign Out Form -->
+                        {% url 'account_logout' as action_url %}
+                        <form method="post" action="{{ action_url }}">
+                            {% csrf_token %}
+                            {{ redirect_field }}
+                            <button type="submit" class="btn btn-lg text-white w-100"
+                                    style="background: linear-gradient(to right, #FF4500, #FFA500);
+                                           border: none; padding: 12px; font-weight: 600;
+                                           transition: 0.3s ease-in-out;">
+                                {% trans "Sign Out" %}
+                            </button>
+                        </form>
+
+                        <!-- Extra Actions -->
+                        <div class="mt-4">
+                            <a href="{% url 'account_email' %}" class="d-block text-decoration-none fw-bold text-primary">
+                                {% trans "Change Email" %}
+                            </a>
+                            <a href="{% url 'account_change_password' %}" class="d-block text-decoration-none fw-bold text-primary">
+                                {% trans "Change Password" %}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

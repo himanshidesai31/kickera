@@ -12,6 +12,8 @@ class  CategoryListView(ListView):
         # context['products_coming'] = Product.objects.all().order_by('?')
 
         return context
+
+
 class  ProductListView(ListView):
     model = Product
     template_name = 'index.html'
@@ -21,13 +23,22 @@ class  ProductListView(ListView):
         context['all_products'] = context['object_list']
         return context
 
+
 class  CheckoutListView(ListView):
     model = Checkout
     template_name = 'products/checkout.html'
 
+
 class  CartListView(ListView):
     model = Cart
     template_name = 'products/cart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CartListView, self).get_context_data(**kwargs)
+        context['cart_items'] = context['object_list']
+        return context
+
+
 
 class ConfirmationListView(ListView):
     model = Confirmation
