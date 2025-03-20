@@ -1,3 +1,4 @@
+
 from django.urls import path
 from django.views.generic import TemplateView
 from core.views import (
@@ -13,6 +14,7 @@ from core.views import (
     AboutPageView,
     WishlistPageView,
     PasswordChangeView,
+    ReauthenticateView
 )
 
 urlpatterns = [
@@ -31,5 +33,8 @@ urlpatterns = [
     
     #password change url
     path('accounts/password/change/', PasswordChangeView.as_view(), name='account_change_password'),
-    path('accounts/password/change/done/', TemplateView.as_view(template_name="account/password_change_done.html"), name='account_change_password_done'),
+
+    path('accounts/reauthenticate/', ReauthenticateView.as_view(), name='account_reauthenticate'),
+    path('accounts/password/change/done/', TemplateView.as_view(template_name="account/password_change_done.html"),
+         name='account_change_password_done'),
 ]

@@ -108,8 +108,8 @@ LOGIN_REDIRECT_URL = '/' #redirect after login
 
 
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
-# ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
-# ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL ="account_change_password_done"
+ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
+
 
 
 

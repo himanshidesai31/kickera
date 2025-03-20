@@ -5,27 +5,18 @@
     Reauthenticate
 {% endblock title %}
 {% block content %}
-<section class="login_box_area section_gap" style="padding-top: 120px;">
+    <section class="login_box_area section_gap mt-5 radius ">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5">
-                <div class="card shadow-lg border-0">
-                    <div class="card-header bg-secondary text-white text-center py-4">
-                        <h4 class="mb-0">{% blocktranslate %}Reauthenticate{% endblocktranslate %}</h4>
-                    </div>
-                    <div class="card-body">
-                        {% block reauthenticate_content %}
-                        <p class="text-center mb-4 text-muted">
-                            {% blocktranslate %}Please enter your password to continue.{% endblocktranslate %}
-                        </p>
-                        {% url 'account_reauthenticate' as action_url %}
-                        <form method="post" action="{{ action_url }}">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4 text-dark"> Reauthenticate </h2>
+
+                        <form method="POST" autocomplete="off"  action="{% url 'account_reauthenticate' %}">
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label for="password" class="font-weight-bold">
-                                    {{ form.password.label }}
-                                </label>
-                                {{ form.password|add_class:"form-control" }}
+                            <div class="form-group mt-3">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Updated Password">
                                 {% if form.password.errors %}
                                     <div class="text-danger small mt-1">
                                         {{ form.password.errors }}
@@ -33,13 +24,14 @@
                                 {% endif %}
                             </div>
                             {{ redirect_field }}
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-secondary btn-block">
+                            <div class="mt-4">
+                                <button class="btn btn-primary change-password-btn w-100" style="background: linear-gradient(to right, #ff6a00, #ee0979); border: none; padding: 12px; font-weight: 600; border-radius: 10px;" type="submit" class="btn btn-secondary btn-block">
                                     {% trans "Confirm" %}
                                 </button>
                             </div>
+
                         </form>
-                        {% endblock %}
+
                     </div>
                 </div>
             </div>

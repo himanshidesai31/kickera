@@ -35,7 +35,7 @@ Login
                         <img class="img-fluid" src="{% static 'img/login.jpg' %}" alt="">
                         <div class="hover">
                             <h4>New to our website?</h4>
-                            <p>There are advances being made in science and technology everyday, and a good example of
+                            <p>There are advances being made in science and technology every day, and a good example of
                                 this is the</p>
                             <a class="primary-btn" href="{% url 'account_signup' %}">Create an Account</a>
                         </div>
@@ -43,40 +43,43 @@ Login
                 </div>
                 <div class="col-lg-6">
                     <div class="login_form_inner">
-                        <h3>Log in to enter</h3>
+                        <h2>Log in to Enter</h2>
                       
                         <!-- Django's Login Form Integration -->
                         <form class="row login_form" action="{% url 'account_login' %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
-
-                            <!-- Email Field -->
-                            <div class="col-md-12 form-group">
-                                <input required type="email" class="form-control" id="exampleEmail" name="login" placeholder="Email" value="{{ request.POST.login }}">
-                                {% if form.login.errors %}
-                                    <ul class="errorlist">
-                                        {% for error in form.login.errors %}
-                                            <li class="text-danger">{{ error }}</li>
+                        
+                            <!-- Display Non-Field Errors -->
+                            {% if form.non_field_errors %}
+                                <div class="col-md-12 form-group">
+                                    <ul class="text-danger">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
                                         {% endfor %}
                                     </ul>
-                                {% endif %} 
-                            </div>
-
-                            <!-- Password Field -->
+                                </div>
+                            {% endif %}
+                        
+                            <!-- Email Field -->
                             <div class="col-md-12 form-group">
-                               <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="{{ request.POST.password }}">
-                               {% if form.password.errors %}
-                                   <ul class="errorlist">
-                                       {% for error in form.password.errors %}
-                                           <li class="text-danger">{{ error }}</li>
-                                       {% endfor %}
-                                   </ul>
-                               {% endif %}
-
-                                {% if user.exist %}
-
+                                <input required type="email" class="form-control" id="exampleEmail" name="login" placeholder="Email" value="{{ request.POST.login }}"/>
+                                {% if form.errors %}
+                                    {% for error in form.login.errors %}
+                                        <li class="text-danger">{{ error }}</li>
+                                    {% endfor %}
                                 {% endif %}
                             </div>
-
+                        
+                            <!-- Password Field -->
+                            <div class="col-md-12 form-group">
+                                <input required type="password" class="form-control" id="password" name="password" placeholder="Password"/>
+                                {% if form.errors %}
+                                    {% for error in form.password.errors %}
+                                        <li class="text-danger">{{ error }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        
                             <!-- Remember Me Checkbox -->
                             <div class="col-md-12 form-group">
                                 <div class="creat_account">
@@ -84,12 +87,10 @@ Login
                                     <label for="f-option2">Keep me logged in</label>
                                 </div>
                             </div>
-
+                        
                             <!-- Submit Button and Forgot Password Link -->
                             <div class="col-md-12 form-group">
-
                                 <button type="submit" value="submit" class="primary-btn">Log In</button>
-
                                 <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
                             </div>
                         </form>

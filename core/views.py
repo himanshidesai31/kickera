@@ -1,9 +1,12 @@
-from django.contrib import messages 
+from http.client import responses
+
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from core.models import Product, Banner, Deal, Brand
 from django.views.generic import TemplateView
 from django.contrib.auth.views import PasswordChangeView
+from allauth.account.views import ReauthenticateView
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
@@ -56,17 +59,31 @@ class AboutPageView(LoginRequiredMixin, TemplateView):
 
 class WishlistPageView(LoginRequiredMixin, TemplateView):
     template_name = 'products/wishlist.html'
-    
-    
+
+
 class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
-    success_url = reverse_lazy('account_change_password_done')
     template_name = 'account/password_change.html'
+    success_url = reverse_lazy('account_reauthenticate')
     
     def form_valid(self, form):
-        messages.success(self.request, 'Password changed successfully!')
-        return super().form_valid(form)
+        messages.success(self.request, 'Your password has been updated!')
+        return super(PasswordChangeView, self).form_valid(form)
     
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        messages.error(self.request, 'Something went wrong, Invalid Form Submission, Please fill the form correctly')
+        messages.error(self.request, 'Please correct the error below.')
         return response
+
+class ReauthenticateView(LoginRequiredMixin, ReauthenticateView):
+    template_name = 'account/reauthenticate.html'
+    success_url = reverse_lazy('account_change_password_done')
+
+    def form_valid(self, form):
+        responses = super().form_valid(form)
+        messages.success(self.request, 'Your password has been updated!')
+        return responses
+
+    def form_invalid(self, form):
+        responses = super().form_invalid(form)
+        messages.error(self.request, 'Please correct the error below.')
+        return responses
