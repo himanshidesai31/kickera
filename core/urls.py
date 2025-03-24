@@ -14,7 +14,7 @@ from core.views import (
     AboutPageView,
     WishlistPageView,
     PasswordChangeView,
-    ReauthenticateView
+    ReauthenticateView,
 )
 
 urlpatterns = [
@@ -29,8 +29,6 @@ urlpatterns = [
     path('elements/', ElementPageView.as_view(), name='elements'),
     path('about/', AboutPageView.as_view(), name='about'),
     path('wishlist/', WishlistPageView.as_view(), name='wishlist'),
-    
-    
     #password change url
     path('accounts/password/change/', PasswordChangeView.as_view(), name='account_change_password'),
 

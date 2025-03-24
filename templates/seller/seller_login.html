@@ -1,0 +1,50 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}
+{% trans 'Login' %}
+{% endblock title %}
+
+{% block content %}
+<section class="login_box_area section_gap mt-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h2 class="mb-0 font-weight-bold">Login</h2>
+                        <p class="mb-0">Start Selling Today!</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" action="{% url 'seller-login' %}" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label for="email" class="font-weight-bold">Email Address</label>
+                                <input type="email" class="form-control rounded-pill shadow-sm" id="email" name="email" placeholder="Enter your email" required>
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="password" class="font-weight-bold">Password</label>
+                                <input type="password" class="form-control rounded-pill shadow-sm" id="password" name="password" placeholder="Enter your password" minlength="8" required>
+                                {% for error in form.password.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center bg-light py-3">
+                        <small class="text-muted">Don't have an account? <a href="{% url 'seller-register' %}" class="text-primary font-weight-bold">Register</a></small>
+                        <br>
+                        {% comment %} <small class="text-muted"><a href="{% url 'password-reset' %}" class="text-secondary">Forgot Password?</a></small> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

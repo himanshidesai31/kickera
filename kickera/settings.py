@@ -105,10 +105,9 @@ ACCOUNT_LOGIN_METHODS = {'email'}  # Example value
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 LOGIN_REDIRECT_URL = '/' #redirect after login
-
-
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
+''
 
 
 
@@ -185,14 +184,12 @@ ACCOUNT_FORMS = {
     'confirm_login_code': 'allauth.account.forms.ConfirmLoginCodeForm',
     'request_login_code': 'allauth.account.forms.RequestLoginCodeForm',
     'reset_password_from_key': 'allauth.account.forms.ResetPasswordKeyForm',
+
 }
-
-AUTH_USER_MODEL = "users.User"
-
-
-
 
 MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.ERROR: 'alert-danger',
 }
+#
+AUTH_USER_MODEL = 'users.User'

@@ -87,3 +87,4 @@ class ReauthenticateView(LoginRequiredMixin, ReauthenticateView):
         responses = super().form_invalid(form)
         messages.error(self.request, 'Please correct the error below.')
         return responses
+

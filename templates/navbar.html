@@ -72,7 +72,7 @@
                                         <a class="nav-link" href="{% url 'checkout' %}">Product Checkout</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'cart-list' %}">Shopping Cart</a>
+                                        <a class="nav-link" href="{% url 'cart-list'  %}">Shopping Cart</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
@@ -97,6 +97,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Contact</a>
                             </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                          <a class="nav-link" href="{% url 'seller' %}">Become a Seller</a>
+                                      </li>
+                        {% endif %}
+
 
                             {% if user.is_authenticated %}
                                 <li class="nav-item submenu dropdown">
@@ -105,6 +111,7 @@
                                         <i style="font-size: 22px" class="fa fa-user"></i>
                                     </a>
                                     <ul class="dropdown-menu">
+
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'profile' user.id%}">My profile</a>
                                         </li>
@@ -120,9 +127,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'address_list_view' %}">Address</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#">Vendor</a>
-                                        </li>
+
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                                         </li>
@@ -141,6 +146,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'account_login' %}">Login</a>
                                         </li>
+
                                     </ul>
                                 </li>
                             {% endif %}

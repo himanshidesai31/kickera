@@ -4,7 +4,6 @@ from users.views import ProfileView, AddressListView, Add_AddressListView, Updat
 
 urlpatterns = [
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
-
     path('list-address', AddressListView.as_view(), name='address_list_view'),
     path('add-address',Add_AddressListView.as_view(), name='add_address_view'),
     path('update-address/<int:pk>/',UpdateAddressView.as_view(), name='update_address_view'),

@@ -1,0 +1,40 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}
+    Become a Seller - Kickera
+{% endblock title %}
+{% block content %}
+<div class="container-fluid bg-light mt-5 pt-5">
+    <!-- Hero Section -->
+    <div class="row bg-secondary text-white py-5 text-center mb-4 mt-5">
+        <div class="col-md-6 align-self-center">
+            <h1 class="display-4 font-weight-bold">Become a Seller on Kickera</h1>
+            <p class="lead">Join thousands of sellers and grow your business with us.</p>
+            <a href="{% url 'seller-register' %}" class="btn btn-warning btn-lg mt-3">Get Started</a>
+        </div>
+        <div class="col-md-6">
+            <img src="{% static 'img/seller/seller-hero2.png' %}" alt="Seller Hero" class="img-fluid">
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container py-5">
+        <h2 class="text-center font-weight-bold mb-5">Why Sell on Kickera?</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h4 class="font-weight-bold">Wide Customer Reach</h4>
+                <p>Access millions of customers across the globe.</p>
+            </div>
+            <div class="col-md-4">
+                <h4 class="font-weight-bold">Easy to Use</h4>
+                <p>Simple tools to manage your store and track sales.</p>
+            </div>
+            <div class="col-md-4">
+                <h4 class="font-weight-bold">Secure Payments</h4>
+                <p>Get paid quickly and securely for your sales.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
