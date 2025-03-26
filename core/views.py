@@ -3,7 +3,8 @@ from http.client import responses
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from core.models import Product, Banner, Deal, Brand
+from core.models import  Banner, Deal, Brand
+from product.models import Product
 from django.views.generic import TemplateView
 from django.contrib.auth.views import PasswordChangeView
 from allauth.account.views import ReauthenticateView
@@ -25,32 +26,32 @@ class HomePageView(TemplateView):
 
 
 class BlogPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/blog.html'
+    template_name = 'product/blog.html'
 
 
 class SingleBlogPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/single_blog.html'
+    template_name = 'product/single_blog.html'
 
 
 class SingleProductPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/single_product.html'
+    template_name = 'product/single_product.html'
 
 
 class CheckoutPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/checkout.html'
+    template_name = 'product/checkout.html'
 
 
 
 class ConfirmationPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/confirmation.html'
+    template_name = 'product/confirmation.html'
 
 
 class TrackingPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/tracking.html'
+    template_name = 'product/tracking.html'
 
 
 class ElementPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/elements.html'
+    template_name = 'product/elements.html'
 
 
 class AboutPageView(LoginRequiredMixin, TemplateView):
@@ -58,7 +59,7 @@ class AboutPageView(LoginRequiredMixin, TemplateView):
 
 
 class WishlistPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'products/wishlist.html'
+    template_name = 'product/wishlist.html'
 
 
 class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):

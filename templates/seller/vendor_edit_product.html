@@ -1,0 +1,130 @@
+{% extends 'seller/vendor_navbar.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+{% trans 'Vendor Edit Products' %}
+{% endblock %}
+
+{% block content %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb py-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-between">
+            <div class="col-first">
+                <h1 class="text-center text-white">Edit Product</h1>
+                <nav class="d-flex align-items-center text-white">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-white">Dashboard
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="#" class="text-decoration-none text-white">Edit Product</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!-- Edit Product Form -->
+<section class="login_box_area section_gap py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 rounded-lg">
+
+                    <div class="card-body p-5">
+
+                        <form method="post" action="{% url 'vendor_edit_product' product.id %}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            <!-- Product Type -->
+                            <div class="form-group mb-4">
+                                <label for="product_type" class="font-weight-bold">Product Type</label>
+                                <select class="form-control rounded-pill shadow-sm border-0" id="product_type" name="product_type" required>
+                                    <option value="">Select the Product Type</option>
+                                    {% for key, value in form.product_type.field.choices %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% for error in form.product_type.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Product Name -->
+                            <div class="form-group mb-4">
+                                <label for="name" class="font-weight-bold">Product Name</label>
+                                <input type="text" class="form-control rounded-pill shadow-sm border-0" id="name" name="name" placeholder="Enter product name" value="{{ form.name.value }}" required>
+                                {% for error in form.name.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Price -->
+                            <div class="form-group mb-4">
+                                <label for="price" class="font-weight-bold">Price</label>
+                                <input type="number" step="0.01" class="form-control rounded-pill shadow-sm border-0" id="price" name="price" placeholder="Enter price" value="{{ form.price.value }}" required>
+                                {% for error in form.price.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Discount -->
+                            <div class="form-group mb-4">
+                                <label for="discount" class="font-weight-bold">Discount</label>
+                                <input type="number" step="0.01" class="form-control rounded-pill shadow-sm border-0" id="discount" name="discount" placeholder="Enter discount" required value="{{ form.discount.value }}">
+                                {% for error in form.discount.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Original Price -->
+                            <div class="form-group mb-4">
+                                <label for="original_price" class="font-weight-bold">Original Price</label>
+                                <input type="number" step="0.01" class="form-control rounded-pill shadow-sm border-0" id="original_price" name="original_price" placeholder="Enter original price" value="{{form.original_price.value}}" required>
+                                {% for error in form.original_price.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Stock -->
+                            <div class="form-group mb-4">
+                                <label for="stock" class="font-weight-bold">Stock</label>
+                                <input type="number" class="form-control rounded-pill shadow-sm border-0" id="stock" name="stock" value="{{ form.stock.value }}" placeholder="Enter stock quantity" required>
+                                {% for error in form.stock.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Category -->
+{#                            <div class="form-group mb-4">#}
+{#                                <label for="category" class="font-weight-bold">Category</label>#}
+{#                                <input type="text" class="form-control rounded-pill shadow-sm border-0" id="category" name="category" value="{{ form.category.value }}" placeholder="Enter category" required>#}
+{#                                {% for error in form.category.errors %}#}
+{#                                <div class="text-danger small">{{ error }}</div>#}
+{#                                {% endfor %}#}
+{#                            </div>#}
+
+                            <!-- Product Images -->
+                            <div class="form-group mb-4">
+                                <label for="images" class="font-weight-bold">Product Images</label>
+                                <input type="file" class="form-control rounded-pill shadow-sm border-0" id="images" name="images" value="{{ form.images.value }}" multiple>
+                                {% for error in form.images.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill hover-shadow">Update Profile</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends 'seller/vendor_navbar.html' %}
+{% load static %}
+{% block title %}Vendor Profile{% endblock title %}
+{% block content %}
+<section class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-body p-5 mt-5">
+            <h2 class="text-center mb-3 font-weight-bold text-dark">Vendor Profile</h2>
+            <table class="table table-bordered mt-5">
+                <tr><th>Business Name</th><td>{{ vendor.business_name }}</td></tr>
+                <tr><th>Phone Number</th><td>{{ vendor.phone_number }}</td></tr>
+                <tr><th>Email</th><td>{{ vendor.user.email }}</td></tr>
+                <tr><th>Business Registration Number</th><td>{{ vendor.business_registration_number }}</td></tr>
+                <tr><th>Tax ID</th><td>{{ vendor.tax_id }}</td></tr>
+                <tr><th>GST Number</th><td>{{ vendor.gst_no }}</td></tr>
+                <tr>
+                    <th>Business Logo</th>
+                    <td>
+                        {% if vendor.logo %}
+                            <img src="{{ vendor.logo.url }}" alt="Business Logo" width="150">
+                        {% else %}
+                            No logo uploaded
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            <div class="text-center mt-3">
+                <a href="{% url 'vendor_profile_update' %}" class="btn btn-primary rounded-pill">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='product',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='products/'),
+            field=models.ImageField(blank=True, null=True, upload_to='product/'),
         ),
         migrations.AlterField(
             model_name='product',
@@ -77,6 +77,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='products', to='core.category'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='product', to='core.category'),
         ),
     ]

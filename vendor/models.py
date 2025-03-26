@@ -1,7 +1,6 @@
 from django.db import models
 from users.models import User
 
-
 class VendorProfile(models.Model):
     admin = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     business_name = models.CharField(max_length=100, default="kickera")

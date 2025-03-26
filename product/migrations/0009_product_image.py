@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='image',
-            field=models.ImageField(default='exit', max_length=200, upload_to='products/'),
+            field=models.ImageField(default='exit', max_length=200, upload_to='product/'),
             preserve_default=False,
         ),
     ]

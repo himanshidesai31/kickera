@@ -77,12 +77,6 @@ class UpdateAddressView(LoginRequiredMixin, UpdateView):
 #detete address class view
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
-    template_name = 'user/delete_address.html'
+    # template_name = 'user/delete_address.html'
     from_class = AddressForm
     success_url = reverse_lazy('address_list_view')
-    
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete(self, request, *args, **kwargs)
-        messages.success(self.request, 'Address deleted successfully!')
-        return redirect('address_list_view')   

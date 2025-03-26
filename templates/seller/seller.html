@@ -11,7 +11,11 @@
         <div class="col-md-6 align-self-center">
             <h1 class="display-4 font-weight-bold">Become a Seller on Kickera</h1>
             <p class="lead">Join thousands of sellers and grow your business with us.</p>
-            <a href="{% url 'seller-register' %}" class="btn btn-warning btn-lg mt-3">Get Started</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'account_login' %}" class="btn btn-warning btn-lg mt-3">Login</a>
+            {% else %}
+            <a href="{% url 'seller-register' %}" class="btn btn-warning btn-lg mt-3">Register</a>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <img src="{% static 'img/seller/seller-hero2.png' %}" alt="Seller Hero" class="img-fluid">

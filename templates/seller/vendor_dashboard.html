@@ -1,75 +1,79 @@
-{% extends 'navbar.html' %}
+{% extends 'seller/vendor_navbar.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}
-    Vendor Dashboard - Kickera
-{% endblock title %}
+
+{% block title %}Vendor Dashboard - Kickera{% endblock title %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <div class="container-fluid bg-light mt-5 pt-5">
-            <div class="row bg-secondary text-white py-5 text-center mb-4 mt-5">
-                <div class="col-md-6 align-self-center">
-                    <h2 class="display-4 font-weight-bold text-primary">Welcome, {{ user.username }}</h2>
-                    <p class="lead">Manage your store and grow your business on Kickera.</p>
-                </div>
-            </div>
-
-            <div class="container mt-4">
-                <div class="row">
-                    <!-- Manage Products Section -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Manage Products</h5>
-                                <p class="card-text">Add, edit, or remove products from your store.</p>
-                                <a  class="btn btn-primary text-white">Go to Products</a>
-{#                                <!--href="{% url 'manage_products' %}"-->#}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- View Orders Section -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">View Orders</h5>
-                                <p class="card-text">Track and manage customer orders.</p>
-                                <a  class="btn btn-success text-white">View Orders</a>
-{#                                href="{% url 'view_orders' %}"#}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Account Settings Section -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Account Settings</h5>
-                                <p class="card-text">Update your profile and store details.</p>
-                                <a  class="btn btn-warning text-white">Edit Settings</a>
-{#                                href="{% url 'account_settings' %}"#}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Features Section -->
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <h3 class="text-center">Additional Features</h3>
-                        <ul class="list-group">
-                            <li class="list-group-item">Analytics and Reports (Coming Soon)</li>
-                            <li class="list-group-item">Promotional Tools (Coming Soon)</li>
-                            <li class="list-group-item">Customer Feedback Management (Coming Soon)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% else %}
+{% if user.is_authenticated %}
+    <div class="container-fluid bg-light py-5 mt-5">
         <div class="container text-center mt-5">
-            <h2>Please <a href="{% url 'seller-login' %}">log in</a> to access your vendor dashboard.</h2>
+            <h4 class="display-4 fw-bold text-dark">Welcome, {{ user.username }}</h4>
+            <p class="lead text-muted">Manage your store efficiently and grow your business on Kickera.</p>
         </div>
-    {% endif %}
+
+        <!-- Dashboard Cards -->
+        <div class="container mt-5">
+            <div class="row g-4">
+                <!-- Manage Products -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
+                        <div class="card-body">
+                            <i class="fa-solid fa-box-open fa-4x text-primary mb-3"></i>
+                            <h5 class="card-title fw-bold">Manage Products</h5>
+                            <p class="card-text text-muted">Add, edit, or remove products from your store.</p>
+                            <a href="{% url 'vendor_product_list' %} " class="btn btn-outline-primary">Go to Products</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Orders -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
+                        <div class="card-body">
+                            <i class="fa-solid fa-shopping-cart fa-4x text-success mb-3"></i>
+                            <h5 class="card-title fw-bold">View Orders</h5>
+                            <p class="card-text text-muted">Track and manage customer orders.</p>
+                            <a href="#" class="btn btn-outline-success">View Orders</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
+                        <div class="card-body">
+                            <i class="fa-solid fa-user-cog fa-4x text-warning mb-3"></i>
+                            <h5 class="card-title fw-bold">Account Settings</h5>
+                            <p class="card-text text-muted">Update your profile and store details.</p>
+                            <a href="#" class="btn btn-outline-warning">Edit Settings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Features -->
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <h3 class="fw-bold text-dark">Additional Features</h3>
+                    <div class="list-group list-group-flush mt-3">
+                        <span class="list-group-item bg-transparent border-0">
+                            <i class="fa-solid fa-chart-line text-primary me-2"></i> Analytics and Reports (Coming Soon)
+                        </span>
+                        <span class="list-group-item bg-transparent border-0">
+                            <i class="fa-solid fa-bullseye text-danger me-2"></i> Promotional Tools (Coming Soon)
+                        </span>
+                        <span class="list-group-item bg-transparent border-0">
+                            <i class="fa-solid fa-comments text-success me-2"></i> Customer Feedback Management (Coming Soon)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="container text-center mt-5">
+        <h2>Please <a href="{% url 'seller_login' %}">log in</a> to access your vendor dashboard.</h2>
+    </div>
+{% endif %}
 {% endblock content %}

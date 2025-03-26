@@ -1,43 +1,41 @@
-from django.views.generic import ListView
-from product.models import Category, Product, Checkout, Cart, Confirmation, CartItem
+from django.views.generic import ListView, TemplateView
+from product.models import  Product, Checkout, Cart, Confirmation, CartItem
+from vendor.views import VendorProductListView
 
 
 #Categories class
-class  CategoryListView(ListView):
-    model = Category
-    template_name = 'products/category.html'
+class  CategoryListView(TemplateView):
+    # model = Category      ListView
+    template_name = 'product/category.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(CategoryListView, self).get_context_data(**kwargs)
-        context['categories'] = Product.objects.all()
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(CategoryListView, self).get_context_data(**kwargs)
+    #     context['categories'] = Product.objects.all()
+    #     return context
 
-
-
-class  ProductListView(ListView):
+#Products class
+class ProductListView(ListView):
     model = Product
     template_name = 'index.html'
 
-    def get_context_data(self,  **kwargs):
-        context = super(ProductListView, self).get_context_data(**kwargs)
-        context['all_products'] = context['object_list']
-        return context
-                    
-    
+    def get_queryset(self):
+        return Product.objects.all().prefetch_related('images')
+        # return Product.objects.filter(user__admin=self.request.user).prefetch_related('images')
+
+
 class  CheckoutListView(ListView):
     model = Checkout
-    template_name = 'products/checkout.html'
+    template_name = 'product/checkout.html'
 
 
 class ConfirmationListView(ListView):
     model = Confirmation
-    template_name = 'products/confirmation.html'
-
+    template_name = 'product/confirmation.html'
 
 
 class CartListView(ListView):
     model = Cart
-    template_name = 'products/cart.html'
+    template_name = 'product/cart.html'
 
     def get_context_data(self, **kwargs):
         context = super(CartListView, self).get_context_data(**kwargs)
@@ -51,7 +49,7 @@ class CartListView(ListView):
 
 class CartItemListView(ListView):
                 model = CartItem
-                template_name = 'products/cart_items.html'
+                template_name = 'product/cart_items.html'
 
                 def get_context_data(self, **kwargs):
                     context = super(CartItemListView, self).get_context_data(**kwargs)
@@ -59,3 +57,5 @@ class CartItemListView(ListView):
                     context['cart_items'] = CartItem.objects.filter(cart=user_cart)
                     context['cart_subtotal'] = sum(item.cart.product.price * item.quantity for item in context['cart_items'])
                     return context
+                
+                

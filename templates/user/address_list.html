@@ -23,7 +23,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                          <a class="btn btn-secondary btn-sm" href="{% url 'update_address_view' address.id %}">Edit</a>
                                         <br>
-                                        <form method="post" action = "{% url 'delete_address_view' address.id %}"  style="display:inline;"
+                                        <form method="post" action = "{% url 'delete_address_view' address.id %}"  style="display:inline;">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                         </form>

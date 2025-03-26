@@ -1,0 +1,110 @@
+{% extends 'seller/vendor_navbar.html' %}
+{% load static %}
+
+{% block title %}Edit Vendor Profile{% endblock title %}
+
+{% block content %}
+<section class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-gradient-primary text-white text-center py-4">
+                    <h2 class="mb-0 font-weight-bold">Edit Vendor Profile</h2>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation">
+                        {% csrf_token %}
+
+                        <!-- Business Name -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Business Name</label>
+                            <input type="text" name="business_name" class="form-control border rounded"
+                                value="{{ form.business_name.value|default_if_none:'' }}" required>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Phone Number</label>
+                            <input type="text" name="phone_number" class="form-control border rounded"
+                                value="{{ form.phone_number.value|default_if_none:'' }}" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Email</label>
+                            <input type="email" name="email" class="form-control border rounded"
+                                value="{{ form.email.value|default_if_none:'' }}" required>
+                        </div>
+
+                        <!-- Business Registration Number -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Business Registration Number</label>
+                            <input type="text" name="business_registration_number" class="form-control border rounded"
+                                value="{{ form.business_registration_number.value|default_if_none:'' }}">
+                        </div>
+
+                        <!-- Tax ID -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Tax ID</label>
+                            <input type="text" name="tax_id" class="form-control border rounded"
+                                value="{{ form.tax_id.value|default_if_none:'' }}">
+                        </div>
+
+                        <!-- GST Number -->
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">GST Number</label>
+                            <input type="text" name="gst_no" class="form-control border rounded"
+                                value="{{ form.gst_no.value|default_if_none:'' }}">
+                        </div>
+
+                        <!-- Business Logo -->
+                        <div class="form-group mb-4">
+                            <label class="fw-bold">Business Logo</label>
+                            <input type="file" name="logo" class="form-control border rounded" id="logoInput" accept="image/*">
+
+                            <!-- Image Preview -->
+                            {% if form.instance.logo %}
+                                <div class="mt-3">
+                                    <img id="logoPreview" src="{{ form.instance.logo.url }}"
+                                        alt="Current Logo" class="img-thumbnail rounded" width="150">
+                                </div>
+                            {% else %}
+                                <div class="mt-3">
+                                    <img id="logoPreview" src="" class="img-thumbnail rounded d-none" width="150">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">
+                                 Save Changes
+                            </button>
+                            <a href="{% url 'vendor_profile' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill shadow-sm">
+                                 Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Image Preview Script -->
+<script>
+    document.getElementById("logoInput").addEventListener("change", function(event) {
+        let preview = document.getElementById("logoPreview");
+        let file = event.target.files[0];
+
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove("d-none");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock content %}

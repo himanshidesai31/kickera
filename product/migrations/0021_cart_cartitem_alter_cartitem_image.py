@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cartitem',
             name='image',
-            field=models.ImageField(default='products/default_image.jpg', upload_to=''),
+            field=models.ImageField(default='product/default_image.jpg', upload_to=''),
         ),
     ]

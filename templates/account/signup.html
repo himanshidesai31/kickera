@@ -38,13 +38,7 @@
                         <h2 class="text-center mb-3 font-weight-bold text-dark">Sign Up</h2>
                         <p class="text-muted text-center mb-4">Join us and start shopping now!</p>
 
-                        <!-- Error Messages -->
-                        {% if form.errors %}
-                        <div class="alert alert-danger d-flex align-items-center text-center" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            There was an issue with your form submission. Please check your details.
-                        </div>
-                        {% endif %}
+
 
                         {% if user.is_authenticated %}
                         <div class="alert alert-warning text-center">
