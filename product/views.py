@@ -4,14 +4,12 @@ from vendor.views import VendorProductListView
 
 
 #Categories class
-class  CategoryListView(TemplateView):
-    # model = Category      ListView
+class  CategoryListView(ListView):
+    model = Product
     template_name = 'product/category.html'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(CategoryListView, self).get_context_data(**kwargs)
-    #     context['categories'] = Product.objects.all()
-    #     return context
+    def get_queryset(self):
+        return Product.objects.all().prefetch_related('category')
 
 #Products class
 class ProductListView(ListView):

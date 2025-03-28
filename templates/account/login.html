@@ -46,7 +46,7 @@ Login
                         <h2>Log in to Enter</h2>
                       
                         <!-- Django's Login Form Integration -->
-                        <form class="row login_form" action="{% url 'account_login' %}" method="post" id="contactForm" novalidate="novalidate">
+                        <form class="row login_form" action="{% url 'account_login'  %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
                         
                             <!-- Display Non-Field Errors -->

@@ -4,10 +4,29 @@
 {% block title %}My Products - Kickera{% endblock %}
 
 {% block content %}
+    <section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">Product's List</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-white">Dashboard
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'vendor_product_list' %}" class="text-decoration-none text-white ">My Products
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
 <div class="container py-5 mt-5">
-    <h2 class="text-center mb-4 mt-5 text-secondary ">My Products</h2>
+{#    <h2 style="" class="text-center mb-4 mt-5 text-dark">My Products</h2>#}
 
-    <div class="text-end mb-3">
+    <div class="text-end mb-3 text-right">
         <a href="{% url 'vendor_add_product' %}" class="btn btn-primary text-sm-center">
             Add New Product
         </a>
@@ -15,17 +34,18 @@
     {% if products %}
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
-                <thead class="table-dark">
-                    <tr>
+                <thead class="thead-dark color-1-hover">
+                    <tr class="text-left">
                         <th>Image</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Stock</th>
-{#                        <th>Category</th>#}
+                        <th>Brand</th>
+                        <th>Category</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody> 
+                <tbody class="">
                     {% for product in products %}
                         <tr>
                             <td>
@@ -42,7 +62,8 @@
                             <td>{{ product.name }}</td>
                             <td>{{ product.price }}</td>
                             <td>{{ product.stock }}</td>
-{#                            <td>{{ product.category.name }}</td>#}
+                            <td>{{ product.brand.brand_name }}</td>
+                            <td>{{ product.category.category_name }}</td>
                             <td>
                                 <a href="{% url 'vendor_edit_product' product.id %}">
                                     <button type="button" class="btn btn-primary btn-sm text-white"> Edit </button>

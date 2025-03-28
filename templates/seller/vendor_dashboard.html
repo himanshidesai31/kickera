@@ -5,18 +5,14 @@
 {% block title %}Vendor Dashboard - Kickera{% endblock title %}
 
 {% block content %}
+<section class="content mt-5">
 {% if user.is_authenticated %}
     <div class="container-fluid bg-light py-5 mt-5">
-        <div class="container text-center mt-5">
-            <h4 class="display-4 fw-bold text-dark">Welcome, {{ user.username }}</h4>
-            <p class="lead text-muted">Manage your store efficiently and grow your business on Kickera.</p>
-        </div>
-
         <!-- Dashboard Cards -->
         <div class="container mt-5">
             <div class="row g-4">
                 <!-- Manage Products -->
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6 mt-5">
                     <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
                         <div class="card-body">
                             <i class="fa-solid fa-box-open fa-4x text-primary mb-3"></i>
@@ -28,7 +24,7 @@
                 </div>
 
                 <!-- View Orders -->
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6 mt-5">
                     <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
                         <div class="card-body">
                             <i class="fa-solid fa-shopping-cart fa-4x text-success mb-3"></i>
@@ -40,13 +36,24 @@
                 </div>
 
                 <!-- Account Settings -->
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6 mt-5">
                     <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
                         <div class="card-body">
                             <i class="fa-solid fa-user-cog fa-4x text-warning mb-3"></i>
                             <h5 class="card-title fw-bold">Account Settings</h5>
                             <p class="card-text text-muted">Update your profile and store details.</p>
                             <a href="#" class="btn btn-outline-warning">Edit Settings</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mt-5">
+                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
+                        <div class="card-body center">
+                            <i class="fa-solid fa-user-cog fa-4x text-warning mb-3"></i>
+                            <h5 class="card-title fw-bold">Create brand</h5>
+                            <p class="card-text text-muted">Vendor Creating Our Brand .</p>
+                            <a href="{% url 'vendor_add_brand'  %} " class="btn btn-outline-warning">Add Brand </a>
                         </div>
                     </div>
                 </div>
@@ -76,4 +83,5 @@
         <h2>Please <a href="{% url 'seller_login' %}">log in</a> to access your vendor dashboard.</h2>
     </div>
 {% endif %}
+    </section>
 {% endblock content %}
