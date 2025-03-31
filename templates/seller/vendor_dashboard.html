@@ -10,78 +10,69 @@
     <div class="container-fluid bg-light py-5 mt-5">
         <!-- Dashboard Cards -->
         <div class="container mt-5">
-            <div class="row g-4">
-                <!-- Manage Products -->
-                <div class="col-lg-4 col-md-6 mt-5">
-                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
-                        <div class="card-body">
-                            <i class="fa-solid fa-box-open fa-4x text-primary mb-3"></i>
-                            <h5 class="card-title fw-bold">Manage Products</h5>
-                            <p class="card-text text-muted">Add, edit, or remove products from your store.</p>
-                            <a href="{% url 'vendor_product_list' %} " class="btn btn-outline-primary">Go to Products</a>
-                        </div>
-                    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Manage Products -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-box-open fa-4x text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">Manage Products</h5>
+                    <p class="card-text text-muted">Add, edit, or remove products from your store.</p>
                 </div>
-
-                <!-- View Orders -->
-                <div class="col-lg-4 col-md-6 mt-5">
-                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
-                        <div class="card-body">
-                            <i class="fa-solid fa-shopping-cart fa-4x text-success mb-3"></i>
-                            <h5 class="card-title fw-bold">View Orders</h5>
-                            <p class="card-text text-muted">Track and manage customer orders.</p>
-                            <a href="#" class="btn btn-outline-success">View Orders</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Account Settings -->
-                <div class="col-lg-4 col-md-6 mt-5">
-                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
-                        <div class="card-body">
-                            <i class="fa-solid fa-user-cog fa-4x text-warning mb-3"></i>
-                            <h5 class="card-title fw-bold">Account Settings</h5>
-                            <p class="card-text text-muted">Update your profile and store details.</p>
-                            <a href="#" class="btn btn-outline-warning">Edit Settings</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 mt-5">
-                    <div class="card border-0 shadow-lg h-100 text-center dashboard-card">
-                        <div class="card-body center">
-                            <i class="fa-solid fa-user-cog fa-4x text-warning mb-3"></i>
-                            <h5 class="card-title fw-bold">Create brand</h5>
-                            <p class="card-text text-muted">Vendor Creating Our Brand .</p>
-                            <a href="{% url 'vendor_add_brand'  %} " class="btn btn-outline-warning">Add Brand </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Features -->
-            <div class="row mt-5">
-                <div class="col-md-12 text-center">
-                    <h3 class="fw-bold text-dark">Additional Features</h3>
-                    <div class="list-group list-group-flush mt-3">
-                        <span class="list-group-item bg-transparent border-0">
-                            <i class="fa-solid fa-chart-line text-primary me-2"></i> Analytics and Reports (Coming Soon)
-                        </span>
-                        <span class="list-group-item bg-transparent border-0">
-                            <i class="fa-solid fa-bullseye text-danger me-2"></i> Promotional Tools (Coming Soon)
-                        </span>
-                        <span class="list-group-item bg-transparent border-0">
-                            <i class="fa-solid fa-comments text-success me-2"></i> Customer Feedback Management (Coming Soon)
-                        </span>
-                    </div>
+                <div>
+                    <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-primary">Go to Products</a>
                 </div>
             </div>
         </div>
+
+        <!-- View Orders -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-shopping-cart fa-4x text-success mb-3"></i>
+                    <h5 class="card-title fw-bold">View Orders</h5>
+                    <p class="card-text text-muted">Track and manage customer orders.</p>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-outline-success">View Orders</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Brand -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-tags fa-4x text-info mb-3"></i>
+                    <h5 class="card-title fw-bold">Create Brand</h5>
+                    <p class="card-text text-muted">Add and manage your shoe brand.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_add_brand' %}" class="btn btn-outline-info">Add Brand</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Category -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-layer-group fa-4x text-danger mb-3"></i>
+                    <h5 class="card-title fw-bold">Add Category</h5>
+                    <p class="card-text text-muted">Add and manage product categories.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_add_category' %}" class="btn btn-outline-danger">Add New Category</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 {% else %}
     <div class="container text-center mt-5">
         <h2>Please <a href="{% url 'seller_login' %}">log in</a> to access your vendor dashboard.</h2>
     </div>
 {% endif %}
-    </section>
+</section>
 {% endblock content %}

@@ -24,7 +24,6 @@
     <link rel="stylesheet" href="{% static 'css/ion.rangeSlider.skinFlat.css' %}">
     <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-
     {% block css %}{% endblock css %}
 </head>
 
@@ -60,8 +59,33 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Analytics</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Settings</a>
+
+                            <!-- Settings Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-cog" style="font-size: 20px"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="{% url 'vendor_profile' %}">
+                                        <i class="fa fa-user"></i> Profile Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+{#                                        {% url 'vendor_store_settings' %}#}
+                                        <i class="fa fa-building"></i> Store Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+{#                                        {% url 'vendor_payment_settings' %}#}
+                                        <i class="fa fa-credit-card"></i> Payment Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+{#                                        {% url 'vendor_notifications' %}#}
+                                        <i class="fa fa-bell"></i> Notification Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+{#                                        {% url 'vendor_security' %}#}
+                                        <i class="fa fa-lock"></i> Privacy & Security
+                                    </a>
+                                </div>
                             </li>
 
                             {% if user.is_authenticated %}
@@ -70,7 +94,7 @@
                                         <i class="fa fa-user" style="font-size: 22px"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="{% url 'vendor_profile'  %}">Profile</a>
+
                                         <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                                     </div>
                                 </li>
@@ -96,7 +120,7 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+       <!-- JavaScript -->
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
         integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous">
@@ -133,7 +157,6 @@
             }
         });
     </script>
-
     {% block js %}{% endblock js %}
 </body>
 </html>

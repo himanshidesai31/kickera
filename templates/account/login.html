@@ -1,4 +1,4 @@
-{% extends 'navbar.html' %}{# templates/account/login.html #}
+{% extends 'navbar.html' %}
 {% load static %}
 {% load i18n %}
 {% load allauth account %}
@@ -44,11 +44,11 @@ Login
                 <div class="col-lg-6">
                     <div class="login_form_inner">
                         <h2>Log in to Enter</h2>
-                      
-                        <!-- Django's Login Form Integration -->
+
+                        <p> NEXT:URL = {{ request.GET.next }}</p>
                         <form class="row login_form" action="{% url 'account_login'  %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
-                        
+                        <input type="hidden" name="next" value="{{ request.GET.next }}" />
                             <!-- Display Non-Field Errors -->
                             {% if form.non_field_errors %}
                                 <div class="col-md-12 form-group">
@@ -59,7 +59,7 @@ Login
                                     </ul>
                                 </div>
                             {% endif %}
-                        
+
                             <!-- Email Field -->
                             <div class="col-md-12 form-group">
                                 <input required type="email" class="form-control" id="exampleEmail" name="login" placeholder="Email" value="{{ request.POST.login }}"/>
@@ -69,7 +69,7 @@ Login
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                        
+
                             <!-- Password Field -->
                             <div class="col-md-12 form-group">
                                 <input required type="password" class="form-control" id="password" name="password" placeholder="Password"/>
@@ -79,7 +79,7 @@ Login
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                        
+
                             <!-- Remember Me Checkbox -->
                             <div class="col-md-12 form-group">
                                 <div class="creat_account">
@@ -87,7 +87,7 @@ Login
                                     <label for="f-option2">Keep me logged in</label>
                                 </div>
                             </div>
-                        
+
                             <!-- Submit Button and Forgot Password Link -->
                             <div class="col-md-12 form-group">
                                 <button type="submit" value="submit" class="primary-btn">Log In</button>

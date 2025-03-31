@@ -26,7 +26,7 @@ class Address(models.Model):
     vendor = models.ForeignKey('vendor.VendorProfile',null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=100,blank=True ,null=True)
-    mobile = models.CharField(max_length=15)  # Removed `unique=True`
+    mobile = models.CharField(max_length=15,null=True)
     address_type = models.CharField(max_length=10, choices=ADDRESS_TYPES, default=HOME)
     city = models.CharField(max_length=100)
     Address = models.CharField(max_length=100 ,null=True)

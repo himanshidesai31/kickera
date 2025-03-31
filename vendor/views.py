@@ -1,51 +1,40 @@
-#vendor/views.py
+# vendor/views.py
 from django.contrib.auth.views import LoginView
 from django.shortcuts import get_object_or_404, redirect
-from product.models import Product, Image, Category, Brand
-from users.models import User
-from vendor.forms import SellerLoginForm, SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, TemplateView, UpdateView, DetailView
-from vendor.models import  VendorProfile
+from product.models import Product, Image, Category, Brand
+from vendor.models import VendorProfile
+from vendor.forms import SellerLoginForm, SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm
 
 
 class SellerHomePageView(LoginRequiredMixin, TemplateView):
     template_name = 'seller/seller.html'
 
 
-class SellerRegisterView(LoginRequiredMixin,CreateView):
+class SellerRegisterView(CreateView):  # LoginRequiredMixin हटाया
     template_name = 'seller/seller_register.html'
     form_class = SellerRegisterForm
     success_url = reverse_lazy('vendor_dashboard')
 
     def form_valid(self, form):
-        form.instance.admin = self.request.user
-        response = super().form_valid(form)
-
-        # Save the VendorProfile first
-        user = User.objects.get(id=self.request.user.id)
+        user = form.save(commit=False)
         user.is_vendor = True
         user.save()
-        return response
+        return super().form_valid(form)
 
-    def form_invalid(self, form):
-        print('------form invalid--------')
-        return self.render_to_response(self.get_context_data(form=form))
 
-#Vendor profile view showing the vendor user details
-class VendorProfileView(DetailView):
+class VendorProfileView(LoginRequiredMixin, DetailView):
     model = VendorProfile
     template_name = 'seller/vendor_profile.html'
     context_object_name = 'vendor'
 
-    # def get_queryset(self):
-    #     return VendorProfile.objects.filter(admin=self.request.user)  # QuerySet return kre che
-
     def get_object(self, queryset=None):
-        return self.get_queryset().first() # first record return kre che
+        return get_object_or_404(VendorProfile, admin=self.request.user)
 
-class VendorProfileUpdateView(UpdateView):
+
+class VendorProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = VendorProfile
     form_class = SellerRegisterForm
     template_name = 'seller/vendor_profile_edit.html'
@@ -61,12 +50,11 @@ class SellerLoginView(LoginView):
     success_url = reverse_lazy('vendor_dashboard')
 
 
-class VendorDashboardView(TemplateView):
+class VendorDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'seller/vendor_dashboard.html'
 
 
-#vendor product related view's
-class VendorProductListView(LoginRequiredMixin,ListView):
+class VendorProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'seller/vendor_product_list.html'
     context_object_name = 'products'
@@ -81,7 +69,6 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
     form_class = VendorAddProductForm
     success_url = reverse_lazy('vendor_product_list')
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
@@ -89,11 +76,10 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        product = form.save(commit=False)  #
+        product = form.save(commit=False)
         product.vendor = self.request.user.vendorprofile
-        product.save()  # Now save it
+        product.save()
 
-        #  image upload
         images = self.request.FILES.getlist('images')
         for img in images:
             Image.objects.create(product=product, image=img)
@@ -102,54 +88,33 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
 
 
 class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
-    template_name = 'seller/vendor_edit_product.html'
     model = Product
+    template_name = 'seller/vendor_edit_product.html'
     form_class = VendorAddProductForm
     success_url = reverse_lazy('vendor_product_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
-        context['brands'] = Brand.objects.all()  # Pass all brands to the template
-
-        if self.object.category:
-            context['selected_category'] = self.object.category.id
-
-        if self.object.brand:
-            context['selected_brand'] = self.object.brand.id
-
+        context['brands'] = Brand.objects.all()
+        context['product_images'] = self.object.images.all()
         return context
 
-
     def form_valid(self, form):
-        form.instance.vendor = VendorProfile.objects.filter(admin=self.request.user).first()
-        category_name = self.request.POST.get('category')
-
-        if category_name:
-            try:
-                category = Category.objects.get(id=category_name)
-                form.instance.category = category
-            except Category.DoesNotExist:
-                form.add_error('category', 'Invalid category selected.')
-                return self.form_invalid(form)
-
-        self.object = form.save()
+        product = form.save(commit=False)
+        product.vendor = self.request.user.vendorprofile
+        product.save()
 
         images = self.request.FILES.getlist('images')
         if images:
-            self.object.images.all().delete()
+            product.images.all().delete()  # ⚠ इमेज डिलीट करने से पहले वेरिफाई करें!
             for img in images:
-                Image.objects.create(product=self.object, image=img)
+                Image.objects.create(product=product, image=img)
 
         return super().form_valid(form)
 
 
-    def form_invalid(self, form):
-        print('------form invalid--------')
-        return self.render_to_response(self.get_context_data(form=form))
-
-
-class VendorDeleteProductView(LoginRequiredMixin,DeleteView):
+class VendorDeleteProductView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('vendor_product_list')
 
@@ -159,19 +124,23 @@ class VendorDeleteProductView(LoginRequiredMixin,DeleteView):
 
 class VendorAddBrandView(LoginRequiredMixin, CreateView):
     model = Brand
-    template_name = 'seller/Vendor_add_brand.html'
+    template_name = 'seller/vendor_add_brand.html'
     form_class = VendorAddBrandForm
     success_url = reverse_lazy('vendor_add_brand')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
+        context = super().get_context_data(**kwargs)
         context['brands'] = Brand.objects.all()
         return context
 
-    def form_valid(self, form):
-        print('------form valid--------')
-        return super().form_valid(form)
 
-    def form_invalid(self, form):
-        print('------form invalid--------')
-        return super().form_invalid(form)
+class VendorCategoryAddView(LoginRequiredMixin, CreateView):
+    model = Category
+    template_name = 'seller/vendor_add_category.html'
+    form_class = VendorAddCategoryForm
+    success_url = reverse_lazy('vendor_add_category')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context

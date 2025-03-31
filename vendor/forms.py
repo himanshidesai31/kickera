@@ -1,6 +1,6 @@
 from django import forms
 from vendor.models import VendorProfile
-from product.models import Product, Brand
+from product.models import Product, Brand, Category
 
 
 class SellerRegisterForm(forms.ModelForm):
@@ -38,3 +38,9 @@ class VendorAddBrandForm(forms.ModelForm):
     class Meta:
         model = Brand
         fields = ['brand_name']
+
+
+class VendorAddCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['category_name']

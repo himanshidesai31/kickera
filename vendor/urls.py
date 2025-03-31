@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from vendor.views import SellerHomePageView, SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
-    VendorProfileUpdateView, VendorAddBrandView
+    VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView
 
 urlpatterns = [
     path('seller/', SellerHomePageView.as_view(), name='seller_register'),
@@ -21,6 +21,8 @@ urlpatterns = [
     path('product/delete-product/<int:pk>/',VendorDeleteProductView.as_view(), name='vendor_delete_product'),
 
     path('brand-add', VendorAddBrandView.as_view(), name='vendor_add_brand'),
+
+    path('add-category', VendorCategoryAddView.as_view(), name='vendor_add_category'),
 
 ]
 

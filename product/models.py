@@ -1,4 +1,4 @@
-from django.core.files import images
+
 from django.db import models
 from users.models import User
 from vendor.models import VendorProfile
