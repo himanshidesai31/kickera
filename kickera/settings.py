@@ -5,13 +5,15 @@ import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
 
+#RAZORPAY PAYMENT API KYE's
+RAZORPAY_KEY_ID  = os.environ.get('rzp_test_oeqHuvXLrWxLNQ')
+RAZORPAY_KEY_SECRET = os.environ.get('1rYjH0tu686SsxKHg3kAJNW7')
+
+
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-s_n828=qw_=07&b!loo+&u_@4v0+a)!6)i6+pdc6mnowvkezlm'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # Allowed hosts

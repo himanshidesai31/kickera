@@ -53,11 +53,12 @@ class UserUpdateForm(forms.ModelForm):
         return mobile
 
 
+
 #address form
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ['name', 'mobile', 'address_type', 'city', 'state', 'pincode','Address','country']
+        fields = ['name', 'mobile', 'address_type', 'city', 'state', 'pincode', 'Address', 'country']  # Fixed 'address'
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -65,49 +66,22 @@ class AddressForm(forms.ModelForm):
             raise ValidationError("The name field cannot be empty.")
         return name
 
-        # mobile validation
     def clean_mobile(self):
         mobile = self.cleaned_data.get('mobile')
         if not mobile:
             raise ValidationError("The mobile field cannot be empty.")
-
-            # Invert this condition so that we raise an error if it's NOT digits
         if not mobile.isdigit():
             raise ValidationError("Enter a valid mobile number (digits only).")
-
-        if len(mobile) < 10 or len(mobile) > 10:
-            raise ValidationError("Mobile number should be between 1 to 10 digits.")
+        if len(mobile) != 10:  # Fixed logic for 10-digit number
+            raise ValidationError("Mobile number should be exactly 10 digits.")
         return mobile
 
-    def clean_address_type(self):
-        address_type = self.cleaned_data.get('address_type')
-        if not address_type:
-            raise ValidationError("The address type field cannot be empty.")
-        return address_type
-
-    def clean_country(self):
-        country = self.cleaned_data.get('country')
-        if not country:
-            raise ValidationError("The country field cannot be empty.")
-        return country
-
-    def clean_state(self):
-        state = self.cleaned_data.get('state')
-        if not state:
-            raise ValidationError("The state field cannot be empty.")
-        return state
-
-    def clean_city(self):
-        city = self.cleaned_data.get('city')
-        if not city:
-            raise ValidationError("The city field cannot be empty.")
-        return city
-
     def clean_pincode(self):
-        pincode =self.cleaned_data.get('pincode')
+        pincode = self.cleaned_data.get('pincode')
         if not pincode:
             raise ValidationError("The pincode field cannot be empty.")
-
-        if len(pincode) < 6 or (len(pincode) > 8):
-            raise ValidationError("Pincode should be at least 6 to 8 digits.")
+        if not pincode.isdigit():
+            raise ValidationError("Pincode should only contain digits.")
+        if len(pincode) < 6 or len(pincode) > 8:
+            raise ValidationError("Pincode should be between 6 and 8 digits.")
         return pincode

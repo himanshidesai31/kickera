@@ -55,16 +55,16 @@
                                     aria-haspopup="true" aria-expanded="false">Shop</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item ">
-                                        <a class="nav-link" href="{% url 'category-list'  %}">Shop Category</a>
+                                        <a class="nav-link" href="{% url 'category_list'  %}">Shop Category</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'single_product' %}">Product Details</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'checkout' %}">Product Checkout</a>
+                                        <a class="nav-link" href="{% url 'checkout'  %}">Product Checkout</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'cart-list'  %}">Shopping Cart</a>
+                                        <a class="nav-link" href="{% url 'cart_list'  %}">Shopping Cart</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
@@ -156,7 +156,7 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="nav-item">
-                                <a href="{% url 'cart-list' %}" class="cart">
+                                <a href="{% url 'cart_list' %}" class="cart">
                                     <span style="font-size: 18px" class="ti-bag"></span>
                                 </a>
                             </li>

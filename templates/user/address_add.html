@@ -67,9 +67,23 @@
                                 <input class="form-control" type="text" name="pincode" placeholder="{% trans "Enter Pincode Number" %}" required>
                                 <div class="text-danger"> {{ form.pincode.errors }}</div>
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">{% trans "Add New" %}</button>
+                            
+                            <!-- Hidden fields for handling navigation if needed -->
+                            <input type="hidden" name="previous_url" value="{{ previous_url }}">
+                            <input type="hidden" name="next_url" value="{{ next_url }}">
+                            {% if request.GET.product_id %}
+                            <input type="hidden" name="product_id" value="{{ request.GET.product_id }}">
+                            <input type="hidden" name="go_to_checkout" value="1">
+                            {% endif %}
+                            
+                            <div class="d-grid gap-2 d-flex justify-content-between">
+                                {% if request.GET.product_id %}
+                                <a href="{% url 'check_user_address' pk=request.GET.product_id %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                                <button type="submit" class="btn btn-primary">{% trans "Add & Proceed to Checkout" %}</button>
+                                {% else %}
                                 <a href="{% url 'address_list_view' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                                <button type="submit" class="btn btn-primary">{% trans "Add New Address" %}</button>
+                                {% endif %}
                             </div>
                         </form>
                     </div>

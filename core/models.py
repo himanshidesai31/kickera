@@ -15,7 +15,7 @@ class Banner(models.Model):
 # Deal model:
 class Deal(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='deals/')
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     deal_price = models.DecimalField(max_digits=10, decimal_places=2)

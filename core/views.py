@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from core.models import  Banner, Deal, Brand
 from product.models import Product
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView, DetailView
 from django.contrib.auth.views import PasswordChangeView
 from allauth.account.views import ReauthenticateView
 
@@ -35,10 +35,6 @@ class SingleBlogPageView(LoginRequiredMixin, TemplateView):
 
 class SingleProductPageView(LoginRequiredMixin, TemplateView):
     template_name = 'product/single_product.html'
-
-
-class CheckoutPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/checkout.html'
 
 
 

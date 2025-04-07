@@ -45,11 +45,12 @@ Login
                     <div class="login_form_inner">
                         <h2>Log in to Enter</h2>
 
-                        <p> NEXT:URL = {{ request.GET.next }}</p>
+
                         <form class="row login_form" action="{% url 'account_login'  %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
+                        <p> NEXT:URL = {{ request.GET.next }}</p>
                         <input type="hidden" name="next" value="{{ request.GET.next }}" />
-                            <!-- Display Non-Field Errors -->
+
                             {% if form.non_field_errors %}
                                 <div class="col-md-12 form-group">
                                     <ul class="text-danger">

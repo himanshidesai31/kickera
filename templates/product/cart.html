@@ -1,97 +1,151 @@
 {% extends 'navbar.html' %}
 {% load static %}
-{% load i18n %}
-{% block title %}
-    Cart
-{% endblock title %}
-{% block content %}
-    {{ user.id }}
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Shopping Cart</h1>
-                    <nav class="d-flex align-items-center">
-                        <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="{% url 'cart-list' %}">Cart</a>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Banner Area -->
+{% block title %} Shopping Cart {% endblock title %}
 
-    <!--================Cart Area =================-->
-    <section class="cart_area">
-        <div class="container">
-            <div class="cart_inner">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Product</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in cart_items %}
-                            <tr>
-                                <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src="{{ item.image.url }}" alt="{{ item.product.name }}" width="100">
-                                        </div>
-                                        <div class="media-body">
-                                            <p>{{ item.product.name }}</p>
-                                        </div>
+{% block content %}
+
+<section class="cart_area" style="padding: 40px 0;">
+    <div class="container">
+        <div class="cart_inner" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h2 style="margin-bottom: 20px;">Your Cart</h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}"
+                         style="margin-bottom: 20px; padding: 10px 15px; border-radius: 4px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="table-responsive">
+                <table class="table" style="width: 100%;">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th style="padding: 12px; width: 40%;">Product</th>
+                            <th style="padding: 12px; width: 15%;">Price</th>
+                            <th style="padding: 12px; width: 20%;">Quantity</th>
+                            <th style="padding: 12px; width: 15%;">Total</th>
+                            <th style="padding: 12px; width: 10%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 15px 12px; vertical-align: middle;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="margin-right: 15px; width: 80px;">
+                                        {% if item.product.images.exists %}
+                                            <img src="{{ item.product.images.first.image.url }}"
+                                                 alt="{{ item.product.name }}"
+                                                 style="width: 100%; height: auto; border-radius: 4px;">
+                                        {% else %}
+                                            <div style="width: 80px; height: 80px; background: #f8f9fa;
+                                                 display: flex; align-items: center; justify-content: center;
+                                                 border-radius: 4px;">
+                                                No Image
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                </td>
-                                <td><h5>${{ item.price }}</h5></td>
-                                <td>
-                                    <form method="POST" action="{% url 'update-cart' item.id %}">
-                                        {% csrf_token %}
-                                        <div class="product_count">
-                                            <input type="number" name="quantity" id="qty_{{ item.id }}" min="1" value="{{ item.quantity }}" class="input-text qty">
-                                            <button type="submit" class="gray_btn">Update</button>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td><h5>${{ item.price|floatformat:2 }}</h5></td>
-                                <td>
-                                    <a href="{% url 'remove-cart-item' item.id %}" class="primary-btn">Remove</a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center"><h5>Your cart is empty</h5></td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="2"></td>
-                                <td><h5>Subtotal</h5></td>
-                                <td><h5>${{ cart_subtotal }}</h5></td>
-                                <td></td>
-                            </tr>
-                            <tr class="out_button_area">
-                                <td colspan="2"></td>
-                                <td></td>
-                                <td>
-                                    <div class="checkout_btn_inner d-flex align-items-center">
-                                        <a class="gray_btn" href="{% url 'category-list' %}">Continue Shopping</a>
-                                        <a class="primary-btn" href="{% url 'checkout-list' %}">Proceed to checkout</a>
+                                    <div>
+                                        <p style="margin: 0; font-weight: 500;">{{ item.product.name }}</p>
                                     </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
+                       
+                            <td style="padding: 15px 12px; vertical-align: middle;">${{ item.product.price }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">
+                                <form id="update-form-{{ item.id }}" action="{% url 'cart_update' item.id %}" method="POST" style="display: flex; align-items: center;">
+                                    {% csrf_token %}
+                                    <button type="button" class="quantity-btn decrement-btn" data-id="{{ item.id }}" style="width: 30px; height: 30px; padding: 5px; text-align: center; border: 1px solid #ced4da; border-radius: 4px;">-</button>
+                                    <input type="number" name="quantity" id="quantity-{{ item.id }}" value="{{ item.quantity }}" min="1" style="width: 50px; margin: 0 5px; padding: 5px; text-align: center; border: 1px solid #ced4da; border-radius: 4px;">
+                                    <button type="button" class="quantity-btn increment-btn" data-id="{{ item.id }}" style="width: 30px; height: 30px; padding: 5px; text-align: center; border: 1px solid #ced4da; border-radius: 4px;">+</button>
+                                </form>
+                            </td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">${{ item.total_price }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">
+                                <a href="{% url 'cart_remove' item.id %}"
+                                   style="padding: 5px 10px; background: #f8f9fa; border: 1px solid #ddd;
+                                          border-radius: 4px; color: #333; text-decoration: none;">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="padding: 30px; text-align: center;">
+                                Your cart is empty.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr style="background: #f8f9fa;">
+                            <td colspan="3" style="padding: 15px 12px; text-align: right;">
+                                <strong>Total:</strong>
+                            </td>
+                            <td style="padding: 15px 12px;">
+                                <strong>${{ cart_total }}</strong>
+                            </td>
+                            <td style="padding: 15px 12px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
+            {% if cart_items %}
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <a href="{% url 'index' %}"
+                   style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #ddd;
+                          border-radius: 4px; color: #333; text-decoration: none;">
+                    Continue Shopping
+                </a>
+                <a href="{% url 'check_user_address' user.id %}"
+                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
+                          border-radius: 4px; color: #fff; text-decoration: none;">
+                    Place Order
+                </a>
+            </div>
+            {% else %}
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{% url 'index' %}"
+                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
+                          border-radius: 4px; color: #fff; text-decoration: none;">
+                    Start Shopping
+                </a>
+            </div>
+            {% endif %}
         </div>
-    </section>
-    <!--================End Cart Area =================-->
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all increment and decrement buttons
+        const incrementBtns = document.querySelectorAll('.increment-btn');
+        const decrementBtns = document.querySelectorAll('.decrement-btn');
+        
+        // Add event listeners to increment buttons
+        incrementBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                const inputField = document.getElementById('quantity-' + itemId);
+                inputField.value = parseInt(inputField.value) + 1;
+                document.getElementById('update-form-' + itemId).submit();
+            });
+        });
+        
+        // Add event listeners to decrement buttons
+        decrementBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                const inputField = document.getElementById('quantity-' + itemId);
+                const currentValue = parseInt(inputField.value);
+                if (currentValue > 1) {
+                    inputField.value = currentValue - 1;
+                    document.getElementById('update-form-' + itemId).submit();
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock content %}
