@@ -2,100 +2,71 @@
 {% load static %}
 {% load i18n %}
 {% load allauth account %}
-
-{% block title %}Profile{% endblock title %}
-
-<body>
+{% block title %}
+    Profile
+{% endblock title %}
 {% block content %}
+
     <section class="profile_box_area section_gap mt-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="card shadow-lg border-0 rounded p-4">
-                        <h2 class="text-center mb-4 text-primary">User Profile</h2>
-
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert
-                                    {% if message.tags == 'error' %}
-                                    alert-danger
-                                    {% else %}
-                                    alert-success
-                                    {% endif %}
-                                ">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-
-                        <form method="post" action="{% url 'profile' pk=user.id %}" class="form-horizontal needs-validation" novalidate enctype="multipart/form-data">
-                            {% csrf_token %}
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">First Name</label>
-                                <input class="form-control" type="text" name="first_name" value="{{ form.first_name.value }}" required>
-                                <p class="text-danger"> {{ form.first_name.errors }}</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Last Name</label>
-                                <input class="form-control" type="text" name="last_name" value="{{ form.last_name.value }}" required>
-                                <p class="text-danger"> {{ form.last_name.errors }}</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Email</label>
-                                <input class="form-control" type="email" name="email" value="{{ user.email }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Username</label>
-                                <input class="form-control" type="text" name="username" value="{{ user.username }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Date of Birth</label>
-                                <input class="form-control" type="date" name="birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}" required>
-                                <p class="text-danger"> {{ form.birth_date.errors }}</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Phone</label>
-                                <input class="form-control" type="number" name="mobile" value="{{ form.mobile.value }}" required pattern="^\+?[0-9]{10,15}$">
-                                <p class="text-danger"> {{ form.mobile.errors }}</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="font-weight-bold">Picture</label>
-                                <input class="form-control" type="file" name="picture" required>
-                                <p class="text-danger"> {{ form.picture.errors }}</p>
-                                {% if user.profile.picture %}
-                                    <img src="{{ user.profile.picture.url }}" alt="Profile Picture" class="img-thumbnail mt-2" width="150">
+                    <h1  class="text-secondary text-center">User Profile </h1>
+                        <div class="text-center mb-4">
+                            {% for i in user_list %}
+                                {% if i.picture %}
+                                    <img src="{{ i.picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/user_icon.png' %}" alt="Default Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                                 {% endif %}
-                            </div>
+                            {% endfor %}
+                        </div>
 
-                            <div class="form-group">
-                                <label class="font-weight-bold">Gender</label><br>
-                                <input type="radio" name="gender" value="male" {% if form.gender.value == 'male' %}checked{% endif %}> Male
-                                <input type="radio" name="gender" value="female" {% if form.gender.value == 'female' %}checked{% endif %}> Female
-                                <p class="text-danger"> {{ form.gender.errors }}</p>
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                {% for user in user_list %}
+                                <tbody>
+                                    <tr>
+                                        <th class="text-secondary">First Name</th>
+                                        <td>{{ user.first_name }}</td>
 
-{#                            <div class="form-group">#}
-{#                                <label class="font-weight-bold">Address</label>#}
-{#                                <input class="form-control" type="text" name="address" value="{{ form.address.value }}" required>#}
-{#                                <p class="text-danger"> {{ form.address.errors }}</p>#}
-{#                            </div>#}
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Last Name</th>
+                                        <td>{{ user.last_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Email</th>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Username</th>
+                                        <td>{{ user.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Date of Birth</th>
+                                        <td>{{ user.birth_date|date:"F d, Y" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Mobile Number</th>
+                                        <td>{{ user.mobile }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-secondary">Gender</th>
+                                        <td>{{ user.gender|title }}</td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
 
-                            <div class="text-center">
-                                <button class="btn btn-primary btn-lg btn-block" type="submit">Update Profile</button>
-                            </div>
-                        </form>
-
+                        <div class="text-center mt-4">
+                            <a href="{% url 'update_profile' user.id%}" class="btn btn-primary">Edit Profile</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 {% endblock content %}
-</body>

@@ -1,0 +1,60 @@
+<!-- templates/seller/vendor_register_success.html -->
+{% extends 'navbar.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Registration Successful' %}
+{% endblock title %}
+
+{% block content %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">Application Submitted</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-secondary">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!-- Success Content -->
+<section class="section_gap">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow text-center">
+                    <div class="card-body p-5">
+
+                        <h2 class="mb-3">Vendor Application Submitted Successfully!</h2>
+                        <p class="lead text-muted mb-4">
+                            Thank you for applying to become a vendor on our platform. Your application is now being reviewed by our team.
+                        </p>
+                        <p class="mb-4">
+                            We've sent a confirmation email to your registered email address. You'll receive another notification when your application is approved or rejected.
+                        </p>
+                        <div class="alert alert-info mb-4 mx-auto" style="max-width: 600px;">
+                            <p class="mb-0">
+
+                                The verification process typically takes 1-2 business days.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+{#                            <a href="{% url 'vendor_dashboard' %}" class="btn btn-primary">Go to Dashboard</a>#}
+                            <a href="{% url 'index' %}" class="btn btn-outline-secondary ms-2">Return to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Success Content -->
+{% endblock content %}

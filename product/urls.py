@@ -1,18 +1,24 @@
 from  django.urls import  path
-from product.views import CategoryListView, CheckoutListView, ConfirmationListView, ProductListView, \
-    CartItemAddView, CartListView, CartRemoveView, CheckoutPageView, SelectUserAddressView, CartUpdateView
+from product.views import CategoryListView, CheckoutListView, ProductListView, \
+    CartItemAddView, CartListView, CartRemoveView, CheckoutPageView, SelectUserAddressView, CartUpdateView, \
+    WishListView, AddWishListView, RemoveWishListView
 
 urlpatterns = [
     path('category/',CategoryListView.as_view(),name='category_list'),
     path('product/',ProductListView.as_view(),name='product_list'),
-    path('confirmation/',ConfirmationListView.as_view(),name='confirmation-list'),
 
+    #cart related url's
     path('cart/',CartListView.as_view(),name='cart_list'),
     path('add-cart/<int:pk>/', CartItemAddView.as_view(), name='cart_add'),
     path('remove-cart/<int:pk>/', CartRemoveView.as_view(), name='cart_remove'),
     path('update-cart/<int:pk>/', CartUpdateView.as_view(), name='cart_update'),
+
+    #wishlist Url's
+    path('wishlist',WishListView.as_view(),name='wishlist'),
+    path('add-wishlist/<int:pk>/', AddWishListView.as_view(), name='add_wishlist'),
+    path('remove-wishlist/<int:pk>/', RemoveWishListView.as_view(), name='remove_wishlist'),
+
+    #product checkout related url
     path('checkout/', CheckoutPageView.as_view(), name='checkout'),
-
     path('shipinng-address/<int:pk>/', SelectUserAddressView.as_view(), name='check_user_address'),
-
 ]

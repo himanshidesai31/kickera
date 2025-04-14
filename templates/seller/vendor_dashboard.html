@@ -5,10 +5,78 @@
 {% block title %}Vendor Dashboard - Kickera{% endblock title %}
 
 {% block content %}
+    <section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">Vendor Dashboard</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-white">Dashboard
+                    </a>
+
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="content mt-5">
 {% if user.is_authenticated %}
-    <div class="container-fluid bg-light py-5 mt-5">
-        <!-- Dashboard Cards -->
+    <!-- Messages Section -->
+{#    {% if messages %}#}
+{#    <div class="container">#}
+{#        {% for message in messages %}#}
+{#        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">#}
+{#            {{ message }}#}
+{#            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>#}
+{#        </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#    {% endif %}#}
+{#    #}
+    <!-- Vendor Status Section -->
+    <div class="container mb-4">
+        {% if vendor_profile %}
+            <!-- Approved Vendor -->
+            <div class="alert alert-success">
+                <h4 class="text-center">You're an Approved Vendor</h4>
+{#                <p>Your vendor account for <strong>{{ vendor_profile.business_name }}</strong> is active. You can manage your products and orders.</p>#}
+            </div>
+        {% elif vendor_request %}
+            {% if vendor_request.status == 'pending' %}
+                <!-- Pending Request -->
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-clock me-2"></i>Vendor Application Pending</h4>
+                    <p>Your application for <strong>{{ vendor_request.business_name }}</strong> is currently under review. We'll notify you once it's approved.</p>
+                </div>
+            {% elif vendor_request.status == 'approved' %}
+                <!-- Approved but Profile Not Created Yet -->
+                <div class="alert alert-success">
+                    <h4><i class="fas fa-check-circle me-2"></i>Vendor Application Approved</h4>
+                    <p>Your application for <strong>{{ vendor_request.business_name }}</strong> has been approved! Please refresh the page to access vendor features.</p>
+                </div>
+            {% elif vendor_request.status == 'rejected' %}
+                <!-- Rejected Request -->
+                <div class="alert alert-danger">
+                    <h4><i class="fas fa-times-circle me-2"></i>Vendor Application Rejected</h4>
+                    <p>Your application for <strong>{{ vendor_request.business_name }}</strong> was not approved. Please contact support for more information.</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- No Vendor Request -->
+            <div class="alert alert-info">
+                <h4><i class="fas fa-info-circle me-2"></i>Become a Vendor</h4>
+                <p>You haven't applied to become a vendor yet. Would you like to sell your products on our platform?</p>
+                <a href="{% url 'seller_register' %}" class="btn btn-primary">Apply Now</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="container-fluid bg-light py-5 mt-3">
+    <h1 class="text-secondary text-center">Vendor Functionality</h1>
         <div class="container mt-5">
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <!-- Manage Products -->
@@ -20,7 +88,7 @@
                     <p class="card-text text-muted">Add, edit, or remove products from your store.</p>
                 </div>
                 <div>
-                    <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-primary">Go to Products</a>
+                    <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-primary" {% if not vendor_profile %}disabled{% endif %}>Go to Products</a>
                 </div>
             </div>
         </div>
@@ -33,7 +101,7 @@
                     <p class="card-text text-muted">Track and manage customer orders.</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-outline-success">View Orders</a>
+                    <a href="#" class="btn btn-outline-success" {% if not vendor_profile %}disabled{% endif %}>View Orders</a>
                 </div>
             </div>
         </div>
@@ -46,7 +114,7 @@
                     <p class="card-text text-muted">Add and manage your shoe brand.</p>
                 </div>
                 <div>
-                    <a href="{% url 'vendor_add_brand' %}" class="btn btn-outline-info">Add Brand</a>
+                    <a href="{% url 'vendor_add_brand' %}" class="btn btn-outline-info" {% if not vendor_profile %}disabled{% endif %}>Add Brand</a>
                 </div>
             </div>
         </div>
@@ -60,7 +128,7 @@
                     <p class="card-text text-muted">Add and manage product categories.</p>
                 </div>
                 <div>
-                    <a href="{% url 'vendor_add_category' %}" class="btn btn-outline-danger">Add New Category</a>
+                    <a href="{% url 'vendor_add_category' %}" class="btn btn-outline-danger" {% if not vendor_profile %}disabled{% endif %}>Add New Category</a>
                 </div>
             </div>
         </div>

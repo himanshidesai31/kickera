@@ -3,7 +3,6 @@
 {% block title %} Shopping Cart {% endblock title %}
 
 {% block content %}
-
 <section class="cart_area" style="padding: 40px 0;">
     <div class="container">
         <div class="cart_inner" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
@@ -53,7 +52,7 @@
                                 </div>
                             </td>
                        
-                            <td style="padding: 15px 12px; vertical-align: middle;">${{ item.product.price }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.product.price }}</td>
                             <td style="padding: 15px 12px; vertical-align: middle;">
                                 <form id="update-form-{{ item.id }}" action="{% url 'cart_update' item.id %}" method="POST" style="display: flex; align-items: center;">
                                     {% csrf_token %}
@@ -62,7 +61,7 @@
                                     <button type="button" class="quantity-btn increment-btn" data-id="{{ item.id }}" style="width: 30px; height: 30px; padding: 5px; text-align: center; border: 1px solid #ced4da; border-radius: 4px;">+</button>
                                 </form>
                             </td>
-                            <td style="padding: 15px 12px; vertical-align: middle;">${{ item.total_price }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.total_price }}</td>
                             <td style="padding: 15px 12px; vertical-align: middle;">
                                 <a href="{% url 'cart_remove' item.id %}"
                                    style="padding: 5px 10px; background: #f8f9fa; border: 1px solid #ddd;
@@ -83,7 +82,7 @@
                                 <strong>Total:</strong>
                             </td>
                             <td style="padding: 15px 12px;">
-                                <strong>${{ cart_total }}</strong>
+                                <strong>₹{{ cart_total }}</strong>
                             </td>
                             <td style="padding: 15px 12px;"></td>
                         </tr>

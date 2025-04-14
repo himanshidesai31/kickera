@@ -1,2 +1,6 @@
-Django==5.1.6
-django-allauth==65.4.1
+Django==5.0.3
+django-allauth==65.7.0
+razorpay~=1.4.2
+django-crispy-forms==2.1
+crispy-bootstrap4==2023.1
+Pillow==10.2.0

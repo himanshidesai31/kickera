@@ -1,0 +1,198 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block title %}Update Profile{% endblock title %}
+
+{% block content %}
+    <section class="profile_box_area section_gap mt-5 center">
+        <div class="container ">
+            <div class="row justify-content-center">
+                <!-- Profile Update Form -->
+                <div class="col-lg-9 align-center">
+                    <div class="card shadow-lg border-0 rounded p-4 ">
+                        <h2 class="text-center mb-4 text-secondary">Update User Profile</h2>
+
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'update_profile' user.id %}" novalidate>
+                            {% csrf_token %}
+
+                            <div class="text-center mb-4">
+                                {% if user.picture %}
+                                    <img src="{{ user.picture.url }}" alt="Current Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/user_icon.png' %}" alt="Default Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Profile Picture</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="picture" name="picture" accept="image/jpeg,image/png">
+                                    <label class="custom-file-label" for="picture">Choose file</label>
+                                </div>
+                                <small class="form-text text-muted">Recommended size: 150x150 pixels. Max file size: 2MB. Allowed formats: JPG, JPEG, PNG</small>
+                                {% if form.picture.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.picture.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">First Name <span class="text-danger">*</span></label>
+                                <input class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                                       type="text"
+                                       name="first_name"
+                                       value="{{ user.first_name }}"
+                                       required>
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Last Name <span class="text-danger">*</span></label>
+                                <input class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                       type="text"
+                                       name="last_name"
+                                       value="{{ user.last_name }}"
+                                       required>
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Email</label>
+                                <input class="form-control" type="email" name="email" value="{{ user.email }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Username</label>
+                                <input class="form-control" type="text" name="username" value="{{ user.username }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Date of Birth <span class="text-danger">*</span></label>
+                                <input class="form-control {% if form.birth_date.errors %}is-invalid{% endif %}"
+                                       type="date"
+                                       name="birth_date"
+                                       value="{{ user.birth_date|date:'Y-m-d' }}"
+                                       max="{{ today|date:'Y-m-d' }}"
+                                       required>
+                                <small class="form-text text-muted">You must be at least 13 years old to use this service.</small>
+                                {% if form.birth_date.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.birth_date.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Mobile Number <span class="text-danger">*</span></label>
+                                <input class="form-control {% if form.mobile.errors %}is-invalid{% endif %}"
+                                       type="text"
+                                       name="mobile"
+                                       value="{{ user.mobile }}"
+                                       pattern="[0-9]{10,12}"
+                                       title="Please enter a valid mobile number (10-12 digits)"
+                                       required>
+                                {% if form.mobile.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.mobile.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Gender <span class="text-danger">*</span></label>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="male" name="gender" value="male"
+                                           class="custom-control-input {% if form.gender.errors %}is-invalid{% endif %}"
+                                           {% if user.gender == 'male' %}checked{% endif %}
+                                           required>
+                                    <label class="custom-control-label" for="male">Male</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="female" name="gender" value="female"
+                                           class="custom-control-input {% if form.gender.errors %}is-invalid{% endif %}"
+                                           {% if user.gender == 'female' %}checked{% endif %}
+                                           required>
+                                    <label class="custom-control-label" for="female">Female</label>
+                                </div>
+                                {% if form.gender.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.gender.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary" type="submit">Update Profile</button>
+                                <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Update custom file input label with selected filename
+        document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+            var fileName = e.target.files[0].name;
+            var nextSibling = e.target.nextElementSibling;
+            nextSibling.innerText = fileName;
+        });
+
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                var birthDate = document.querySelector('input[name="birth_date"]');
+                if (!birthDate.value) {
+                    birthDate.classList.add('is-invalid');
+                    var feedbackDiv = document.createElement('div');
+                    feedbackDiv.className = 'invalid-feedback';
+                    feedbackDiv.innerText = 'Date of birth is required';
+                    if (!birthDate.nextElementSibling.classList.contains('invalid-feedback')) {
+                        birthDate.parentNode.insertBefore(feedbackDiv, birthDate.nextSibling);
+                    }
+                    event.preventDefault();
+                }
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    try {
+                        var bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    } catch (e) {
+                        alert.style.display = 'none';
+                    }
+                });
+            }, 5000);
+        });
+    </script>
+{% endblock content %}

@@ -1526,7 +1526,7 @@ h1, h2, h3, h4, h5, h6 {
   .single-product .product-details .prd-bottom {
     position: relative;
     margin-top: 20px;
-
+    display: flex;
 
   }
     .single-product .product-details .prd-bottom .social-info {

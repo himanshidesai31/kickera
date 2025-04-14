@@ -5,15 +5,25 @@ import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
 
-#RAZORPAY PAYMENT API KYE's
-RAZORPAY_KEY_ID  = os.environ.get('rzp_test_oeqHuvXLrWxLNQ')
-RAZORPAY_KEY_SECRET = os.environ.get('1rYjH0tu686SsxKHg3kAJNW7')
+# Environment variables configuration - defaults are for development only
+# In production, these should be set in the environment
+RAZORPAY_KEY_ID = 'rzp_test_K1oQ1KX1Tbyl0c'
+RAZORPAY_KEY_SECRET = 'J511i3H83YStynKmrI3fnSmc'
+RAZORPAY_CALLBACK_URL = "http://127.0.0.1:8000/payment/callback/"
 
+# RAZOR pay integrations
+PAYMENT_VARIANTS = {'razorpay': ('django_payments_razorpay.RazorPayProvider', 
+                                {'public_key': RAZORPAY_KEY_ID,
+                                 'secret_key': RAZORPAY_KEY_SECRET})}
+CHECKOUT_PAYMENT_CHOICES = ['razorpay,RazorPay']
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-s_n828=qw_=07&b!loo+&u_@4v0+a)!6)i6+pdc6mnowvkezlm'
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # Allowed hosts
@@ -101,18 +111,13 @@ SITE_ID = 1
 # Django-Allauth Configuration
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-# ACCOUNT_AUTHENTICATION_METHOD = 'email'
-#upadated
-ACCOUNT_LOGIN_METHODS = {'email'}  # Example value
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 LOGIN_REDIRECT_URL = '/' #redirect after login
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
-
-
-
-
+# SITE_NAME = "Kickera"
 
 
 # Password Validators
@@ -129,37 +134,28 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-import os
-
+# Media file configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
-#static file
+# Static file configuration
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
-STATICFILES_DIRS  =  [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Default Primary Key Field Type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#email configration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #used for console email verifications
-# EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'chaudharykamlesh185@gmail.com'
-EMAIL_HOST_PASSWORD = 'ejxwnmlcknlsfrqq'  # Use an App Password, NOT your Gmail password!,create app and there password paste here
+EMAIL_HOST_PASSWORD = 'ejxwnmlcknlsfrqq'  # Use an App Password, NOT your Gmail password!
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ADMINS = [('Admin', 'kickerashoesstore@gmail.com')]
 
-
-#csrf token related configration
+# CSRF token related configuration
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
@@ -170,7 +166,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
 ]
 
-
+# Django Allauth settings
 ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None

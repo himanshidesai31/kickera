@@ -1,46 +1,67 @@
+from profile import Profile
 from django.contrib import messages
-from django.contrib.messages import success
 from django.http import request, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView, ListView, FormView,DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin 
-from .forms import AddressForm
-from .models import Address
-from django.shortcuts import redirect
+from django.views.generic import UpdateView, ListView, FormView, DeleteView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import AddressForm, UserUpdateForm
+from .models import Address, User
+from datetime import date
 
-#profile view class
-class ProfileView(LoginRequiredMixin, UpdateView):
-    model = Address
-    form_class = AddressForm
+
+# profile view class
+class ProfileView(LoginRequiredMixin, ListView):
+    model = User
     template_name = 'user/profile.html'
+    # context_object_name = 'user'
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id) #use for filter multiple user
+        # return User.objects.get(pk=self.request.user.id) #get the current user
+
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'user/profile_update.html'
     success_url = reverse_lazy('profile')
-
-    def get_success_url(self):
-        return reverse_lazy('profile',kwargs={'pk':self.request.user.id})
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        print('-------------------valid form-------------------')
-        messages.success(self.request, 'Profile updated successfully!')
-        return response
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Something went wrong , Invalid Form Submission ,Please Try Again')
-        return super(ProfileView, self).form_invalid(form)
 
     def get_object(self, queryset=None):
         return self.request.user
 
+    def form_valid(self, form):
+        try:
+            # Handle profile picture
+            if 'picture' in self.request.FILES:
+                form.instance.picture = self.request.FILES['picture']
 
-#this is only list of address of the user right
+            response = super().form_valid(form)
+            messages.success(self.request, 'Profile updated successfully!')
+            return response
+        except Exception as e:
+            messages.error(self.request, f'Error updating profile: {str(e)}')
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update Profile'
+        context['today'] = date.today()
+        return context
+
+
+# this is only list of address of the user right
 class AddressListView(LoginRequiredMixin, ListView):
     model = Address
     context_object_name = 'addresses'
     template_name = 'user/address_list.html'
     success_url = reverse_lazy('address-list')
 
-    #used for filter user address
+    # used for filter user address
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
 
@@ -48,8 +69,7 @@ class AddressListView(LoginRequiredMixin, ListView):
         return self.request.user
 
 
-
-#this is view only user can add new adders right
+# this is view only user can add new adders right
 class Add_AddressListView(LoginRequiredMixin, FormView):
     template_name = 'user/address_add.html'
     form_class = AddressForm
@@ -67,7 +87,6 @@ class Add_AddressListView(LoginRequiredMixin, FormView):
         next_url2 = self.request.POST.get('next1')
         go_to_checkout = self.request.POST.get('go_to_checkout')
 
-
         if product_id and go_to_checkout:
             return reverse_lazy('checkout')
         elif product_id:
@@ -79,15 +98,16 @@ class Add_AddressListView(LoginRequiredMixin, FormView):
         else:
             return reverse_lazy('index')
 
-#update address class view
+
+# update address class view
 class UpdateAddressView(LoginRequiredMixin, UpdateView):
     model = Address
     template_name = 'user/edit_address.html'
     form_class = AddressForm
     success_url = reverse_lazy('address_list_view')
-    
 
-#detete address class view
+
+# detete address class view
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
     from_class = AddressForm

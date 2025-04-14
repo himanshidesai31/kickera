@@ -4,225 +4,114 @@
     Wishlist
 {% endblock title %}
 {% block content %}
-
-<body>
 	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb">
-		<div class="container">
-			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
-					<h1>Wishlist</h1>
-					<nav class="d-flex align-items-center">
-						<a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="{% url 'wishlist' %}">Wish-list</a>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</section>
+{#	<section class="banner-area organic-breadcrumb">#}
+{#		<div class="container">#}
+{#			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">#}
+{#				<div class="col-first">#}
+{#					<h1>Wishlist</h1>#}
+{#					<nav class="d-flex align-items-center">#}
+{#						<a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>#}
+{#						<a href="{% url 'wishlist' %}">Wish-list</a>#}
+{#					</nav>#}
+{#				</div>#}
+{#			</div>#}
+{#		</div>#}
+{#	</section>#}
 	<!-- End Banner Area -->
 
 	<!--================Cart Area =================-->
-	<section class="cart_area">
-		<div class="container">
-			<div class="cart_inner">
-				<div class="table-responsive">
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Product</th>
-								<th scope="col">Price</th>
-								<th scope="col">Quantity</th>
-								<th scope="col">Total</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<div class="media">
-										<div class="d-flex">
-											<img src="{% static 'img/cart.jpg' %}" alt="">
-										</div>
-										<div class="media-body">
-											<p>Minimalistic shop for multipurpose use</p>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h5>$360.00</h5>
-								</td>
-								<td>
-									<div class="product_count">
-										<input type="text" name="qty" id="sst1" maxlength="12" value="1"
-											title="Quantity:" class="input-text qty">
-										<button
-											onclick="var result = document.getElementById('sst1'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-											class="increase items-count" type="button"><i
-												class="lnr lnr-chevron-up"></i></button>
-										<button
-											onclick="var result = document.getElementById('sst1'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-											class="reduced items-count" type="button"><i
-												class="lnr lnr-chevron-down"></i></button>
-									</div>
-								</td>
-								<td>
-									<h5>$720.00</h5>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media">
-										<div class="d-flex">
-											<img src="{% static 'img/cart.jpg' %}" alt="">
-										</div>
-										<div class="media-body">
-											<p>Minimalistic shop for multipurpose use</p>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h5>$360.00</h5>
-								</td>
-								<td>
-									<div class="product_count">
-										<input type="text" name="qty" id="sst" maxlength="12" value="1"
-											title="Quantity:" class="input-text qty">
-										<button
-											onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-											class="increase items-count" type="button"><i
-												class="lnr lnr-chevron-up"></i></button>
-										<button
-											onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-											class="reduced items-count" type="button"><i
-												class="lnr lnr-chevron-down"></i></button>
-									</div>
-								</td>
-								<td>
-									<h5>$720.00</h5>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media">
-										<div class="d-flex">
-											<img src="{% static 'img/cart.jpg' %}" alt="">
-										</div>
-										<div class="media-body">
-											<p>Minimalistic shop for multipurpose use</p>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h5>$360.00</h5>
-								</td>
-								<td>
-									<div class="product_count">
-										<input type="text" name="qty" id="sst" maxlength="12" value="1"
-											title="Quantity:" class="input-text qty">
-										<button
-											onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-											class="increase items-count" type="button"><i
-												class="lnr lnr-chevron-up"></i></button>
-										<button
-											onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-											class="reduced items-count" type="button"><i
-												class="lnr lnr-chevron-down"></i></button>
-									</div>
-								</td>
-								<td>
-									<h5>$720.00</h5>
-								</td>
-							</tr>
-							<tr class="bottom_button">
-								<td>
-									<a class="gray_btn" href="#">Update Cart</a>
-								</td>
-								<td>
 
-								</td>
-								<td>
+    <section class="cart_area mt-5 " style="padding: 40px 0;">
+    <div class="container mt-5">
+        <div class="cart_inner" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h2 class="text-secondary text-center ">Your Wish list's</h2>
 
-								</td>
-								<td>
-									<div class="cupon_text d-flex align-items-center">
-										<input type="text" placeholder="Coupon Code">
-										<a class="primary-btn" href="#">Apply</a>
-										<a class="gray_btn" href="#">Close Coupon</a>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}"
+                         style="margin-bottom: 20px; padding: 10px 15px; border-radius: 4px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-								</td>
-								<td>
+            <div class="table-responsive">
+                <table class="table" style="width: 100%;">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th style="padding: 12px; width: 40%;">Product</th>
+                            <th style="padding: 12px; width: 15%;">Price</th>
+                            <th style="padding: 12px; width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in wish_list %}
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 15px 12px; vertical-align: middle;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="margin-right: 15px; width: 80px;">
+                                        {% if item.product.images.exists %}
+                                            <img src="{{ item.product.images.first.image.url }}"
+                                                 alt="{{ item.product.name }}"
+                                                 style="width: 100%; height: auto; border-radius: 4px;">
+                                        {% else %}
+                                            <div style="width: 80px; height: 80px; background: #f8f9fa;
+                                                 display: flex; align-items: center; justify-content: center;
+                                                 border-radius: 4px;">
+                                                No Image
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; font-weight: 500;">{{ item.product.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.product.price }}</td>
+                            <td>
+                                <a href="{% url 'remove_wishlist' item.id %}"
+                                   style="padding: 5px 10px; background: #f8f9fa; border: 1px solid #ddd;
+                                          border-radius: 4px; color: #333; text-decoration: none;">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="padding: 30px; text-align: center;">
+                                Your Wish list is empty.
+                            </td>
+                        </tr>
+                        {% endfor %}
 
-								</td>
-								<td>
-									<h5>Subtotal</h5>
-								</td>
-								<td>
-									<h5>$2160.00</h5>
-								</td>
-							</tr>
-							<tr class="shipping_area">
-								<td>
+                    </tbody>
+                </table>
+            </div>
 
-								</td>
-								<td>
-
-								</td>
-								<td>
-									<h5>Shipping</h5>
-								</td>
-								<td>
-									<div class="shipping_box">
-										<ul class="list">
-											<li><a href="#">Flat Rate: $5.00</a></li>
-											<li><a href="#">Free Shipping</a></li>
-											<li><a href="#">Flat Rate: $10.00</a></li>
-											<li class="active"><a href="#">Local Delivery: $2.00</a></li>
-										</ul>
-										<h6>Calculate Shipping <i class="fa fa-caret-down" aria-hidden="true"></i></h6>
-										<select class="shipping_select">
-											<option value="1">Bangladesh</option>
-											<option value="2">India</option>
-											<option value="4">Pakistan</option>
-										</select>
-										<select class="shipping_select">
-											<option value="1">Select a State</option>
-											<option value="2">Select a State</option>
-											<option value="4">Select a State</option>
-										</select>
-										<input type="text" placeholder="Postcode/Zipcode">
-										<a class="gray_btn" href="#">Update Details</a>
-									</div>
-								</td>
-							</tr>
-							<tr class="out_button_area">
-								<td>
-
-								</td>
-								<td>
-
-								</td>
-								<td>
-
-								</td>
-								<td>
-									<div class="checkout_btn_inner d-flex align-items-center">
-										<a class="gray_btn" href="{% url 'category_list' %}">Continue Shopping</a>
-										<a class="primary-btn" href="{% url 'checkout_list' %}">Proceed to checkout</a>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!--================End Cart Area =================-->
-
-</body>
+            {% if wish_list %}
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <a href="{% url 'index' %}"
+                   style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #ddd;
+                          border-radius: 4px; color: #333; text-decoration: none;">
+                    Continue Shopping
+                </a>
+                <a href="{% url 'check_user_address' user.id %}"
+                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
+                          border-radius: 4px; color: #fff; text-decoration: none;">
+                    Place Order
+                </a>
+            </div>
+            {% else %}
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{% url 'index' %}"
+                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
+                          border-radius: 4px; color: #fff; text-decoration: none;">
+                    Start Shopping
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock content %}

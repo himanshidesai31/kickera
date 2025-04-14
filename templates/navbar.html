@@ -29,16 +29,18 @@
 {% block header %}
 {% endblock header %}
 
-<body>
+
 {{ user.id }}
 {{ user.username }}
+
     <!-- Navbar code start -->
     <header class="header_area sticky-header">
         <div class="main_menu">
             <nav class="navbar navbar-expand-lg navbar-light main_box">
                 <div class="container">
                     <a class="navbar-brand logo_h" href="{% url 'index' %}">
-                        <img src="{% static 'img/logo.png' %}" alt="">
+                        <i class=""></i>
+{#                        <img src="{% static 'img/kickera.jpg' %}" alt="">#}
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -70,19 +72,7 @@
                                         <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'confirmation' %}">Confirmation</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                    aria-haspopup="true" aria-expanded="false">Blog</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'blog' %}">Blog</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'single_blog' %}">Blog Details</a>
+                                        <a class="nav-link" href="{% url 'confirmation' %}">Payment Status</a>
                                     </li>
                                 </ul>
                             </li>
@@ -93,7 +83,7 @@
                                 {% if user.is_authenticated %}
                                     {% if user.is_vendor %}
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'vendor_dashboard' %}">vendor-Dashboard</a>
+                                            <a class="nav-link" href="{% url 'vendor_dashboard' %}">Vendor Dashboard</a>
                                         </li>
                                     {% else %}
                                         <li class="nav-item">
@@ -115,19 +105,19 @@
                                     <ul class="dropdown-menu">
 
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'profile' user.id%}">My profile</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'tracking' %}">Tracking</a>
+                                            <a class="nav-link" href="{% url 'profile' %}">My profile</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#">My orders</a>
+                                            <a class="nav-link" href="{% url 'confirmation' %}">My Payment Status</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="{% url 'address_list_view' %}">Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'my_orders'     %}">My Order's</a>
                                         </li>
 
                                         <li class="nav-item">
@@ -295,5 +285,4 @@
         });
     </script>
     {% block js %}{% endblock js %}
-</body>
 </html>

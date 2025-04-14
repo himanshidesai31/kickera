@@ -11,12 +11,12 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card shadow-lg border-0 rounded-lg">
-                    <div class="card-header bg-primary text-white text-center py-4">
+                    <div class="card-header  text-white text-center py-4">
                         <h2 class="mb-0 font-weight-bold">Login</h2>
                         <p class="mb-0">Start Selling Today!</p>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" action="{% url 'seller-login' %}" class="needs-validation" novalidate>
+                        <form method="post" action="{% url 'seller_login' %}" class="needs-validation" novalidate>
                             {% csrf_token %}
                             <div class="form-group mb-3">
                                 <label for="email" class="font-weight-bold">Email Address</label>
@@ -38,7 +38,7 @@
                         </form>
                     </div>
                     <div class="card-footer text-center bg-light py-3">
-                        <small class="text-muted">Don't have an account? <a href="{% url 'seller-register' %}" class="text-primary font-weight-bold">Register</a></small>
+                        <small class="text-muted">Don't have an account? <a href="{% url 'seller_register' %}" class="text-primary font-weight-bold">Register</a></small>
                         <br>
                         <small class="text-muted"><a  class="text-secondary">Forgot Password?</a></small>
 

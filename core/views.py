@@ -8,6 +8,7 @@ from product.models import Product
 from django.views.generic import TemplateView, UpdateView, DetailView
 from django.contrib.auth.views import PasswordChangeView
 from allauth.account.views import ReauthenticateView
+from orders.models import Order
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
@@ -25,38 +26,75 @@ class HomePageView(TemplateView):
         return context
 
 
-class BlogPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/blog.html'
-
-
-class SingleBlogPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/single_blog.html'
-
-
 class SingleProductPageView(LoginRequiredMixin, TemplateView):
     template_name = 'product/single_product.html'
-
 
 
 class ConfirmationPageView(LoginRequiredMixin, TemplateView):
     template_name = 'product/confirmation.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('test') == 'true':
+            from product.models import Product
+            try:
+                product = Product.objects.first()
+                if product:
+                    from orders.models import Order
+                    order = Order.objects.create(
+                        user=request.user,
+                        product=product,
+                        amount=product.price,
+                        is_paid=True,
+                        razorpay_order_id='test_order_id',
+                        razorpay_payment_id='test_payment_id',
+                        razorpay_signature='test_signature'
+                    )
+                    print(f"Created test order: {order.id}")
+                    from django.shortcuts import redirect
+                    return redirect(f'/product/confirmation/?order_id={order.id}')
+            except Exception as e:
+                print(f"Error creating test order: {e}")
 
-class TrackingPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/tracking.html'
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
-class ElementPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/elements.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order_id = self.request.GET.get('order_id') or self.request.POST.get('order_id')
+        print(f"ConfirmationPageView: order_id from request: {order_id}")
+        print(f"ConfirmationPageView: user: {self.request.user}")
+
+        if order_id:
+            # Try to get the specific order
+            try:
+                order = Order.objects.get(
+                    id=order_id,
+                    user=self.request.user,
+                    is_paid=True
+                )
+                print(f"ConfirmationPageView: Found order: {order.id}, is_paid: {order.is_paid}")
+            except Order.DoesNotExist:
+                print(f"ConfirmationPageView: Order not found with id {order_id}")
+                order = None
+        else:
+            # Fallback to latest paid order if no order_id provided
+            order = Order.objects.filter(
+                user=self.request.user,
+                is_paid=True
+            ).order_by('-id').first()
+            print(f"ConfirmationPageView: Latest paid order: {order.id if order else None}")
+
+        context['order'] = order
+        return context
 
 
 class AboutPageView(LoginRequiredMixin, TemplateView):
     template_name = 'about.html'
-
-
-class WishlistPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/wishlist.html'
-
 
 class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'account/password_change.html'
@@ -84,4 +122,3 @@ class ReauthenticateView(LoginRequiredMixin, ReauthenticateView):
         responses = super().form_invalid(form)
         messages.error(self.request, 'Please correct the error below.')
         return responses
-

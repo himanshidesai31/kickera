@@ -27,7 +27,11 @@
     </div>
 </section>
 <!-- End Banner Area -->
-
+<div class="card-footer text-center bg-light py-3">
+        <h3 class="text-muted">
+                Already have an account? <a href="{% url 'seller_login' %}" class="text-primary font-weight-bold">Login here</a>
+            </h3>
+    </div>
 <!-- Seller Registration Form -->
 <section class="login_box_area section_gap">
     <div class="container">
@@ -40,74 +44,101 @@
 
                         <form method="post" action="{% url 'seller_register' %}" enctype="multipart/form-data" class="needs-validation" novalidate>
                             {% csrf_token %}
+                            
+                            <!-- Account Information -->
+                            <h4 class="mb-3">Account Information</h4>
+                            
+                            <div class="form-group mb-3">
+                                <label for="email" class="font-weight-bold">Email Address *</label>
+                                <input type="email" class="form-control rounded-pill shadow-sm" id="email" name="email" placeholder="Enter your email" required>
+                                {% for error in form.email.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Business Information -->
+                            <h4 class="mt-4 mb-3">Business Information</h4>
 
-                            <div class="form-group">
-                                <label for="business_name" class="font-weight-bold">Business Name</label>
+                            <div class="form-group mb-3">
+                                <label for="business_name" class="font-weight-bold">Business Name *</label>
                                 <input type="text" class="form-control rounded-pill shadow-sm" id="business_name" name="business_name" placeholder="Enter your business name" required>
                                 {% for error in form.business_name.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 <label for="phone_number" class="font-weight-bold">Phone Number</label>
-                                <input type="tel" class="form-control rounded-pill shadow-sm" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                                <input type="tel" class="form-control rounded-pill shadow-sm" id="phone_number" name="phone_number" placeholder="Enter your phone number">
                                 {% for error in form.phone_number.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
-                            <div class="form-group">
-                                <label for="email" class="font-weight-bold">Email Address</label>
-                                <input type="email" class="form-control rounded-pill shadow-sm" id="email" name="email" placeholder="Enter your email" required>
-                                {% for error in form.email.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 <label for="business_registration_number" class="font-weight-bold">Business Registration Number</label>
-                                <input type="text" class="form-control rounded-pill shadow-sm" id="business_registration_number" name="business_registration_number" placeholder="Enter your business registration number" required>
+                                <input type="text" class="form-control rounded-pill shadow-sm" id="business_registration_number" name="business_registration_number" placeholder="Enter your business registration number">
                                 {% for error in form.business_registration_number.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 <label for="tax_id" class="font-weight-bold">Tax ID</label>
-                                <input type="text" class="form-control rounded-pill shadow-sm" id="tax_id" name="tax_id" placeholder="Enter your tax ID" required>
+                                <input type="text" class="form-control rounded-pill shadow-sm" id="tax_id" name="tax_id" placeholder="Enter your tax ID">
                                 {% for error in form.tax_id.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
-                            <div class="form-group">
-                                <label for="logo" class="font-weight-bold">Business Logo</label>
-                                <input type="file" class="form-control rounded-pill shadow-sm" id="logo" name="logo" required>
-                                {% for error in form.logo.errors %}
-                                <div class="text-danger small">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 <label for="gst_no" class="font-weight-bold">GST Number</label>
-                                <input type="text" class="form-control rounded-pill shadow-sm" id="gst_no" name="gst_no" placeholder="Enter your GST number" required>
+                                <input type="text" class="form-control rounded-pill shadow-sm" id="gst_no" name="gst_no" placeholder="Enter your GST number">
                                 {% for error in form.gst_no.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
+                            <div class="form-group mb-3">
+                                <label for="logo" class="font-weight-bold">Business Logo</label>
+                                <input type="file" class="form-control" id="logo" name="logo">
+                                {% for error in form.logo.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Password Fields -->
+                            <div class="form-group mb-3">
+                                <label for="password" class="font-weight-bold">Password</label>
+                                <input type="password" class="form-control rounded-pill shadow-sm" id="password" name="password" placeholder="Create a strong password" required>
+                                {% for error in form.password.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="password_confirm" class="font-weight-bold">Confirm Password</label>
+                                <input type="password" class="form-control rounded-pill shadow-sm" id="password_confirm" name="password_confirm" placeholder="Confirm your password" required>
+                                {% for error in form.password_confirm.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
                             <div class="d-grid mt-4 text-center">
-                                <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill">Register & Continue</button>
+                                <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill">Register & Submit Application</button>
                             </div>
                         </form>
                     </div>
 
-{#                    <div class="card-footer text-center bg-light py-3">#}
-{#                        <small class="text-muted">#}
-{#                            Already have an account? <a href="{% url 'seller_login' %}" class="text-primary font-weight-bold">Login here</a>#}
-{#                        </small>#}
-{#                    </div>#}
+
                 </div>
             </div>
         </div>

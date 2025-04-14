@@ -3,30 +3,17 @@ from django.urls import path
 from django.views.generic import TemplateView
 from core.views import (
     HomePageView,
-    BlogPageView,
-    SingleBlogPageView,
     SingleProductPageView,
-    ConfirmationPageView,
-    TrackingPageView,
-    ElementPageView,
     AboutPageView,
-    WishlistPageView,
     PasswordChangeView,
     ReauthenticateView,
+    ConfirmationPageView,
 )
-
 urlpatterns = [
     path('', HomePageView.as_view(), name='index'),
-    path('blog/', BlogPageView.as_view(), name='blog'),
-    path('single-blog/', SingleBlogPageView.as_view(), name='single_blog'),
     path('product/', SingleProductPageView.as_view(), name='single_product'),
-
-    # path('cart/', CartPageView.as_view(), name='cart'),
-    path('confirmation/', ConfirmationPageView.as_view(), name='confirmation'),
-    path('tracking/', TrackingPageView.as_view(), name='tracking'),
-    path('elements/', ElementPageView.as_view(), name='elements'),
     path('about/', AboutPageView.as_view(), name='about'),
-    path('wishlist/', WishlistPageView.as_view(), name='wishlist'),
+    path('product/confirmation/', ConfirmationPageView.as_view(), name='confirmation'),
     #password change url
     path('accounts/password/change/', PasswordChangeView.as_view(), name='account_change_password'),
 

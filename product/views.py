@@ -1,11 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import request, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, UpdateView
 from core.models import Deal
-from product.models import  Product, Cart, Confirmation
+from product.models import Product, Cart, Confirmation, WishList
 from users.forms import AddressForm
 from users.models import Address
 
@@ -25,10 +24,10 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         return Product.objects.all().prefetch_related('images')
-        # return Product.objects.filter(user__admin=self.request.user).prefetch_related('images')
 
 
-class  CheckoutListView(ListView):
+
+class CheckoutListView(ListView):
     model = Cart
     template_name = 'product/checkout.html'
 
@@ -68,7 +67,7 @@ class CartItemAddView(View):
         except Exception as e:
             messages.error(request, f"An error occurred while adding the product to the cart: {str(e)}")
 
-        return redirect('index')
+        return redirect('cart_list')
 
 
 class CartRemoveView(View):
@@ -102,15 +101,93 @@ class CartUpdateView(View):
         return redirect('cart_list')
 
 
+class WishListView(LoginRequiredMixin, ListView):
+    model = WishList
+    template_name = 'product/wishlist.html'
+
+    def get_queryset(self):
+        return WishList.objects.all().prefetch_related('product')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['wish_list'] = WishList.objects.all()
+        return context
+
+class AddWishListView(View):
+    def post(self, request, pk):
+        try:
+            product = get_object_or_404(Product, pk=pk)
+            wish_list,created = WishList.objects.get_or_create(product=product, user=request.user)
+
+            if not created:
+                wish_list.quantity += 1
+                wish_list.save()
+                messages.success(request, "Product Quantity added to wish list successfully.")
+            else:
+                messages.success(request, "Product added to wishlist successfully.")
+        except Exception as e:
+            messages.error(request, f"An error occurred while adding the product to the wishlist: {str(e)}")
+
+        return redirect('wishlist')
+
+
+class RemoveWishListView(View):
+    def get(self, request, pk):
+        try:
+            wish_list = get_object_or_404(WishList, pk=pk , user=request.user)
+            wish_list.delete()
+            messages.success(request, "Product  removed from wish-list successfully.")
+        except Exception as e:
+            messages.error(request, f"An error occurred while removing the product: {str(e)}")
+
+        return redirect('wishlist')
+
 class CheckoutPageView(LoginRequiredMixin, ListView):
-    model = Cart
+    model = Product
     context_object_name = 'cart_items'
     template_name = 'product/checkout.html'
     success_url = reverse_lazy('checkout')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_price'] = sum(item.product.price * item.quantity for item in self.get_queryset()) #sum of total product's
+        
+        # Get items from cart
+        cart_items = self.get_queryset()
+        cart_total = sum(item.product.price * item.quantity for item in cart_items)
+        
+        # Check if there are wishlist items in request
+        wishlist_item_ids = self.request.GET.getlist('wishlist_item_id')
+        wishlist_items = []
+        wishlist_total = 0
+        
+        if wishlist_item_ids:
+            # Get wishlist items
+            wishlist_items = WishList.objects.filter(
+                id__in=wishlist_item_ids,
+                user=self.request.user
+            )
+            wishlist_total = sum(item.product.price for item in wishlist_items)
+            
+        # Get selected address
+        address_id = self.request.GET.get('address_id')
+        selected_address = None
+        if address_id:
+            try:
+                selected_address = Address.objects.get(id=address_id, user=self.request.user)
+            except Address.DoesNotExist:
+                pass
+                
+        # Calculate total price (cart + wishlist)
+        total_price = cart_total + wishlist_total
+        
+        # Update context with all information
+        context.update({
+            'cart_items': cart_items,
+            'wishlist_items': wishlist_items,
+            'total_price': total_price,
+            'selected_address': selected_address,
+        })
+        
         return context
 
     def get_queryset(self):
@@ -129,6 +206,19 @@ class SelectUserAddressView(ListView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Address, user=self.request.user)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.kwargs.get('pk')
+        if user_id:
+            # Get the wishlist items for the user
+            wishlist_items = WishList.objects.filter(user_id=user_id)
+            context['wishlist_items'] = wishlist_items
+            
+            # Calculate total price
+            total_price = sum(item.product.price for item in wishlist_items)
+            context['total_price'] = total_price
+        return context
 
 
 class DealListView(ListView):

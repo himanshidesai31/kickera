@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class User(AbstractUser):
     mobile = models.CharField(max_length=15, unique=True, null=True)
     picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
@@ -10,6 +11,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username}:{self.email}"
+
+
 
 class Address(models.Model):
     WORK = 'work'
@@ -28,7 +31,7 @@ class Address(models.Model):
     mobile = models.CharField(max_length=15, null=True, blank=True)
     address_type = models.CharField(max_length=10, choices=ADDRESS_TYPES, default=HOME)
     city = models.CharField(max_length=100)
-    Address = models.CharField(max_length=255, null=True, blank=True)  # Fixed field name (lowercase "address")
+    address = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100, null=True, blank=True)
     pincode = models.CharField(max_length=10)

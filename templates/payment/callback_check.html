@@ -1,0 +1,89 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block title %}
+    Payment Status
+{% endblock title %}
+
+{% block content %}
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Payment Status</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Payment Status</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section_gap">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body text-center">
+                        {% if payment_status == 'success' %}
+                            <div class="mb-4">
+                                <i class="fas fa-check-circle text-success" style="font-size: 48px;"></i>
+                            </div>
+                            <h2 class="card-title text-success">Payment Successful!</h2>
+                            <p class="card-text">Your payment has been processed successfully.</p>
+                            
+                            <div class="payment-details mt-4">
+                                <h4>Payment Details</h4>
+                                <table class="table">
+                                    <tr>
+                                        <th>Order ID:</th>
+                                        <td>{{ order.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Amount Paid:</th>
+                                        <td>₹{{ order.amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Payment ID:</th>
+                                        <td>{{ order.razorpay_payment_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date:</th>
+                                        <td>{{ order.created_at|date:"F d, Y H:i" }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <a href="{% url 'index' %}" class="btn btn-primary">Continue Shopping</a>
+                            </div>
+                        {% elif payment_status == 'no_payment' %}
+                            <div class="mb-4">
+                                <i class="fas fa-info-circle text-info" style="font-size: 48px;"></i>
+                            </div>
+                            <h2 class="card-title text-info">No Payment Found</h2>
+                            <p class="card-text">{{ error_message }}</p>
+                            
+                            <div class="mt-4">
+                                <a href="{% url 'cart_list' %}" class="btn btn-primary">View Cart</a>
+                                <a href="{% url 'index' %}" class="btn btn-secondary ml-2">Continue Shopping</a>
+                            </div>
+                        {% else %}
+                            <div class="mb-4">
+                                <i class="fas fa-times-circle text-danger" style="font-size: 48px;"></i>
+                            </div>
+                            <h2 class="card-title text-danger">Payment Failed</h2>
+                            <p class="card-text">{{ error_message|default:"There was an error processing your payment." }}</p>
+                            
+                            <div class="mt-4">
+                                <a href="{% url 'checkout' %}" class="btn btn-primary">Try Again</a>
+                                <a href="{% url 'index' %}" class="btn btn-secondary ml-2">Return to Home</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %} 

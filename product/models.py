@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db import models
 from users.models import User
 from vendor.models import VendorProfile
@@ -18,6 +20,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, null=True)
+
 
     def __str__(self):
         return self.name
@@ -68,6 +71,21 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in {self.user.username if self.user else 'Unknown User'}'s Cart"
+
+    @property
+    def total_price(self):
+        return self.quantity * self.product.price
+
+
+#wishlist
+class WishList(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlist')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return self.product.name if self.product else 'Unknown Product'
+
 
     @property
     def total_price(self):

@@ -1,0 +1,67 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block title %}
+    Order's
+{% endblock title %}
+{% block content %}
+
+    <section class="cart_area mt-5 " style="padding: 40px 0;">
+    <div class="container mt-5">
+        <div class="cart_inner" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <h2 class="text-secondary text-center ">Your Order List</h2>
+            <div class="table-responsive">
+                <table class="table" style="width: 100%;">
+                    <thead style="background: #f8f9fa;">
+                        <tr>
+                            <th style="padding: 12px; width: 40%;">Product</th>
+                            <th style="padding: 12px; width: 15%;">Price</th>
+                            <th style="padding: 12px; width: 15%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in orders %}
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 15px 12px; vertical-align: middle;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="margin-right: 15px; width: 80px;">
+                                        {% if item.product.images.exists %}
+                                            <img src="{{ item.product.images.first.image.url }}"
+                                                 alt="{{ item.product.name }}"
+                                                 style="width: 100%; height: auto; border-radius: 4px;">
+                                        {% else %}
+                                            <div style="width: 80px; height: 80px; background: #f8f9fa;
+                                                 display: flex; align-items: center; justify-content: center;
+                                                 border-radius: 4px;">
+                                                No Image
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; font-weight: 500;">{{ item.product.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.product.price }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;"> {{ item.order_status }}</td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="padding: 30px; text-align: center;">
+                                Your Order list is empty.
+                            </td>
+                        </tr>
+                        <tr>
+                        <td  colspan="5" style="padding: 30px; text-align: center;">
+                                   <a style="border-radius: 5px; width: 100px;" href="{% url 'index' %}">Purchase The Product</a>
+                        </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

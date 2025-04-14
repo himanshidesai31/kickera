@@ -38,9 +38,10 @@
                                         </div>
                                         <div>
                                             <p style="margin: 0; font-weight: 500;">{{ item.product.name }}</p>
+                                            <p style="margin: 0; font-size: 12px; color: #666;">From Cart</p>
                                         </div>
                                     </td>
-                                    <td style="padding: 15px;">${{ item.product.price }}</td>
+                                    <td style="padding: 15px;">₹{{ item.product.price }}</td>
                                     <td style="padding: 15px;">
                                         <div style="display: flex; align-items: center;">
                                             <button style="width: 30px; height: 30px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa; font-size: 16px;">-</button>
@@ -48,18 +49,46 @@
                                             <button style="width: 30px; height: 30px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa; font-size: 16px;">+</button>
                                         </div>
                                     </td>
-                                    <td style="padding: 15px;">{{ item.total_price }}</td>
+                                    <td style="padding: 15px;">₹{{ item.total_price }}</td>
                                     <td style="padding: 15px;">
                                         <a href="{% url 'cart_remove' item.id %}" style="color: #ff5252; text-decoration: none; font-weight: 500;">Remove</a>
                                     </td>
                                 </tr>
-                                {% empty %}
+                                {% endfor %}
+                                
+                                {% for item in wishlist_items %}
+                                <tr>
+                                    <td style="padding: 15px; display: flex; align-items: center;">
+                                        <div style="width: 60px; height: 60px; margin-right: 15px;">
+                                            {% if item.product.images.exists %}
+                                            <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" style="width: 100%; height: auto; border-radius: 4px;">
+                                            {% else %}
+                                            <div style="width: 60px; height: 60px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                                No Image
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <p style="margin: 0; font-weight: 500;">{{ item.product.name }}</p>
+                                            <p style="margin: 0; font-size: 12px; color: #666;">From Wishlist</p>
+                                        </div>
+                                    </td>
+                                    <td style="padding: 15px;">₹{{ item.product.price }}</td>
+                                    <td style="padding: 15px;">1</td>
+                                    <td style="padding: 15px;">₹{{ item.product.price }}</td>
+                                    <td style="padding: 15px;">
+                                        <a href="{% url 'remove_wishlist' item.id %}" style="color: #ff5252; text-decoration: none; font-weight: 500;">Remove</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                {% if not cart_items and not wishlist_items %}
                                 <tr>
                                     <td colspan="5" style="padding: 30px; text-align: center; color: #888;">
                                         Your cart is empty.
                                     </td>
                                 </tr>
-                                {% endfor %}
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -71,12 +100,12 @@
                     <h3 style="margin-bottom: 20px; font-weight: 600;">Price Details</h3>
                     <div style="border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span>Total MRP </span>
-                            <span>{{ total_price }}</span>
+                            <span>Total MRP</span>
+                            <span>₹{{ total_price }}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                             <span>Discount</span>
-                            <span style="color: #28a745;">0.00</span>
+                            <span style="color: #28a745;">₹ 0.00</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span>Delivery Charges</span>
@@ -85,14 +114,14 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 16px;">
                         <span>Total Amount</span>
-                        <span>{{ total_price }}</span>
+                        <span>₹{{ total_price }}</span>
                     </div>
                 </div>
-                    {% if cart_items %}
+                    {% if cart_items or wishlist_items %}
                     <div style="margin-top: 20px; text-align: center;">
-                        <a href="{% url 'payment'  %}" style="display: inline-block; width: 100%; padding: 12px 0; background: #2874f0; color: #fff; text-decoration: none; border-radius: 4px; font-weight: 600;">
+                        <button id="rzp-button1" class="btn btn-primary" style="width: 100%; padding: 12px 0; background: #2874f0; color: #fff; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">
                             Continue to Payment
-                        </a>
+                        </button>
                     </div>
                     {% else %}
                     <div style="margin-top: 20px; text-align: center;">
@@ -105,4 +134,111 @@
         </div>
     </div>
 </section>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById("rzp-button1").addEventListener("click", async function () {
+        // Get product ID from cart or wishlist
+        {% if cart_items.0 %}
+        const productId = "{{ cart_items.0.product.id }}";
+        {% elif wishlist_items.0 %}
+        const productId = "{{ wishlist_items.0.product.id }}";
+        {% else %}
+        alert("No products available for checkout");
+        return;
+        {% endif %}
+        
+        const cartTotal = "{{ total_price }}";
+        
+        // Construct URL with wishlist item IDs if they exist
+        let paymentUrl = `/payment/create-payment/${productId}/`;
+        
+        {% if wishlist_items %}
+        const params = new URLSearchParams();
+        {% for item in wishlist_items %}
+        params.append('wishlist_item_id', '{{ item.id }}');
+        {% endfor %}
+        paymentUrl += '?' + params.toString();
+        {% endif %}
+
+        try {
+            const response = await fetch(paymentUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    cart_total: cartTotal
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                const options = {
+                    key: data.razorpay_key_id,
+                    amount: data.amount,
+                    currency: "INR",
+                    name: "Kickera Shoes store ",
+                    description: "Cart Checkout",
+                    order_id: data.order_id,
+                    handler: function (response) {
+                        // Submit the payment details to the callback URL
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = data.razorpay_callback_url;
+                        
+                        // Add CSRF token
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrfmiddlewaretoken';
+                        csrfInput.value = '{{ csrf_token }}';
+                        form.appendChild(csrfInput);
+                        
+                        // Add payment details
+                        const orderIdInput = document.createElement('input');
+                        orderIdInput.type = 'hidden';
+                        orderIdInput.name = 'razorpay_order_id';
+                        orderIdInput.value = response.razorpay_order_id;
+                        form.appendChild(orderIdInput);
+                        
+                        const paymentIdInput = document.createElement('input');
+                        paymentIdInput.type = 'hidden';
+                        paymentIdInput.name = 'razorpay_payment_id';
+                        paymentIdInput.value = response.razorpay_payment_id;
+                        form.appendChild(paymentIdInput);
+                        
+                        const signatureInput = document.createElement('input');
+                        signatureInput.type = 'hidden';
+                        signatureInput.name = 'razorpay_signature';
+                        signatureInput.value = response.razorpay_signature;
+                        form.appendChild(signatureInput);
+                        
+                        // Submit the form
+                        document.body.appendChild(form);
+                        form.submit();
+                    },
+                    prefill: {
+                        name: "{{ request.user.get_full_name|default:request.user.username }}",
+                        email: "{{ request.user.email }}",
+                        contact: "{{ request.user.mobile|default:'' }}",
+                    },
+                    theme: {
+                        color: "#2874f0",
+                    },
+                };
+
+                const rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                alert("Failed to create payment. Please try again.");
+            }
+        } catch (error) {
+            console.error("Payment error:", error);
+            alert("Failed to create payment. Please try again.");
+        }
+    });
+</script>
 {% endblock content %}

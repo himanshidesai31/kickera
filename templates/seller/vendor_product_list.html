@@ -33,12 +33,12 @@
     </div>
     {% if products %}
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover w-100">
                 <thead class="thead-dark color-1-hover">
                     <tr class="text-left">
                         <th>Image</th>
                         <th>Name</th>
-                        <th>Price</th>
+                        <th>₹ Price</th>
                         <th>Stock</th>
                         <th>Brand</th>
                         <th>Category</th>
@@ -60,7 +60,7 @@
 
 
                             <td>{{ product.name }}</td>
-                            <td>{{ product.price }}</td>
+                            <td>₹{{ product.price }}</td>
                             <td>{{ product.stock }}</td>
                             <td>{{ product.brand.brand_name }}</td>
                             <td>{{ product.category.category_name }}</td>

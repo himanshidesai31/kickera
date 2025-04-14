@@ -5,6 +5,7 @@ from django.urls import path
 from vendor.views import SellerHomePageView, SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
     VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('seller/', SellerHomePageView.as_view(), name='seller_register'),
@@ -13,7 +14,8 @@ urlpatterns = [
     path('seller/dashboard/', VendorDashboardView.as_view(), name='vendor_dashboard'),
     path('seller/profile/', VendorProfileView.as_view(), name='vendor_profile'),
     path('seller/profile/edit/<int:pk>/', VendorProfileUpdateView.as_view(), name='vendor_profile_update'),
-
+    path('seller/register/success/', TemplateView.as_view(template_name='seller/vendor_register_success.html'), name='vendor_register_success'),
+    
     #vendor - product related urls
     path('product/product-list', VendorProductListView.as_view(), name='vendor_product_list'),
     path('product/add-product',VendorAddProductView.as_view(), name='vendor_add_product'),
