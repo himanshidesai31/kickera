@@ -64,8 +64,7 @@
                             <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.total_price }}</td>
                             <td style="padding: 15px 12px; vertical-align: middle;">
                                 <a href="{% url 'cart_remove' item.id %}"
-                                   style="padding: 5px 10px; background: #f8f9fa; border: 1px solid #ddd;
-                                          border-radius: 4px; color: #333; text-decoration: none;">
+                                   class="btn btn-outline-danger btn-sm" style="padding: 5px 10px; border-radius: 4px; text-decoration: none;">
                                     Remove
                                 </a>
                             </td>
@@ -92,9 +91,9 @@
 
             {% if cart_items %}
             <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                <a href="{% url 'index' %}"
-                   style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #ddd;
-                          border-radius: 4px; color: #333; text-decoration: none;">
+                <a href="{% url 'index' %}" class="text-black bg-light border rounded-pill px-3 py-2"
+                        style="padding: 10px 20px;
+                        border-radius: 4px; color: black; text-decoration: none; cursor: pointer;">
                     Continue Shopping
                 </a>
                 <a href="{% url 'check_user_address' user.id %}"
@@ -105,9 +104,9 @@
             </div>
             {% else %}
             <div style="text-align: center; margin-top: 20px;">
-                <a href="{% url 'index' %}"
-                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
-                          border-radius: 4px; color: #fff; text-decoration: none;">
+                <a href="{% url 'index' %}" class="text-black bg-light border rounded-pill px-3 py-2"
+                        style="padding: 10px 20px;
+                        border-radius: 4px; color: black; text-decoration: none; cursor: pointer;">
                     Start Shopping
                 </a>
             </div>

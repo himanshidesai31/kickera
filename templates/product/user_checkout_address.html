@@ -68,10 +68,9 @@
                     <tr>
                     <h3 class="text-center text-black-50">Your Selected Item's</h3>
                     </tr>
-                    {% if wishlist_items %}
-                        {% for item in wishlist_items %}
-
-                            <table class="table"><tr>
+                    {% if cart_items %}
+                    {% for item in cart_items %}
+                        <table class="table"><tr>
                                 <td style="margin-right: 15px; width: 80px;">
                                         {% if item.product.images.exists %}
                                             <img src="{{ item.product.images.first.image.url }}"

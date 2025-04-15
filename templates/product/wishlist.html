@@ -70,11 +70,23 @@
                             </td>
                             <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.product.price }}</td>
                             <td>
-                                <a href="{% url 'remove_wishlist' item.id %}"
-                                   style="padding: 5px 10px; background: #f8f9fa; border: 1px solid #ddd;
-                                          border-radius: 4px; color: #333; text-decoration: none;">
-                                    Remove
-                                </a>
+                                <div class="action-buttons">
+                                    <!-- Add to Cart Button -->
+                                    <form id="cart-form-{{ item.product.pk }}" action="{% url 'cart_add' item.product.pk %}" method="POST" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'wishlist' %}">
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="margin-right: 5px;">
+                                            Add to Cart
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- Remove Button -->
+                                    <a href="{% url 'remove_wishlist' item.id %}"
+                                       class="btn btn-outline-danger btn-sm"
+                                       style="padding: 5px 10px; border-radius: 4px; text-decoration: none;">
+                                        Remove
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}
@@ -88,19 +100,26 @@
                     </tbody>
                 </table>
             </div>
-
             {% if wish_list %}
             <div style="display: flex; justify-content: space-between; margin-top: 20px;">
                 <a href="{% url 'index' %}"
-                   style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #ddd;
-                          border-radius: 4px; color: #333; text-decoration: none;">
+                  class="text-black bg-light border rounded-pill px-3 py-2"
+                        style="padding: 10px 20px;
+                        border-radius: 4px; color: black; text-decoration: none; cursor: pointer;">
                     Continue Shopping
                 </a>
-                <a href="{% url 'check_user_address' user.id %}"
-                   style="padding: 10px 20px; background: #007bff; border: 1px solid #007bff;
-                          border-radius: 4px; color: #fff; text-decoration: none;">
-                    Place Order
-                </a>
+                <form action="{% url 'add_all_to_cart' %}" method="POST">
+                    {% csrf_token %}
+                    {% for item in wish_list %}
+                    <input type="hidden" name="product_ids" value="{{ item.product.id }}">
+                    {% endfor %}
+                    <input type="hidden" name="next" value="{% url 'cart_list' %}">
+                    <button type="submit" class="text-black bg-light border rounded-pill px-3 py-2"
+                        style="padding: 10px 20px;
+                        border-radius: 4px; color: black; text-decoration: none; cursor: pointer;">
+                        Add All Products to Cart
+                    </button>
+                </form>
             </div>
             {% else %}
             <div style="text-align: center; margin-top: 20px;">

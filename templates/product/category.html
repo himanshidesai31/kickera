@@ -153,9 +153,9 @@ Product Categories
                                         {% csrf_token %}
                                         <input type="hidden" name="next" value="{{ request.get_full_path }}">
                                         <button type="submit" style="display: none;"></button>
-                                        <a href="#" class="social-info" onclick="document.getElementById('cart-form-{{ product.pk }}').submit(); return false;">
+                                        <a href="{% url 'cart_add' product.id %}" class="social-info" onclick="document.getElementById('cart-form-{{ product.pk }}').submit(); return false;">
                                             <p class="hover-text">Add to Cart</p>
-                                            <span class="ti-bag"></span>
+                                            <span class="ti-shopping-cart"></span>
                                         </a>
                                     </form>
                                     <form id="wish-form-{{ product.pk }}" action="{% url 'add_wishlist' product.pk %}" method="POST">
