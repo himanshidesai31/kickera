@@ -16,6 +16,7 @@
                             <th style="padding: 12px; width: 40%;">Product</th>
                             <th style="padding: 12px; width: 15%;">Price</th>
                             <th style="padding: 12px; width: 15%;">Status</th>
+                            <th style="padding: 12px; width: 15%;">Payment Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +44,7 @@
                             </td>
                             <td style="padding: 15px 12px; vertical-align: middle;">₹{{ item.product.price }}</td>
                             <td style="padding: 15px 12px; vertical-align: middle;"> {{ item.order_status }}</td>
+                            <td style="padding: 15px 12px; vertical-align: middle;">{{ item.payment_status }}</td>
 
                         </tr>
                         {% empty %}

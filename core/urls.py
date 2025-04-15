@@ -3,7 +3,6 @@ from django.urls import path
 from django.views.generic import TemplateView
 from core.views import (
     HomePageView,
-    SingleProductPageView,
     AboutPageView,
     PasswordChangeView,
     ReauthenticateView,
@@ -11,7 +10,6 @@ from core.views import (
 )
 urlpatterns = [
     path('', HomePageView.as_view(), name='index'),
-    path('product/', SingleProductPageView.as_view(), name='single_product'),
     path('about/', AboutPageView.as_view(), name='about'),
     path('product/confirmation/', ConfirmationPageView.as_view(), name='confirmation'),
     #password change url

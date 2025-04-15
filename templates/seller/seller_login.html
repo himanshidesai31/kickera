@@ -11,8 +11,8 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card shadow-lg border-0 rounded-lg">
-                    <div class="card-header  text-white text-center py-4">
-                        <h2 class="mb-0 font-weight-bold">Login</h2>
+                    <div class="card-header  text-black-50 text-center py-4">
+                        <h2 class="mb-0 font-weight-bold">Vendor Login</h2>
                         <p class="mb-0">Start Selling Today!</p>
                     </div>
                     <div class="card-body p-4">
@@ -32,16 +32,16 @@
                                 <div class="invalid-feedback d-block">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                            <div class="d-grid mt-4">
+                            <div class="d-grid mt-4 text-center">
                                 <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill">Login</button>
                             </div>
                         </form>
                     </div>
                     <div class="card-footer text-center bg-light py-3">
-                        <small class="text-muted">Don't have an account? <a href="{% url 'seller_register' %}" class="text-primary font-weight-bold">Register</a></small>
+                        <h5 class="text-muted">Don't have an account? <a href="{% url 'seller_register' %}" class="text-primary font-weight-bold">Register</a></h5>
                         <br>
-                        <small class="text-muted"><a  class="text-secondary">Forgot Password?</a></small>
-
+                        <small class="text-muted"><a  class="text-secondary">Forgot Password?
+                        <small class="text-danger">Working On This Functionality</small></a></small>
                     </div>
                 </div>
             </div>

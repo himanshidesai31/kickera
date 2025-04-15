@@ -2,37 +2,83 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View, UpdateView
+from django.views.generic import ListView, View, UpdateView, DetailView
 from core.models import Deal
-from product.models import Product, Cart, Confirmation, WishList
+from product.models import Product, Cart, Confirmation, WishList, Category, Brand
 from users.forms import AddressForm
 from users.models import Address
 
 
 #Categories class
-class  CategoryListView(ListView):
+class CategoryListView(ListView):
     model = Product
     template_name = 'product/category.html'
+    context_object_name = 'products'
+    paginate_by = 12
 
     def get_queryset(self):
-        return Product.objects.all().prefetch_related('category')
+        queryset = Product.objects.all().prefetch_related('images', 'category', 'brand')
+        
+        # Filter by category
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+            
+        # Filter by brand
+        brand_id = self.request.GET.get('brand')
+        if brand_id:
+            queryset = queryset.filter(brand_id=brand_id)
+            
+        # Filter by price range
+        min_price = self.request.GET.get('min_price')
+        max_price = self.request.GET.get('max_price')
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+            
+        # Filter by product type
+        product_type = self.request.GET.get('product_type')
+        if product_type:
+            queryset = queryset.filter(product_type=product_type)
+            
+        # Sort results
+        sort_by = self.request.GET.get('sort_by', 'name')
+        sort_order = self.request.GET.get('sort_order', 'asc')
+        
+        if sort_order == 'desc':
+            sort_by = f'-{sort_by}'
 
-#Products class
-class ProductListView(ListView):
-    model = Product
-    template_name = 'product/single_product.html'
+        queryset = queryset.order_by(sort_by)
+        return queryset
 
-    def get_queryset(self):
-        return Product.objects.all().prefetch_related('images')
+    def get_context_data(self, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        
+        # Add categories and brands for filter sidebar
+        context['categories'] = Category.objects.all()
+        context['brands'] = Brand.objects.all()
+        
+        # Add current filter parameters for maintaining state
+        context['current_filters'] = self.request.GET.copy()
+        
+        # Add price ranges
+        context['min_price'] = self.request.GET.get('min_price', '')
+        context['max_price'] = self.request.GET.get('max_price', '')
+        
+        # Add sort parameters
+        context['sort_by'] = self.request.GET.get('sort_by', 'name')
+        context['sort_order'] = self.request.GET.get('sort_order', 'asc')
+        
+        return context
 
 
-
-class CheckoutListView(ListView):
+class CheckoutListView(LoginRequiredMixin,ListView):
     model = Cart
     template_name = 'product/checkout.html'
 
 
-class ConfirmationListView(ListView):
+class ConfirmationListView(LoginRequiredMixin,ListView):
     model = Confirmation
     template_name = 'product/confirmation.html'
 
@@ -60,13 +106,17 @@ class CartItemAddView(View):
             if not created:
                 cart_item.quantity += 1
                 cart_item.save()
-                messages.success(request, "Your product quantity has been updated in the cart.")
+                messages.success(request, f'"{product.name}" quantity updated to {cart_item.quantity} in your cart.')
             else:
-                messages.success(request, "Product added to cart successfully.")
+                messages.success(request, f'"{product.name}" added to your cart successfully.')
 
         except Exception as e:
             messages.error(request, f"An error occurred while adding the product to the cart: {str(e)}")
 
+        # Check if there's a next parameter in the form or a HTTP_REFERER for redirection
+        next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
+        if next_url and 'category' in next_url:
+            return redirect(next_url)
         return redirect('cart_list')
 
 
@@ -117,17 +167,21 @@ class AddWishListView(View):
     def post(self, request, pk):
         try:
             product = get_object_or_404(Product, pk=pk)
-            wish_list,created = WishList.objects.get_or_create(product=product, user=request.user)
+            wish_list, created = WishList.objects.get_or_create(product=product, user=request.user)
 
             if not created:
                 wish_list.quantity += 1
                 wish_list.save()
-                messages.success(request, "Product Quantity added to wish list successfully.")
+                messages.success(request, f'"{product.name}" quantity updated in your wishlist.')
             else:
-                messages.success(request, "Product added to wishlist successfully.")
+                messages.success(request, f'"{product.name}" added to your wishlist successfully.')
         except Exception as e:
             messages.error(request, f"An error occurred while adding the product to the wishlist: {str(e)}")
 
+        # Check if there's a next parameter in the form or a HTTP_REFERER for redirection
+        next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
+        if next_url and 'category' in next_url:
+            return redirect(next_url)
         return redirect('wishlist')
 
 
@@ -228,3 +282,32 @@ class DealListView(ListView):
 
     def get_queryset(self):
         return Deal.objects.all()
+
+
+# Context processor for cart and wishlist counts
+def cart_wishlist_count(request):
+    """Context processor that adds cart and wishlist counts to all templates."""
+    context = {
+        'cart_count': 0,
+        'wishlist_count': 0
+    }
+    #It will only show the product number of the user who has added the product to their wish list or cart. also filter the user
+    if request.user.is_authenticated:
+        context['cart_count'] = Cart.objects.filter(user=request.user).count()
+        context['wishlist_count'] = WishList.objects.filter(user=request.user).count()
+
+    return context
+
+
+# Product Detail View for use or check the product fully details
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product/product_detail.html'
+    context_object_name = 'product'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.object.category:
+            related_products = Product.objects.filter(category=self.object.category).exclude(id=self.object.id)
+            context['related_products'] = related_products
+        return context

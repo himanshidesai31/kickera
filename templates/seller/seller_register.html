@@ -11,32 +11,30 @@
 <section class="banner-area organic-breadcrumb">
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-            <div class="col-first">
+            <div class="">
                 <h1 class="text-center">Register as a Seller</h1>
                 <nav class="d-flex align-items-center">
-                    <a href="{% url 'index' %}" class="text-decoration-none text-secondary">Home
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
                         <span class="lnr lnr-arrow-right mx-1"></span>
                     </a>
-                    <a href="{% url 'seller_login' %}" class="text-decoration-none text-secondary">Login
-                        <span class="lnr lnr-arrow-right mx-1"></span>
-                    </a>
-                    <a href="{% url 'seller_register' %}" class="text-decoration-none text-secondary">Register</a>
+                    <a href="{% url 'seller_register' %}" class="text-decoration-none text-white">Become a Seller  </a>
                 </nav>
             </div>
         </div>
     </div>
 </section>
 <!-- End Banner Area -->
-<div class="card-footer text-center bg-light py-3">
-        <h3 class="text-muted">
-                Already have an account? <a href="{% url 'seller_login' %}" class="text-primary font-weight-bold">Login here</a>
-            </h3>
-    </div>
+
 <!-- Seller Registration Form -->
 <section class="login_box_area section_gap">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+            <div class="text-center bg-light py-3">
+                <h5 class="text-muted">
+                    Already have an account? <a href="{% url 'seller_login' %}" class="text-primary font-weight-bold">Login here</a>
+                </h5>
+            </div>
                 <div class="card shadow-lg border-0 rounded-lg">
                     <div class="card-body p-5">
                         <h2 class="text-center mb-3 font-weight-bold text-dark">Start Selling Today!</h2>
@@ -100,7 +98,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="logo" class="font-weight-bold">Business Logo</label>
+                                <label for="logo" class="font-weight-bold">Profile Picture </label>
                                 <input type="file" class="form-control" id="logo" name="logo">
                                 {% for error in form.logo.errors %}
                                 <div class="text-danger small">{{ error }}</div>
