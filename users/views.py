@@ -1,6 +1,5 @@
-from profile import Profile
 from django.contrib import messages
-from django.http import request, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, ListView, FormView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,7 +15,7 @@ class ProfileView(LoginRequiredMixin, ListView):
     # context_object_name = 'user'
 
     def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id) #use for filter multiple user
+        return User.objects.filter(id=self.request.user.id) #use for filter multiple user ,for use case  in high level complex logic
         # return User.objects.get(pk=self.request.user.id) #get the current user
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -96,7 +95,7 @@ class Add_AddressListView(LoginRequiredMixin, FormView):
         elif next_url2:
             return reverse_lazy('check_user_address', kwargs={'pk': 2})  # Default to product ID 2 if not specified
         else:
-            return reverse_lazy('index')
+            return reverse_lazy('address_list_view') #redirect  after adding the new address
 
 
 # update address class view
@@ -107,7 +106,7 @@ class UpdateAddressView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('address_list_view')
 
 
-# detete address class view
+# Detele address class view for deleteing the  object
 class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
     from_class = AddressForm

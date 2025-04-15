@@ -12,23 +12,16 @@ from orders.models import Order
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
-
+    #this is  use for showing the all product's  when the vendor has been added in to the there product list
     def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
         banners = Banner.objects.all().order_by('sort_order')
-        print(banners)  # Debugging statement
         context['banners'] = banners
-        # context['categories'] = Category.objects.all()
         context['products_latest'] = Product.objects.filter(product_type='latest')
         context['products_coming'] = Product.objects.filter(product_type='coming')
         context['deals'] = Deal.objects.all()
         context['brands'] = Brand.objects.all()
         return context
-
-
-class SingleProductPageView(LoginRequiredMixin, TemplateView):
-    template_name = 'product/single_product.html'
-
 
 class ConfirmationPageView(LoginRequiredMixin, TemplateView):
     template_name = 'product/confirmation.html'

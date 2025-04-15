@@ -8,13 +8,18 @@ class Order(models.Model):
         ('Shipped', 'Shipped'),
         ('In Delivery', 'In Delivery'),
     )
+    payment_status = (
+        ('Pending', 'Pending'),
+        ('Canceled', 'Canceled'),
+        ('Completed', 'Completed'),
+    )
     order_status = models.CharField(max_length=20, choices=status, default='Shipped')
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
     razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_signature = models.CharField(max_length=100, null=True, blank=True)
-    is_paid = models.BooleanField(default=False)
+    is_paid = models.CharField(max_length=100, choices=payment_status, default='Pending')
     amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
     name = models.CharField(max_length=500, null=True)
     email = models.EmailField(max_length=500, null=True)

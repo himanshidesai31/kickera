@@ -1,11 +1,12 @@
 from  django.urls import  path
-from product.views import CategoryListView, CheckoutListView, ProductListView, \
+from product.views import CategoryListView, CheckoutListView, \
     CartItemAddView, CartListView, CartRemoveView, CheckoutPageView, SelectUserAddressView, CartUpdateView, \
-    WishListView, AddWishListView, RemoveWishListView
+    WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView
 
 urlpatterns = [
     path('category/',CategoryListView.as_view(),name='category_list'),
-    path('product/',ProductListView.as_view(),name='product_list'),
+    # path('product/',ProductListView.as_view(),name='product_list'),
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
 
     #cart related url's
     path('cart/',CartListView.as_view(),name='cart_list'),
@@ -17,6 +18,7 @@ urlpatterns = [
     path('wishlist',WishListView.as_view(),name='wishlist'),
     path('add-wishlist/<int:pk>/', AddWishListView.as_view(), name='add_wishlist'),
     path('remove-wishlist/<int:pk>/', RemoveWishListView.as_view(), name='remove_wishlist'),
+    path('add-all-to-cart/', AddAllToCartView.as_view(), name='add_all_to_cart'),
 
     #product checkout related url
     path('checkout/', CheckoutPageView.as_view(), name='checkout'),

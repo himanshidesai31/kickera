@@ -4,9 +4,8 @@
 {% load allauth account %}
 
 {% block title %}
-Login
+    Login
 {% endblock title %}
-
 {% block content %}
 <body>
     <!-- Start Banner Area -->
@@ -43,14 +42,11 @@ Login
                 </div>
                 <div class="col-lg-6">
                     <div class="login_form_inner">
-                        <h2>Log in to Enter</h2>
-
-
+                        <h2>Login To Enter </h2>
                         <form class="row login_form" action="{% url 'account_login'  %}" method="post" id="contactForm" novalidate="novalidate">
                             {% csrf_token %}
-                        <p> NEXT:URL = {{ request.GET.next }}</p>
-                        <input type="hidden" name="next" value="{{ request.GET.next }}" />
-
+{#                        <p> NEXT:URL = {{ request.GET.next }}</p>,  that line use  for check  the  user  clicked on other page like there link  has  been showing #}
+                          <input type="hidden" name="next" value="{{ request.GET.next }}" />
                             {% if form.non_field_errors %}
                                 <div class="col-md-12 form-group">
                                     <ul class="text-danger">
@@ -66,7 +62,7 @@ Login
                                 <input required type="email" class="form-control" id="exampleEmail" name="login" placeholder="Email" value="{{ request.POST.login }}"/>
                                 {% if form.errors %}
                                     {% for error in form.login.errors %}
-                                        <li class="text-danger">{{ error }}</li>
+                                        <div class="text-danger">{{ error }}</div>
                                     {% endfor %}
                                 {% endif %}
                             </div>
@@ -76,7 +72,8 @@ Login
                                 <input required type="password" class="form-control" id="password" name="password" placeholder="Password"/>
                                 {% if form.errors %}
                                     {% for error in form.password.errors %}
-                                        <li class="text-danger">{{ error }}</li>
+                                        <div
+                                                class="text-danger">{{ error }}</div>
                                     {% endfor %}
                                 {% endif %}
                             </div>
@@ -92,7 +89,7 @@ Login
                             <!-- Submit Button and Forgot Password Link -->
                             <div class="col-md-12 form-group">
                                 <button type="submit" value="submit" class="primary-btn">Log In</button>
-                                <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+                                 <a class="text-danger" href="{% url 'account_reset_password' %}">Forgot Password ?</a>
                             </div>
                         </form>
                         <!-- End Django's Login Form Integration -->

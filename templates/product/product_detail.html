@@ -1,0 +1,277 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block title %}
+{{ product.name }} - Details
+{% endblock title %}
+
+{% block content %}
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Product Details</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="{% url 'category_list' %}">Shop<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="{% url 'product_detail' product.pk %}">Product Details</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="product_image_area">
+        <div class="row s_product_inner">
+            <div class="col-lg-6">
+                <div class="single-prd-item">
+                    {% if product.images.exists %}
+                        <img class="img-fluid" src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="no-image-placeholder">No Image Available</div>
+                    {% endif %}
+                </div>
+                {% if product.images.count > 1 %}
+                <div class="additional-images mt-4">
+                    <div class="row">
+                        {% for image in product.images.all %}
+                        <div class="col-3">
+                            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="s_product_text">
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    <h2 class="product-price">₹{{ product.price }}</h2>
+                    <div class="original-price">
+                        {% if product.original_price %}
+                        <p class="price-detail">₹{{ product.original_price }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-meta mt-4">
+                        <div class="meta-item">
+                            <span class="meta-label">Category</span>
+                            <span class="meta-value">: {{ product.category.category_name}}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Brand</span>
+                            <span class="meta-value">: {{ product.brand.brand_name }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Availability</span>
+                            <span class="meta-value">: {% if product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}</span>
+                        </div>
+                        <div class="meta-item">
+                            <p>{{ product.description }}No description available for this product</p>
+                        </div>
+                    </div>
+                    
+
+                    
+                    <div class="product-actions">
+                        <!-- Add to Cart Button -->
+                        <form id="cart-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST" class="mb-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="btn-secondary full-width-button">ADD TO CART</button>
+                        </form>
+
+                        <!-- Buy Now Button -->
+                        <form id="buy-now-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST" class="mb-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{% url 'checkout' %}">
+                            <button type="submit" class="btn-secondary full-width-button">BUY NOW</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    {% if related_products %}
+    <section class="related-product-area section_gap_bottom">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1>Related Products</h1>
+                        <p>Browse more products from the same category.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        {% for related in related_products %}
+                        <div class="col-lg-3 col-md-6">
+                            <div class="single-product">
+                                {% if related.images.exists %}
+                                <img class="img-fluid" src="{{ related.images.first.image.url }}" alt="{{ related.name }}">
+                                {% else %}
+                                <div class="no-image-placeholder">No Image Available</div>
+                                {% endif %}
+                                <div class="product-details">
+                                    <h6>{{ related.name }}</h6>
+                                    <div class="price">
+                                        <h6>₹{{ related.price }}</h6>
+                                        {% if related.original_price %}
+                                        <h6 class="l-through">₹{{ related.original_price }}</h6>
+                                        {% endif %}
+                                    </div>
+                                    <div class="prd-bottom">
+                                        <a href="{% url 'product_detail' related.pk %}" class="social-info">
+                                            <span class="lnr lnr-move"></span>
+                                            <p class="hover-text">View More</p>
+                                        </a>
+                                        <form  id="wish-form-{{ product.pk }}" action="{% url 'add_wishlist' product.pk %}" method="POST">
+                                            {% csrf_token %}
+                                        <a href="{% url 'add_wishlist' product.pk %}" class="social-info" onclick="document.getElementById('wish-form-{{ product.pk }}').submit(); return false;">
+                                            <span class="lnr lnr-heart"></span>
+                                            <p class="hover-text">Wishlist</p>
+                                        </a>
+                                            <a href="{% url 'cart_add' product.pk %}" class="social-info">
+                                        <span class="lnr lnr-cart"></span>
+                                        <p class="hover-text">Add to cart</p>
+                                    </a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+{% block extra_css %}
+<style>
+    .no-image-placeholder {
+        height: 400px;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-size: 18px;
+    }
+
+    /* Product title and price styling */
+    .product-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .product-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ff9800;
+        margin-bottom: 5px;
+    }
+    
+    .price-detail {
+        text-decoration: line-through;
+        color: #aaa;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    /* Product metadata styling */
+    .product-meta {
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
+    }
+    
+    .meta-item {
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .meta-label {
+        font-weight: 600;
+        color: #555;
+    }
+    
+    .meta-value {
+        color: #777;
+    }
+    
+    /* Product description */
+    .product-description {
+        color: #666;
+        line-height: 1.6;
+    }
+    
+    /* Action buttons styling */
+    .product-actions {
+        margin-top: 25px;
+    }
+    
+    .full-width-button {
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        background-color: #282828;
+        color: white;
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        cursor: pointer;
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        transition: background-color 0.2s;
+    }
+    
+    .full-width-button:hover {
+        background-color: #444;
+    }
+    
+    /* Action buttons row */
+    .action-buttons-row {
+        display: flex;
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 20px;
+    }
+    
+    .icon-button {
+        width: 45px;
+        height: 45px;
+        background-color: #7986cb;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: background-color 0.3s;
+    }
+    
+    .icon-button span {
+        font-size: 18px;
+    }
+    
+    .icon-button:hover {
+        background-color: #5c6bc0;
+    }
+</style>
+{% endblock %}
+
+{% endblock content %} 
