@@ -16,9 +16,10 @@ class CategoryListView(ListView):
     context_object_name = 'products'
     paginate_by = 12
 
+
     def get_queryset(self):
         queryset = Product.objects.all().prefetch_related('images', 'category', 'brand')
-        
+        # import pdb; pdb.set_trace()
         # Filter by category
         category_id = self.request.GET.get('category')
         if category_id:
@@ -32,6 +33,7 @@ class CategoryListView(ListView):
         # Filter by price range
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
+        #checking min or max price
         if min_price:
             queryset = queryset.filter(price__gte=min_price)
         if max_price:

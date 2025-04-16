@@ -5,6 +5,7 @@ from product.views import CategoryListView, CheckoutListView, \
 
 urlpatterns = [
     path('category/',CategoryListView.as_view(),name='category_list'),
+
     # path('product/',ProductListView.as_view(),name='product_list'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
 

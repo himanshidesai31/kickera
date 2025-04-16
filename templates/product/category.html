@@ -1,3 +1,6 @@
+
+
+
 {% extends 'navbar.html' %}
 {% load static %}
 {% block title %}
@@ -28,10 +31,15 @@ Product Categories
 					{% for category in categories %}
 					<li class="main-nav-list">
 						<a href="{% url 'category_list' %}?category={{ category.id }}" class="{% if current_filters.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
+
 							<span class="lnr lnr-arrow-right"></span>{{ category.category_name }}
 							<span class="number">({{ category.product_set.count }})</span>
 						</a>
 					</li>
+                            {% for subcategory in categories %}
+                            {% empty %}
+                            <p>not found sub categories</p>
+                            {% endfor %}
 					{% empty %}
 					<li class="main-nav-list">No categories found</li>
 					{% endfor %}
@@ -43,14 +51,14 @@ Product Categories
 					{% if current_filters.category %}
 					<input type="hidden" name="category" value="{{ current_filters.category }}">
 					{% endif %}
-					
+
 					<div class="common-filter">
 						<div class="head">Brands</div>
 						<ul>
 							{% for brand in brands %}
 							<li class="filter-list">
-								<input class="pixel-radio" type="radio" id="brand-{{ brand.id }}" 
-									name="brand" value="{{ brand.id }}" 
+								<input class="pixel-radio" type="radio" id="brand-{{ brand.id }}"
+									name="brand" value="{{ brand.id }}"
 									{% if current_filters.brand|stringformat:'s' == brand.id|stringformat:'s' %}checked{% endif %}>
 								<label for="brand-{{ brand.id }}">{{ brand.brand_name }}</label>
 							</li>
@@ -59,41 +67,41 @@ Product Categories
 							{% endfor %}
 						</ul>
 					</div>
-					
+
 					<div class="common-filter">
 						<div class="head">Product Type</div>
 						<ul>
 							<li class="filter-list">
-								<input class="pixel-radio" type="radio" id="type-latest" 
+								<input class="pixel-radio" type="radio" id="type-latest"
 									name="product_type" value="latest"
 									{% if current_filters.product_type == 'latest' %}checked{% endif %}>
 								<label for="type-latest">Latest</label>
 							</li>
 							<li class="filter-list">
-								<input class="pixel-radio" type="radio" id="type-coming" 
+								<input class="pixel-radio" type="radio" id="type-coming"
 									name="product_type" value="coming"
 									{% if current_filters.product_type == 'coming' %}checked{% endif %}>
 								<label for="type-coming">Coming Soon</label>
 							</li>
 						</ul>
 					</div>
-					
+
 					<div class="common-filter">
 						<div class="head">Price Range</div>
 						<div class="price-range-area">
 							<div class="price-range-div">
 								<label for="min_price">Min Price:</label>
-								<input type="number" id="min_price" name="min_price" value="{{ min_price }}" 
+								<input type="number" id="min_price" name="min_price" value="{{ min_price }}"
 									min="0" class="form-control" placeholder="Min Price">
 							</div>
 							<div class="price-range-div mt-2">
 								<label for="max_price">Max Price:</label>
-								<input type="number" id="max_price" name="max_price" value="{{ max_price }}" 
+								<input type="number" id="max_price" name="max_price" value="{{ max_price }}"
 									min="0" class="form-control" placeholder="Max Price">
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="mt-3 text-center">
 						<button type="submit" class="primary-btn">Apply Filters</button>
 						<a href="{% url 'category_list' %}" class="gray-btn mt-2">Clear Filters</a>
@@ -111,11 +119,11 @@ Product Categories
 							<input type="hidden" name="{{ key }}" value="{{ value }}">
 							{% endif %}
 						{% endfor %}
-						<select name="sort_by" onchange="document.getElementById('sort-form').submit()">
-							<option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by name</option>
-							<option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by price</option>
-							<option value="product_type" {% if sort_by == 'product_type' %}selected{% endif %}>Sort by type</option>
-						</select>
+{#						<select name="sort_by" onchange="document.getElementById('sort-form').submit()">#}
+{#							<option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by name</option>#}
+{#							<option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by price</option>#}
+{#							<option value="product_type" {% if sort_by == 'product_type' %}selected{% endif %}>Sort by type</option>#}
+{#						</select>#}
 						<select name="sort_order" onchange="document.getElementById('sort-form').submit()">
 							<option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
 							<option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
@@ -127,7 +135,7 @@ Product Categories
 				</div>
 			</div>
 			<!-- End Filter Bar -->
-			
+
 			<!-- Start Product List -->
 			<section class="lattest-product-area pb-40 category-list">
 				<div class="row">
@@ -191,7 +199,7 @@ Product Categories
                     </div>
                     {% endfor %}
                 </div>
-                
+
                 <!-- Pagination -->
                 {% if is_paginated %}
                 <div class="row">
@@ -206,7 +214,7 @@ Product Categories
                                     <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">Previous</a>
                                 </li>
                                 {% endif %}
-                
+
                                 {% for num in paginator.page_range %}
                                     {% if page_obj.number == num %}
                                     <li class="page-item active">
@@ -218,7 +226,7 @@ Product Categories
                                     </li>
                                     {% endif %}
                                 {% endfor %}
-                
+
                                 {% if page_obj.has_next %}
                                 <li class="page-item">
                                     <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">Next</a>

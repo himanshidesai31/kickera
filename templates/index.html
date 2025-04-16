@@ -347,7 +347,7 @@
     <div class="container">
         <div class="row">
             {% for brand in brands %}
-            <a class="col single-img" href="#">
+            <a class="col single-img" href="{% url 'category_list' %}">
                 <img class="img-fluid d-block mx-auto" src="{{ brand.logo.url }}" alt="{{ brand.name }}">
             </a>
             {% endfor %}
