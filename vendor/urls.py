@@ -4,7 +4,8 @@ from django.conf.urls.static import static
 from django.urls import path
 from vendor.views import SellerHomePageView, SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
-    VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView
+    VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView, VendorSubCategoryAddView
+
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path('brand-add', VendorAddBrandView.as_view(), name='vendor_add_brand'),
 
     path('add-category', VendorCategoryAddView.as_view(), name='vendor_add_category'),
+    path('add-subcategory/', VendorSubCategoryAddView.as_view(), name='vendor_add_subcategory'),
 
 ]
 

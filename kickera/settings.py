@@ -118,7 +118,7 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 LOGIN_REDIRECT_URL = '/' #redirect after login
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
-# SITE_NAME = "Kickera"
+SITE_NAME = "Kickera Shoes Store"
 
 
 # Password Validators

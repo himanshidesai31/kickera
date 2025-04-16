@@ -4,9 +4,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, TemplateView, UpdateView, DetailView, FormView
-from product.models import Product, Image, Category, Brand
+from product.models import Product, Image, Category, Brand, SubCategory
 from vendor.models import VendorProfile, VendorRequest
-from vendor.forms import  SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm, VendorProfileForm, VendorLoginForm
+from vendor.forms import  SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm, VendorProfileForm, VendorLoginForm, VendorAddSubCategoryForm
 from django.views.generic.edit import CreateView
 from users.models import User
 from django.core.mail import send_mail
@@ -167,8 +167,12 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # import pdb; pdb.set_trace()
         context['categories'] = Category.objects.all()
         context['brands'] = Brand.objects.all()
+        
+        # Set all subcategories for initial display
+        context['subcategories'] = SubCategory.objects.all()
         return context
 
     def form_valid(self, form):
@@ -194,6 +198,13 @@ class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
         context['categories'] = Category.objects.all()
         context['brands'] = Brand.objects.all()
         context['product_images'] = self.object.images.all()
+        
+        # Get subcategories for the selected product's category
+        if self.object.category:
+            context['subcategories'] = SubCategory.objects.filter(category=self.object.category)
+        else:
+            context['subcategories'] = []
+            
         return context
 
     def form_valid(self, form):
@@ -240,3 +251,32 @@ class VendorCategoryAddView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+    def form_valid(self, form):
+        print('-------form  valid-----')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print('-------form  invalid-----')
+        return super().form_invalid(form)
+
+
+class VendorSubCategoryAddView(LoginRequiredMixin, CreateView):
+    model = SubCategory
+    template_name = 'seller/vendor_add_subcategory.html'
+    form_class = VendorAddSubCategoryForm
+    success_url = reverse_lazy('vendor_add_subcategory')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subcategories'] = SubCategory.objects.all().select_related('category')
+        context['categories'] = Category.objects.all()
+        return context
+
+    def form_valid(self, form):
+        print('-------form  valid-----')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print('-------form  invalid-----')
+        return super().form_invalid(form)

@@ -1,6 +1,3 @@
-
-
-
 {% extends 'navbar.html' %}
 {% load static %}
 {% block title %}
@@ -31,15 +28,11 @@ Product Categories
 					{% for category in categories %}
 					<li class="main-nav-list">
 						<a href="{% url 'category_list' %}?category={{ category.id }}" class="{% if current_filters.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
-
 							<span class="lnr lnr-arrow-right"></span>{{ category.category_name }}
+{#                            <span class="">{{ category.sub_category_name }}</span>#}
 							<span class="number">({{ category.product_set.count }})</span>
 						</a>
 					</li>
-                            {% for subcategory in categories %}
-                            {% empty %}
-                            <p>not found sub categories</p>
-                            {% endfor %}
 					{% empty %}
 					<li class="main-nav-list">No categories found</li>
 					{% endfor %}
@@ -119,11 +112,11 @@ Product Categories
 							<input type="hidden" name="{{ key }}" value="{{ value }}">
 							{% endif %}
 						{% endfor %}
-{#						<select name="sort_by" onchange="document.getElementById('sort-form').submit()">#}
-{#							<option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by name</option>#}
-{#							<option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by price</option>#}
-{#							<option value="product_type" {% if sort_by == 'product_type' %}selected{% endif %}>Sort by type</option>#}
-{#						</select>#}
+						<select name="sort_by" onchange="document.getElementById('sort-form').submit()">
+							<option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by name</option>
+							<option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by price</option>
+							<option value="product_type" {% if sort_by == 'product_type' %}selected{% endif %}>Sort by type</option>
+						</select>
 						<select name="sort_order" onchange="document.getElementById('sort-form').submit()">
 							<option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
 							<option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>

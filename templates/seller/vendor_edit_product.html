@@ -115,6 +115,20 @@
                                 <div class="text-danger">{{ form.category.errors }}</div>
                                 </div>
                             </div>
+                            
+                            <!-- Subcategory -->
+                            <div class="mb-3">
+                                <label for="subcategory" class="form-label fw-bold">Subcategory</label>
+                                <select class="form-select shadow-sm" id="subcategory" name="subcategory">
+                                    <option value="">Select Subcategory</option>
+                                    {% if form.subcategory.value %}
+                                        <option value="{{ form.subcategory.value }}" selected>
+                                            {{ product.subcategory.sub_category_name }}
+                                        </option>
+                                    {% endif %}
+                                </select>
+                                <div class="text-danger">{{ form.subcategory.errors }}</div>
+                            </div>
 
                             <!-- Product Images -->
                             <div class="mb-3">
@@ -172,5 +186,81 @@
             reader.readAsDataURL(file);
         }
     }
+
+    // JavaScript to handle subcategory loading
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category');
+        const subcategorySelect = document.getElementById('subcategory');
+        
+        if (!categorySelect || !subcategorySelect) {
+            console.error("Category or subcategory select element not found");
+            return;
+        }
+        
+        // Save currently selected subcategory if any
+        const currentSubcategoryId = subcategorySelect.value;
+        const currentSubcategoryName = subcategorySelect.options[subcategorySelect.selectedIndex]?.text;
+        
+        // Function to update subcategories
+        function updateSubcategories(categoryId) {
+            // Clear subcategory dropdown
+            subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+            
+            // Add back selected option if we have one
+            if (currentSubcategoryId && currentSubcategoryName) {
+                const option = document.createElement('option');
+                option.value = currentSubcategoryId;
+                option.textContent = currentSubcategoryName;
+                option.selected = true;
+                subcategorySelect.appendChild(option);
+            }
+            
+            if (!categoryId) return;
+            
+            // Hardcoded subcategories for each category
+            const subcategories = {
+                // Men's subcategories (assuming category ID is 1)
+                "1": [
+                    {id: 1, name: "Sport Shoes"},
+                    {id: 2, name: "Formal Shoes"},
+                    {id: 3, name: "Casual Shoes"}
+                ],
+                // Women's subcategories (assuming category ID is 2)
+                "2": [
+                    {id: 4, name: "Heels"},
+                    {id: 5, name: "Flats"},
+                    {id: 6, name: "Casual Shoes"}
+                ],
+                // Kid's subcategories (assuming category ID is 3)
+                "3": [
+                    {id: 7, name: "School Shoes"},
+                    {id: 8, name: "Casual Shoes"},
+                    {id: 9, name: "Sports Shoes"}
+                ]
+            };
+            
+            // Add subcategories for the selected category (not adding duplicates)
+            const categorySubcategories = subcategories[categoryId] || [];
+            categorySubcategories.forEach(subcategory => {
+                // Skip if it's the already selected subcategory to avoid duplicates
+                if (subcategory.id == currentSubcategoryId) return;
+                
+                const option = document.createElement('option');
+                option.value = subcategory.id;
+                option.textContent = subcategory.name;
+                subcategorySelect.appendChild(option);
+            });
+        }
+        
+        // Add change event listener
+        categorySelect.addEventListener('change', function() {
+            updateSubcategories(this.value);
+        });
+        
+        // Initial load for edit forms
+        if (categorySelect.value) {
+            updateSubcategories(categorySelect.value);
+        }
+    });
 </script>
 {% endblock content %}

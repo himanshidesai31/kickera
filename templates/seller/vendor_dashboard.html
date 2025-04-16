@@ -84,26 +84,32 @@
                 <div class="card-body flex-grow-1">
                     <i class="fa-solid fa-box-open fa-4x text-primary mb-3"></i>
                     <h5 class="card-title fw-bold">Manage Products</h5>
-                    <p class="card-text text-muted">Add, edit, or remove products from your store.</p>
+                    <p class="card-text text-muted">Add New products from your store.</p>
                 </div>
                 <div>
-                    <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-primary" {% if not vendor_profile %}disabled{% endif %}>Go to Products</a>
+                   <a href="{% url 'vendor_add_product' %}" class="btn btn-outline-primary btn-block">
+                    Add Product
+{#                       <i class="fa fa-plus-circle"></i>#}
+                   </a>
+                </div>
+            </div>
+        </div>
+    {# view Product's #}
+    <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title fw-bold">View Product's</h5>
+                    <p class="card-text text-muted">View, edit, or remove products from your store.</p>
+                </div>
+                <div>
+                 <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-secondary btn-block">
+                                   View Products
+{#                       <i class="fa fa-list"></i>#}
+                                </a>
                 </div>
             </div>
         </div>
 
-        <!-- View Orders -->
-        <div class="col">
-            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
-                <div class="card-body flex-grow-1">
-                    <h5 class="card-title fw-bold">View Orders</h5>
-                    <p class="card-text text-muted">Track and manage customer orders.</p>
-                </div>
-                <div>
-                    <a href="#" class="btn btn-outline-success" {% if not vendor_profile %}disabled{% endif %}>View Orders</a>
-                </div>
-            </div>
-        </div>
 
         <!-- Create Brand -->
         <div class="col">
@@ -127,7 +133,28 @@
                     <p class="card-text text-muted">Add and manage product categories.</p>
                 </div>
                 <div>
-                    <a href="{% url 'vendor_add_category' %}" class="btn btn-outline-danger" {% if not vendor_profile %}disabled{% endif %}>Add New Category</a>
+                    <a href="{% url 'vendor_add_category' %}" class="btn btn-outline-success btn-block">
+                                     Add Category
+{#                        <i class="fa fa-tag"></i>#}
+                                </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Sub category  -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-layer-group fa-4x text-danger mb-3"></i>
+                    <h5 class="card-title fw-bold">Add Sub Category</h5>
+                    <p class="card-text text-muted">Add and manage product sub categories.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_add_subcategory' %}" class="btn btn-outline-info btn-block">
+                                  Add Subcategory
+{#                          <i class="fa fa-tags"></i> #}
+                                </a>
+
                 </div>
             </div>
         </div>

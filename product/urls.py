@@ -1,7 +1,8 @@
 from  django.urls import  path
 from product.views import CategoryListView, CheckoutListView, \
     CartItemAddView, CartListView, CartRemoveView, CheckoutPageView, SelectUserAddressView, CartUpdateView, \
-    WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView
+    WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView, GetSubcategoriesView
+from django.http import JsonResponse
 
 urlpatterns = [
     path('category/',CategoryListView.as_view(),name='category_list'),
@@ -24,4 +25,23 @@ urlpatterns = [
     #product checkout related url
     path('checkout/', CheckoutPageView.as_view(), name='checkout'),
     path('shipinng-address/<int:pk>/', SelectUserAddressView.as_view(), name='check_user_address'),
+    
+    # API endpoints
+    path('get-subcategories/', GetSubcategoriesView.as_view(), name='get_subcategories'),
+    
+    # Debug endpoints
+    path('debug-subcategories/', lambda request: JsonResponse({
+        'categories': [
+            {
+                'id': cat.id,
+                'name': cat.category_name,
+                'subcategories': [
+                    {
+                        'id': sub.id,
+                        'name': sub.sub_category_name
+                    } for sub in SubCategory.objects.filter(category=cat)
+                ]
+            } for cat in Category.objects.all()
+        ]
+    }), name='debug_subcategories'),
 ]

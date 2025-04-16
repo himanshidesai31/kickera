@@ -123,6 +123,21 @@
                                 </div>
                             </div>
 
+                            <!-- Subcategory -->
+                            <div class="mb-3">
+                                <label for="subcategory" class="form-label fw-bold">Subcategory</label>
+                                <select class="form-select shadow-sm" id="subcategory" name="subcategory">
+                                    <option value="">Select Subcategory</option>
+                                    {% for i in subcategories %}
+                                    <option value="{{ i.id }}">{{ i.sub_category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="text-danger">{{ form.subcategory.errors }}</div>
+                                <div class="text-muted small mt-1">
+                                    <i>First select a category to see available subcategories</i>
+                                </div>
+                            </div>
+
                             <!-- Product Images -->
                             <div class="mb-3">
                                 <label for="images" class="form-label fw-bold">Upload Product Images</label>
@@ -144,32 +159,4 @@
         </div>
     </div>
 </section>
-
-<!-- JavaScript for Image Preview -->
-<script>
-    function previewImages() {
-        var previewContainer = document.getElementById('image-preview');
-        previewContainer.innerHTML = ''; // Clear previous previews
-        var files = document.getElementById('images').files;
-
-        for (let i = 0; i < files.length; i++) {
-            let file = files[i];
-            let reader = new FileReader();
-
-            reader.onload = function(e) {
-                let img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.width = '80px';
-                img.style.height = '80px';
-                img.style.margin = '5px';
-                img.style.borderRadius = '10px';
-                img.style.objectFit = 'cover';
-                img.classList.add('shadow-sm');
-                previewContainer.appendChild(img);
-            }
-
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
 {% endblock content %}

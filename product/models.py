@@ -19,6 +19,7 @@ class Product(models.Model):
     vendor = models.ForeignKey(VendorProfile, on_delete=models.CASCADE ,null=True)
     stock = models.PositiveIntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
+    subcategory = models.ForeignKey('SubCategory', on_delete=models.CASCADE, null=True, blank=True)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, null=True)
 
 
@@ -28,7 +29,6 @@ class Product(models.Model):
 
 class Brand(models.Model):
     brand_name =models.CharField(max_length=255 ,null=True)
-
     def __str__(self):
         return self.brand_name
 
@@ -42,12 +42,19 @@ class Image(models.Model):
 #category model
 class Category(models.Model):
     category_name = models.CharField(max_length=255,null=True)
-
     def __str__(self):
         return self.category_name
 
 
-#checkout model
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories', null=True)
+    sub_category_name = models.CharField(max_length=255,null=True)
+    
+    def __str__(self):
+        if self.category:
+            return f"{self.category.category_name} - {self.sub_category_name}"
+        return self.sub_category_name or "Unknown Subcategory"
+
 
 #conirmation model
 class Confirmation(models.Model):

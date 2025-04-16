@@ -1,6 +1,6 @@
 from django import forms
 from vendor.models import VendorProfile
-from product.models import Product, Brand, Category
+from product.models import Product, Brand, Category, SubCategory
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 
@@ -59,7 +59,20 @@ class VendorAddProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['product_type', 'name', 'price', 'discount', 'original_price', 'stock', 'category', 'brand', 'images']
+        fields = ['product_type', 'name', 'price', 'discount', 'original_price', 'stock', 'category', 'subcategory', 'brand', 'images']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['subcategory'].queryset = SubCategory.objects.none()
+        
+        if 'category' in self.data:
+            try:
+                category_id = int(self.data.get('category'))
+                self.fields['subcategory'].queryset = SubCategory.objects.filter(category_id=category_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk and self.instance.category:
+            self.fields['subcategory'].queryset = self.instance.category.subcategories.all()
 
 
 class VendorProfileForm(forms.ModelForm):
@@ -78,3 +91,15 @@ class VendorAddCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['category_name']
+
+
+class VendorAddSubCategoryForm(forms.ModelForm):
+    class Meta:
+        model = SubCategory
+        fields = ['category', 'sub_category_name']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.all()
+        self.fields['category'].label = "Main Category"
+        self.fields['sub_category_name'].label = "Sub Category Name"

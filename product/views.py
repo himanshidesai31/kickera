@@ -3,8 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, DetailView
+from unicodedata import category
+from django.http import JsonResponse
+
 from core.models import Deal
-from product.models import Product, Cart, Confirmation, WishList, Category, Brand
+from product.models import Product, Cart, Confirmation, WishList, Category, Brand, SubCategory
 from users.forms import AddressForm
 from users.models import Address
 
@@ -18,13 +21,18 @@ class CategoryListView(ListView):
 
 
     def get_queryset(self):
-        queryset = Product.objects.all().prefetch_related('images', 'category', 'brand')
+        queryset = Product.objects.all().prefetch_related('images', 'category', 'brand','subcategory')
         # import pdb; pdb.set_trace()
+
+        #Filter by subcategory
+        sub_category_id = self.kwargs.get('sub_category_id')
+        if sub_category_id:
+            queryset = queryset.filter(subcategory_id=sub_category_id)
         # Filter by category
         category_id = self.request.GET.get('category')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
-            
+
         # Filter by brand
         brand_id = self.request.GET.get('brand')
         if brand_id:
@@ -33,7 +41,7 @@ class CategoryListView(ListView):
         # Filter by price range
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
-        #checking min or max price
+        #check product price ()
         if min_price:
             queryset = queryset.filter(price__gte=min_price)
         if max_price:
@@ -345,3 +353,43 @@ class ProductDetailView(DetailView):
             related_products = Product.objects.filter(category=self.object.category).exclude(id=self.object.id)
             context['related_products'] = related_products
         return context
+
+
+# API view to get subcategories for a given category
+class GetSubcategoriesView(View):
+    def get(self, request):
+        category_id = request.GET.get('category_id')
+        if not category_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'No category_id provided',
+                'subcategories': []
+            })
+            
+        try:
+            category = Category.objects.get(id=category_id)
+            subcategories = SubCategory.objects.filter(category_id=category_id)
+            
+            subcategories_data = [
+                {'id': subcategory.id, 'name': subcategory.sub_category_name}
+                for subcategory in subcategories
+            ]
+            
+            return JsonResponse({
+                'status': 'success',
+                'category_name': category.category_name,
+                'subcategory_count': len(subcategories_data),
+                'subcategories': subcategories_data
+            })
+        except Category.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Category with id {category_id} does not exist',
+                'subcategories': []
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e),
+                'subcategories': []
+            })

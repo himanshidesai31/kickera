@@ -53,6 +53,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'vendor_product_list' %}">My Products</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Categories
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'vendor_add_category' %}">
+                                        <i class="fa fa-plus-circle"></i> Add Category
+                                    </a>
+                                    <a class="dropdown-item" href="{% url 'vendor_add_subcategory'%}">
+                                        <i class="fa fa-plus-circle"></i> Add Subcategory
+                                    </a>
+                                </div>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Orders</a>
                             </li>
