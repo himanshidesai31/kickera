@@ -1,7 +1,7 @@
 {% extends 'navbar.html' %}
 {% load static %}
 {% block title %}
-Product Categories
+    Product Categories
 {% endblock title %}
 {% block content %}
 
@@ -18,6 +18,14 @@ Product Categories
 		</div>
 	</div>
 </section>
+{% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}"
+                         style="margin-bottom: 20px; padding: 10px 15px; border-radius: 4px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 <!-- End Banner Area -->
 <div class="container">
 	<div class="row">

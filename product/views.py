@@ -1,11 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, DetailView
-from unicodedata import category
-from django.http import JsonResponse
-
 from core.models import Deal
 from product.models import Product, Cart, Confirmation, WishList, Category, Brand, SubCategory
 from users.forms import AddressForm
@@ -17,8 +14,7 @@ class CategoryListView(ListView):
     model = Product
     template_name = 'product/category.html'
     context_object_name = 'products'
-    paginate_by = 12
-
+    paginate_by = 10  #showing the object in  the page you can use the paginate_by = number of page's
 
     def get_queryset(self):
         queryset = Product.objects.all().prefetch_related('images', 'category', 'brand','subcategory')
@@ -174,6 +170,7 @@ class WishListView(LoginRequiredMixin, ListView):
         products_in_wishlist = Product.objects.filter(wishlist__user=self.request.user)
         context['products'] = products_in_wishlist
         return context
+
 
 class AddWishListView(View):
     def post(self, request, pk):
@@ -341,6 +338,18 @@ def cart_wishlist_count(request):
     return context
 
 
+# def load_subcategory(request):
+#     category_id = request.GET.get('category_id')
+#     print(f"Category ID: {category_id}")
+#
+#     # Filter subcategories by category
+#     sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
+#     print(f"Subcategories found: {sub_categories.count()}")
+#     return render(request, 'product/subcategory_dropdown_list_options.html', {
+#         'sub_categories': sub_categories
+#     })
+
+
 # Product Detail View for use or check the product fully details
 class ProductDetailView(DetailView):
     model = Product
@@ -353,43 +362,3 @@ class ProductDetailView(DetailView):
             related_products = Product.objects.filter(category=self.object.category).exclude(id=self.object.id)
             context['related_products'] = related_products
         return context
-
-
-# API view to get subcategories for a given category
-class GetSubcategoriesView(View):
-    def get(self, request):
-        category_id = request.GET.get('category_id')
-        if not category_id:
-            return JsonResponse({
-                'status': 'error',
-                'message': 'No category_id provided',
-                'subcategories': []
-            })
-            
-        try:
-            category = Category.objects.get(id=category_id)
-            subcategories = SubCategory.objects.filter(category_id=category_id)
-            
-            subcategories_data = [
-                {'id': subcategory.id, 'name': subcategory.sub_category_name}
-                for subcategory in subcategories
-            ]
-            
-            return JsonResponse({
-                'status': 'success',
-                'category_name': category.category_name,
-                'subcategory_count': len(subcategories_data),
-                'subcategories': subcategories_data
-            })
-        except Category.DoesNotExist:
-            return JsonResponse({
-                'status': 'error',
-                'message': f'Category with id {category_id} does not exist',
-                'subcategories': []
-            })
-        except Exception as e:
-            return JsonResponse({
-                'status': 'error',
-                'message': str(e),
-                'subcategories': []
-            })

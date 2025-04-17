@@ -1,9 +1,12 @@
 # vendor/views.py
 from django.contrib.auth.views import LoginView
-from django.shortcuts import get_object_or_404, redirect
+from django.http import request
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, TemplateView, UpdateView, DetailView, FormView
+from unicodedata import category
+
 from product.models import Product, Image, Category, Brand, SubCategory
 from vendor.models import VendorProfile, VendorRequest
 from vendor.forms import  SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm, VendorProfileForm, VendorLoginForm, VendorAddSubCategoryForm
@@ -159,6 +162,7 @@ class VendorProductListView(LoginRequiredMixin, ListView):
         return Product.objects.filter(vendor__user=self.request.user).select_related('vendor').prefetch_related('images')
 
 
+
 class VendorAddProductView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'seller/vendor_add_products.html'
@@ -167,13 +171,36 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # import pdb; pdb.set_trace()
-        context['categories'] = Category.objects.all()
+
+        # Load categories and print debug info
+        categories = Category.objects.all()
+        print(f"Categories count: {categories.count()}")
+        for cat in categories:
+            print(f"- Category: {cat.category_name} (ID: {cat.id})")
+        context['categories'] = categories
+
+        # Load brands
         context['brands'] = Brand.objects.all()
-        
-        # Set all subcategories for initial display
-        context['subcategories'] = SubCategory.objects.all()
+
+        # Load all subcategories and print debug info
+        subcategories = SubCategory.objects.all()
+
+        # Group subcategories by category for easy filtering in template
+        subcategories_by_category = {}
+        for cat in categories:
+            subcategories_by_category[cat.id] = SubCategory.objects.filter(category=cat)
+
+        context['subcategories'] = subcategories
+        context['subcategories_by_category'] = subcategories_by_category
+
+        print(f"Subcategories count: {subcategories.count()}")
+        for subcat in subcategories:
+            cat_name = subcat.category.category_name
+            cat_id = subcat.category.id
+            print(f"- All the Subcategory: {subcat.sub_category_name} (ID: {subcat.id}) - Category: {cat_name} (ID: {cat_id})")
+
         return context
+
 
     def form_valid(self, form):
         product = form.save(commit=False)
@@ -199,12 +226,10 @@ class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
         context['brands'] = Brand.objects.all()
         context['product_images'] = self.object.images.all()
         
-        # Get subcategories for the selected product's category
-        if self.object.category:
-            context['subcategories'] = SubCategory.objects.filter(category=self.object.category)
-        else:
-            context['subcategories'] = []
-            
+        # Load all subcategories 
+        subcategories = SubCategory.objects.all()
+        context['subcategories'] = subcategories
+        
         return context
 
     def form_valid(self, form):
@@ -214,7 +239,7 @@ class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
 
         images = self.request.FILES.getlist('images')
         if images:
-            product.images.all().delete()  # ⚠ इमेज डिलीट करने से पहले वेरिफाई करें!
+            product.images.all().delete()
             for img in images:
                 Image.objects.create(product=product, image=img)
 
@@ -274,9 +299,43 @@ class VendorSubCategoryAddView(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        print('-------form  valid-----')
+        print('-------form valid-----')
+        # Get the category from form data
+        subcategory = form.save(commit=False)
+        
+        # Double-check that category is set
+        if not subcategory.category_id and form.cleaned_data.get('category'):
+            subcategory.category = form.cleaned_data.get('category')
+            
+        # Save the subcategory
+        subcategory.save()
+        
+        # Show confirmation message
+        messages.success(self.request, f'Subcategory "{subcategory.sub_category_name}" added to category "{subcategory.category.category_name}"')
+        
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        print('-------form  invalid-----')
+        print('-------form invalid-----')
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"Error in {field}: {error}")
         return super().form_invalid(form)
+
+
+# def load_subcategory(request):
+#     category_id = request.GET.get('category_id')
+#     print(f"Category ID: {category_id}")
+#     # Filter subcategories by category
+#     sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
+#     print(f"Subcategories found: {sub_categories.count()}")
+#     return render(request, 'product/subcategory_dropdown_list_options.html', {
+#         'sub_categories': sub_categories
+#     })
+
+def load_subcategory(request):
+    category_id = request.GET.get('category_id')
+    sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
+    return render(request, 'product/subcategory_dropdown_list_options.html', {
+        'sub_categories': sub_categories
+    })

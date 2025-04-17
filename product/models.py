@@ -3,6 +3,7 @@ from typing import Any
 from django.db import models
 from users.models import User
 from vendor.models import VendorProfile
+from django.core.exceptions import ValidationError
 
 #product model
 class Product(models.Model):
@@ -54,7 +55,7 @@ class SubCategory(models.Model):
         if self.category:
             return f"{self.category.category_name} - {self.sub_category_name}"
         return self.sub_category_name or "Unknown Subcategory"
-
+        
 
 #conirmation model
 class Confirmation(models.Model):

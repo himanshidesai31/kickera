@@ -102,4 +102,11 @@ class VendorAddSubCategoryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].label = "Main Category"
+        self.fields['category'].required = True
         self.fields['sub_category_name'].label = "Sub Category Name"
+        
+    def clean_category(self):
+        category = self.cleaned_data.get('category')
+        if not category:
+            raise forms.ValidationError("You must select a category")
+        return category

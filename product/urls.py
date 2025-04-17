@@ -1,7 +1,7 @@
 from  django.urls import  path
 from product.views import CategoryListView, CheckoutListView, \
     CartItemAddView, CartListView, CartRemoveView, CheckoutPageView, SelectUserAddressView, CartUpdateView, \
-    WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView, GetSubcategoriesView
+    WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView
 from django.http import JsonResponse
 
 urlpatterns = [
@@ -26,22 +26,6 @@ urlpatterns = [
     path('checkout/', CheckoutPageView.as_view(), name='checkout'),
     path('shipinng-address/<int:pk>/', SelectUserAddressView.as_view(), name='check_user_address'),
     
-    # API endpoints
-    path('get-subcategories/', GetSubcategoriesView.as_view(), name='get_subcategories'),
-    
-    # Debug endpoints
-    path('debug-subcategories/', lambda request: JsonResponse({
-        'categories': [
-            {
-                'id': cat.id,
-                'name': cat.category_name,
-                'subcategories': [
-                    {
-                        'id': sub.id,
-                        'name': sub.sub_category_name
-                    } for sub in SubCategory.objects.filter(category=cat)
-                ]
-            } for cat in Category.objects.all()
-        ]
-    }), name='debug_subcategories'),
+    # AJAX endpoints
+    # path('ajax/load-subcategories/', load_subcategory, name='ajax-load-subcategories'),
 ]
