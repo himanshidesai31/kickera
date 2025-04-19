@@ -1,9 +1,7 @@
 from typing import Any
-
 from django.db import models
 from users.models import User
 from vendor.models import VendorProfile
-from django.core.exceptions import ValidationError
 
 #product model
 class Product(models.Model):

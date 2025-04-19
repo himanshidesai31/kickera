@@ -1,6 +1,7 @@
 from django.db import models
 from product.models import Product
-from users.models import User
+from users.models import User, Address
+
 
 # Create your models here.
 class Order(models.Model):
@@ -22,13 +23,11 @@ class Order(models.Model):
     is_paid = models.CharField(max_length=100, choices=payment_status, default='Pending')
     amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
     name = models.CharField(max_length=500, null=True)
-    email = models.EmailField(max_length=500, null=True)
-    address = models.CharField(max_length=1000, null=True)
+    address = models.ForeignKey(Address, null=True, blank=True, on_delete=models.SET_NULL)
     card_number = models.CharField(max_length=16, null=True)
     cvv = models.CharField(max_length=3, null=True)
     shipped = models.CharField(max_length=50, null=True, choices=status)
     created_at = models.DateTimeField(auto_now_add=True,null=True)
     updated_at = models.DateTimeField(auto_now=True,null=True)
-
     def __str__(self):
         return f"{self.user.username if self.user else 'Unknown User'}'s Order"

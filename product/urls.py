@@ -4,6 +4,8 @@ from product.views import CategoryListView, CheckoutListView, \
     WishListView, AddWishListView, RemoveWishListView, ProductDetailView, AddAllToCartView
 from django.http import JsonResponse
 
+from vendor.views import load_subcategory
+
 urlpatterns = [
     path('category/',CategoryListView.as_view(),name='category_list'),
 
@@ -25,7 +27,5 @@ urlpatterns = [
     #product checkout related url
     path('checkout/', CheckoutPageView.as_view(), name='checkout'),
     path('shipinng-address/<int:pk>/', SelectUserAddressView.as_view(), name='check_user_address'),
-    
-    # AJAX endpoints
-    # path('ajax/load-subcategories/', load_subcategory, name='ajax-load-subcategories'),
+
 ]

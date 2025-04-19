@@ -18,14 +18,14 @@
 		</div>
 	</div>
 </section>
-{% if messages %}
-                {% for message in messages %}
-                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}"
-                         style="margin-bottom: 20px; padding: 10px 15px; border-radius: 4px;">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}"
+                                 style="margin-bottom: 20px; padding: 10px 15px; border-radius: 4px;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 <!-- End Banner Area -->
 <div class="container">
 	<div class="row">
@@ -34,10 +34,9 @@
 				<div class="head">Browse Categories</div>
 				<ul class="main-categories">
 					{% for category in categories %}
-					<li class="main-nav-list">
+					<li class="main-nav-list category-item">
 						<a href="{% url 'category_list' %}?category={{ category.id }}" class="{% if current_filters.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
 							<span class="lnr lnr-arrow-right"></span>{{ category.category_name }}
-{#                            <span class="">{{ category.sub_category_name }}</span>#}
 							<span class="number">({{ category.product_set.count }})</span>
 						</a>
 					</li>
@@ -52,6 +51,9 @@
 					{% if current_filters.category %}
 					<input type="hidden" name="category" value="{{ current_filters.category }}">
 					{% endif %}
+                    {% if current_filters.subcategory %}
+					<input type="hidden" name="subcategory" value="{{ current_filters.subcategory }}">
+					{% endif %}
 
 					<div class="common-filter">
 						<div class="head">Brands</div>
@@ -64,7 +66,7 @@
 								<label for="brand-{{ brand.id }}">{{ brand.brand_name }}</label>
 							</li>
 							{% empty %}
-							<li class="filter-list">No brands found</li>
+							<li class="filter-list">No brands found,  Please Wait Few day's</li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -114,7 +116,7 @@
 			<!-- Start Filter Bar -->
 			<div class="filter-bar d-flex flex-wrap align-items-center">
 				<div class="sorting">
-					<form id="sort-form" method="GET" action="{% url 'category_list' %}">
+					<form  class="" id="sort-form" method="GET" action="{% url 'category_list' %}">
 						{% for key, value in current_filters.items %}
 							{% if key != 'sort_by' and key != 'sort_order' and key != 'page' %}
 							<input type="hidden" name="{{ key }}" value="{{ value }}">
@@ -125,10 +127,12 @@
 							<option value="price" {% if sort_by == 'price' %}selected{% endif %}>Sort by price</option>
 							<option value="product_type" {% if sort_by == 'product_type' %}selected{% endif %}>Sort by type</option>
 						</select>
+
 						<select name="sort_order" onchange="document.getElementById('sort-form').submit()">
 							<option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Ascending</option>
 							<option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Descending</option>
 						</select>
+
 					</form>
 				</div>
 				<div class="sorting mr-auto">
@@ -181,7 +185,7 @@
                                         <input type="hidden" name="next" value="{% url 'checkout' %}">
                                         <button type="submit" style="display: none;"></button>
                                         <a href="#" class="social-info" onclick="document.getElementById('buy-now-form-{{ product.pk }}').submit(); return false;">
-                                            <span class="lnr lnr-cart"></span>
+                                            <span class="ti-shopping-cart-full"></span>
                                             <p class="hover-text">Buy Now</p>
                                         </a>
                                     </form>
@@ -274,6 +278,33 @@
         text-decoration: none;
     }
     .active {
+        color: #ff6c00 !important;
+        font-weight: bold;
+    }
+    
+    /* Styles for subcategory list */
+    .category-item {
+        position: relative;
+    }
+    .subcategory-list {
+        list-style: none;
+        padding-left: 20px;
+        margin-top: 5px;
+    }
+    .subcategory-item {
+        padding: 5px 0;
+    }
+    .subcategory-item a {
+        color: #333;
+        text-decoration: none;
+        display: block;
+        padding-left: 15px;
+        font-size: 14px;
+    }
+    .subcategory-item a:hover {
+        color: #ff6c00;
+    }
+    .subcategory-item a.active {
         color: #ff6c00 !important;
         font-weight: bold;
     }

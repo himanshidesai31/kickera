@@ -24,12 +24,10 @@
     <link rel="stylesheet" href="{% static 'css/ion.rangeSlider.skinFlat.css' %}">
     <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-      <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-    </script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     {% block css %}{% endblock css %}
 </head>
-
 <body>
     <!-- Vendor Navbar -->
     <header class="header_area sticky-header">
@@ -38,7 +36,7 @@
                 <div class="container">
                     <!-- Brand -->
                     <a class="navbar-brand logo_h" href="{% url 'vendor_dashboard' %}">
-{#                        <img src="{% static 'img/logo.png' %}" alt="Logo">#}
+
                     </a>
                     <!-- Navbar Toggle Button -->
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -70,38 +68,7 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Orders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Analytics</a>
-                            </li>
-
-                            <!-- Settings Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-cog" style="font-size: 20px"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="{% url 'vendor_profile' %}">
-                                        <i class="fa fa-user"></i> Profile Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-{#                                        {% url 'vendor_store_settings' %}#}
-                                        <i class="fa fa-building"></i> Store Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-{#                                        {% url 'vendor_payment_settings' %}#}
-                                        <i class="fa fa-credit-card"></i> Payment Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-{#                                        {% url 'vendor_notifications' %}#}
-                                        <i class="fa fa-bell"></i> Notification Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-{#                                        {% url 'vendor_security' %}#}
-                                        <i class="fa fa-lock"></i> Privacy & Security
-                                    </a>
-                                </div>
+                                <a class="nav-link" href="{% url 'vendor_orders' %}">Orders</a>
                             </li>
 
                             {% if user.is_authenticated %}
@@ -110,8 +77,11 @@
                                         <i class="fa fa-user" style="font-size: 22px"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-
-                                        <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
+                                        <a class="dropdown-item" href="{% url 'vendor_profile' %}">
+                                         Profile Settings
+                                        </a>
+                                        <a class="dropdown-item" href="{% url 'account_logout' %}">
+                                        Logout</a>
                                     </div>
                                 </li>
                             {% endif %}
@@ -143,7 +113,6 @@
     </script>
     <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
-    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/nouislider.min.js' %}"></script>
     <script src="{% static 'js/countdown.js' %}"></script>
@@ -152,28 +121,6 @@
     <script src="{% static 'js/gmaps.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 
-
-    <!-- Search Functionality Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchButton = document.getElementById('searchButton');
-            const searchInputBox = document.getElementById('search_input_box');
-            const closeSearch = document.getElementById('close_search');
-
-            if (searchButton && searchInputBox && closeSearch) {
-                // Toggle search input box visibility
-                searchButton.addEventListener('click', function () {
-                    searchInputBox.style.display = 'block';
-                    document.getElementById('search_input').focus();
-                });
-
-                // Close search input box when the close button is clicked
-                closeSearch.addEventListener('click', function () {
-                    searchInputBox.style.display = 'none';
-                });
-            }
-        });
-    </script>
     {% block js %}{% endblock js %}
 </body>
 </html>

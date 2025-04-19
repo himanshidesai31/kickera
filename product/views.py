@@ -24,6 +24,8 @@ class CategoryListView(ListView):
         sub_category_id = self.kwargs.get('sub_category_id')
         if sub_category_id:
             queryset = queryset.filter(subcategory_id=sub_category_id)
+
+
         # Filter by category
         category_id = self.request.GET.get('category')
         if category_id:
@@ -63,6 +65,7 @@ class CategoryListView(ListView):
         
         # Add categories and brands for filter sidebar
         context['categories'] = Category.objects.all()
+        context['sub_categories'] = SubCategory.objects.all()
         context['brands'] = Brand.objects.all()
         
         # Add current filter parameters for maintaining state
@@ -302,7 +305,7 @@ class SelectUserAddressView(ListView):
         context = super().get_context_data(**kwargs)
         user_id = self.kwargs.get('pk')
         if user_id:
-            # Get the wishlist items for the user
+            # Get the wishlist items for the use    r
             wishlist_items = WishList.objects.filter(user_id=user_id)
             cart_items = Cart.objects.filter(user_id=user_id)
             context['wishlist_items'] = wishlist_items
@@ -325,30 +328,15 @@ class DealListView(ListView):
 
 # Context processor for cart and wishlist counts
 def cart_wishlist_count(request):
-    """Context processor that adds cart and wishlist counts to all templates."""
     context = {
         'cart_count': 0,
-        'wishlist_count': 0
+        'wishlist_count': 0,
     }
     #It will only show the product number of the user who has added the product to their wish list or cart. also filter the user
     if request.user.is_authenticated:
         context['cart_count'] = Cart.objects.filter(user=request.user).count()
         context['wishlist_count'] = WishList.objects.filter(user=request.user).count()
-
     return context
-
-
-# def load_subcategory(request):
-#     category_id = request.GET.get('category_id')
-#     print(f"Category ID: {category_id}")
-#
-#     # Filter subcategories by category
-#     sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
-#     print(f"Subcategories found: {sub_categories.count()}")
-#     return render(request, 'product/subcategory_dropdown_list_options.html', {
-#         'sub_categories': sub_categories
-#     })
-
 
 # Product Detail View for use or check the product fully details
 class ProductDetailView(DetailView):

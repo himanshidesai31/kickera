@@ -3,14 +3,14 @@
 {% block content %}
 
 <!-- Breadcrumb Section -->
-<section class="banner-area organic-breadcrumb" style="background: linear-gradient(135deg, #1E3A8A, #3B82F6); padding: 40px 0;">
+<section class="banner-area organic-breadcrumb">
     <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-center">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
             <div class="col-first text-center">
                 <h1 class="text-white fw-bold">Add New Category</h1>
                 <nav class="d-flex justify-content-center mt-2">
-                    <a href="{% url 'index' %}" class="text-decoration-none text-light fw-semibold">Home</a>
-                    <span class="text-light mx-2">/</span>
+{#                    <a href="{% url 'index' %}" class="text-decoration-none text-light fw-semibold">Home</a>#}
+{#                    <span class="text-light mx-2">/</span>#}
                     <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-light fw-semibold">Dashboard</a>
                     <span class="text-light mx-2">/</span>
                     <a href="{% url 'vendor_add_category' %}" class="text-decoration-none text-light fw-semibold">Add Category</a>
@@ -33,7 +33,7 @@
                             {% csrf_token %}
 
                             <div class="mb-3">
-                                <label for="category_name" class="form-label fw-bold text-secondary">Category Name</label>
+                                <label for="category_name" class="form-label fw-bold text-secondary">Please Add Your Category Name</label>
                                 <input type="text" class="form-control rounded-3 px-3 py-2 border-secondary shadow-sm" name="category_name" id="category_name" placeholder="Enter Category Name" required>
                                 <div class="text-danger mt-1">{{ form.category_name.errors }}</div>
                             </div>

@@ -2,13 +2,11 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-
-from vendor import views
+from django.views.generic import TemplateView
 from vendor.views import SellerHomePageView, SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
-    VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView, VendorSubCategoryAddView, load_subcategory
-
-from django.views.generic import TemplateView
+    VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView, VendorSubCategoryAddView, load_subcategory, \
+    VendorOrderListView
 
 urlpatterns = [
     path('seller/', SellerHomePageView.as_view(), name='seller_register'),
@@ -32,6 +30,8 @@ urlpatterns = [
     path('add-subcategory/', VendorSubCategoryAddView.as_view(), name='vendor_add_subcategory'),
 
     path('ajax/load-subcategories/', load_subcategory, name='ajax-load-subcategories'),
+
+    path('vendor/order',VendorOrderListView.as_view(), name='vendor_orders'),
 
 ]
 

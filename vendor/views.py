@@ -1,12 +1,10 @@
 # vendor/views.py
 from django.contrib.auth.views import LoginView
-from django.http import request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, TemplateView, UpdateView, DetailView, FormView
-from unicodedata import category
-
+from orders.models import Order
 from product.models import Product, Image, Category, Brand, SubCategory
 from vendor.models import VendorProfile, VendorRequest
 from vendor.forms import  SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm, VendorProfileForm, VendorLoginForm, VendorAddSubCategoryForm
@@ -323,19 +321,25 @@ class VendorSubCategoryAddView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-# def load_subcategory(request):
-#     category_id = request.GET.get('category_id')
-#     print(f"Category ID: {category_id}")
-#     # Filter subcategories by category
-#     sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
-#     print(f"Subcategories found: {sub_categories.count()}")
-#     return render(request, 'product/subcategory_dropdown_list_options.html', {
-#         'sub_categories': sub_categories
-#     })
-
+#use for loading the subcategory list related there categories name's
 def load_subcategory(request):
     category_id = request.GET.get('category_id')
     sub_categories = SubCategory.objects.filter(category_id=category_id).order_by('sub_category_name')
     return render(request, 'product/subcategory_dropdown_list_options.html', {
         'sub_categories': sub_categories
     })
+
+
+class VendorOrderListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'seller/vendor_order_list.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        try:
+            vendor_profile = self.request.user.vendor_profile
+            return Order.objects.filter(
+                product__vendor=vendor_profile
+            ).order_by('-created_at')
+        except VendorProfile.DoesNotExist:
+            return Order.objects.none()

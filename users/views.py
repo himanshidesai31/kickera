@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import AddressForm, UserUpdateForm
 from .models import Address, User
 from datetime import date
+from django.shortcuts import get_object_or_404
 
 
 # profile view class
@@ -104,6 +105,15 @@ class UpdateAddressView(LoginRequiredMixin, UpdateView):
     template_name = 'user/edit_address.html'
     form_class = AddressForm
     success_url = reverse_lazy('address_list_view')
+    
+    def get_object(self, queryset=None):
+        # Get the address and verify it belongs to the current user
+        address_id = self.kwargs.get('pk')
+        return get_object_or_404(Address, id=address_id, user=self.request.user)
+        
+    def form_valid(self, form):
+        messages.success(self.request, 'Address updated successfully!')
+        return super().form_valid(form)
 
 
 # Detele address class view for deleteing the  object

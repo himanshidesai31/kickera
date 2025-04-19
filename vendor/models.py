@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 
+
 class VendorRequest(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),

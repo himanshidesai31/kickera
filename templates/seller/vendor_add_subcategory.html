@@ -3,14 +3,14 @@
 {% block content %}
 
 <!-- Breadcrumb Section -->
-<section class="banner-area organic-breadcrumb" style="background: linear-gradient(135deg, #1E3A8A, #3B82F6); padding: 40px 0;">
+<section class="banner-area organic-breadcrumb">
     <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-center">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
             <div class="col-first text-center">
                 <h1 class="text-white fw-bold">Add New Subcategory</h1>
                 <nav class="d-flex justify-content-center mt-2">
-                    <a href="{% url 'index' %}" class="text-decoration-none text-light fw-semibold">Home</a>
-                    <span class="text-light mx-2">/</span>
+{#                    <a href="{% url 'index' %}" class="text-decoration-none text-light fw-semibold">Home</a>#}
+{#                    <span class="text-light mx-2">/</span>#}
                     <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-light fw-semibold">Dashboard</a>
                     <span class="text-light mx-2">/</span>
                     <a href="{% url 'vendor_add_subcategory' %}" class="text-decoration-none text-light fw-semibold">Add Subcategory</a>
@@ -35,7 +35,7 @@
                             <div class="mb-3">
                                 <label for="category" class="form-label fw-bold text-secondary">Main Category</label>
                                 <select class="form-select shadow-sm" id="category" name="category" required>
-                                    <option value="">Select Main Category</option>
+                                    <option value=""> Select Main Category</option>
                                     {% for category in categories %}
                                     <option value="{{ category.id }}">{{ category.category_name }}</option>
                                     {% endfor %}

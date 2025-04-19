@@ -121,17 +121,13 @@
                                     <div class="text-danger">{{ form.category.errors }}</div>
                                 </div>
                             </div>
-
-                            <!-- Subcategory (dynamically loaded) -->
+                            <!--select the subcategory-->
                             <div class="mb-3">
-                                <label for="idsubcategory" class="form-label fw-bold">Subcategory</label>
-                                <select class="custom-select shadow-sm" id="idsubcategory" name="subcategory">
+                                <label for="subcategory"> Sub Cat</label>
+                                <select id="subcategory" name="subcategory" class="form-control shadow-sm" required>
                                     <option value="">Select Subcategory</option>
                                 </select>
                                 <div class="text-danger">{{ form.subcategory.errors }}</div>
-                                <div class="text-muted small mt-1">
-                                    <i>First select a category to see available subcategories</i>
-                                </div>
                             </div>
 
                             <!-- Product Images -->
@@ -155,7 +151,11 @@
         </div>
     </div>
 </section>
-
+    {% block jq %}
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+ </script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        {% endblock jq %}
 <!-- JS to dynamically update subcategories -->
 <script>
     $(document).ready(function() {
@@ -172,9 +172,9 @@
                     'category_id': categoryId
                 },
                 success: function(data) {
-                    $("#idsubcategory").empty();        // Clear old options
-                    $("#idsubcategory").html(data);      // Load new <option> list
-                    $("#idsubcategory").css("display", "block");
+                    console.log(data);
+                    $("#subcategory").html(data);
+
                 },
                 error: function(xhr, status, error) {
                     console.error("Error loading subcategories:", error);
