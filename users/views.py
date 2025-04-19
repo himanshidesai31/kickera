@@ -7,6 +7,9 @@ from .forms import AddressForm, UserUpdateForm
 from .models import Address, User
 from datetime import date
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
 
 
 # profile view class
@@ -121,3 +124,13 @@ class DeleteAddressView(LoginRequiredMixin, DeleteView):
     model = Address
     from_class = AddressForm
     success_url = reverse_lazy('address_list_view')
+
+
+# Custom login redirect view
+def custom_login_redirect(request):
+    if request.user.is_authenticated:
+        if request.user.is_vendor:
+            return redirect('vendor_dashboard')
+        else:
+            return redirect('index')
+    return redirect('account_login')

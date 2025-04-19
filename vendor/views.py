@@ -116,8 +116,20 @@ class SellerLoginView(LoginView):
     success_url = reverse_lazy('vendor_dashboard')
     
     def form_valid(self, form):
-        print('------------form is valid----------')
-        return super().form_valid(form)
+        # Call the parent class's form_valid method to authenticate the user
+        response = super().form_valid(form)
+        
+        # Set the user as a vendor if they're not already
+        user = self.request.user
+        if not user.is_vendor:
+            # Check if they have a vendor profile
+            vendor_profile = VendorProfile.objects.filter(user=user).exists()
+            if vendor_profile:
+                user.is_vendor = True
+                user.save()
+                print(f'User {user.email} is now marked as a vendor')
+            
+        return response
         
     def form_invalid(self, form):
         print('------------form is invalid----------')

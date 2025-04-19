@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class VendorRequest(models.Model):
@@ -40,3 +42,12 @@ class VendorProfile(models.Model):
 
     def __str__(self):
         return f'{self.business_name} {self.email}'
+
+
+
+# Signal to set is_vendor flag when VendorProfile is created
+@receiver(post_save, sender=VendorProfile)
+def set_vendor_flag(sender, instance, created, **kwargs):
+    if instance.user and not instance.user.is_vendor:
+        instance.user.is_vendor = True
+        instance.user.save()
