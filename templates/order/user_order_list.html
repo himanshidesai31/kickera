@@ -1,0 +1,94 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block title %}My Orders - KickEra{% endblock title %}
+
+{% block content %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">My Orders</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="javascript:void(0)" class="text-decoration-none text-white">My Orders</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<section class="section_gap">
+    <div class="container">
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Payment Status</th>
+                        <th>Order Date</th>
+                        <th>Shipping Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if order.product.images.first %}
+                                    <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" width="70" class="mr-3">
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-0">{{ order.product.name }}</h6>
+                                        <small class="text-muted">Order #{{ order.id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>₹{{ order.amount }}</td>
+                            <td>
+                                <span class="badge {% if order.order_status == 'Shipped' %}badge-info{% else %}badge-success{% endif %}">
+                                    {{ order.order_status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if order.is_paid == 'Completed' %}badge-success
+                                    {% elif order.is_paid == 'Pending' %}badge-warning
+                                    {% else %}badge-danger{% endif %}">
+                                    {{ order.is_paid }}
+                                </span>
+                            </td>
+                            <td>{{ order.created_at|date:"d M Y, h:i A" }}</td>
+                            <td>
+                                {% if order.address %}
+                                    {{ order.address.name }}<br>
+                                    {{ order.address.address }}, {{ order.address.city }}<br>
+                                    {{ order.address.state }} - {{ order.address.pincode }}
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fa fa-shopping-bag" style="font-size: 60px; color: #ddd;"></i>
+            </div>
+            <h4 class="mb-3">You haven't placed any orders yet</h4>
+            <p class="text-muted mb-4">Browse our products and place your first order!</p>
+            <a href="{% url 'category_list' %}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %} 
