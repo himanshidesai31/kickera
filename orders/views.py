@@ -23,7 +23,6 @@ class UserOrderListView(LoginRequiredMixin, ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Return orders with prefetched related data including user addresses
         return Order.objects.filter(user=self.request.user).select_related('address', 'user').prefetch_related(
             'product', 
             'product__images',
