@@ -36,11 +36,26 @@ class CreatePaymentView(LoginRequiredMixin, View):
             }
             razorpay_order = client.order.create(order_data)
 
+            # Get the address from request or use default
+            address_id = request.POST.get('address_id')
+            address = None
+            if address_id:
+                try:
+                    from users.models import Address
+                    address = Address.objects.get(id=address_id, user=request.user)
+                except:
+                    # If specified address doesn't exist, try to get default address
+                    address = request.user.addresses.first()
+            else:
+                # Try to get default address
+                address = request.user.addresses.first()
+
             order = Order.objects.create(
                 user=request.user,
                 product=product,
                 amount=payment_amount / 100,  # Store in rupees
                 razorpay_order_id=razorpay_order['id'],
+                address=address,  # Set the address
             )
 
             wishlist_item_ids = request.GET.getlist('wishlist_item_id')

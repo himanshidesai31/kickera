@@ -70,6 +70,10 @@
                                     {{ order.address.name }}<br>
                                     {{ order.address.address }}, {{ order.address.city }}<br>
                                     {{ order.address.state }} - {{ order.address.pincode }}
+                                {% elif order.user.addresses.first %}
+                                    {{ order.user.addresses.first.name }}<br>
+                                    {{ order.user.addresses.first.address }}, {{ order.user.addresses.first.city }}<br>
+                                    {{ order.user.addresses.first.state }} - {{ order.user.addresses.first.pincode }}
                                 {% else %}
                                     Not Available
                                 {% endif %}
