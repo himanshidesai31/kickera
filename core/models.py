@@ -31,3 +31,13 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+
+#Contact Model For Website FeedBack
+class Contact(models.Model):
+    first_name = models.CharField(max_length=100,null=True)
+    last_name = models.CharField(max_length=100,null=True)
+    email = models.EmailField(max_length=100,null=True)
+    message = models.TextField(max_length=400,null=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

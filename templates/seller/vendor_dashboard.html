@@ -41,7 +41,8 @@
             <!-- Approved Vendor -->
             <div class="alert alert-success">
                 <h4 class="text-center">You're an Approved Vendor</h4>
-{#                <p>Your vendor account for <strong>{{ vendor_profile.business_name }}</strong> is active. You can manage your products and orders.</p>#}
+                <p class="text-center">Your vendor account is active. You can manage your products and orders.</p>
+{#            <!--for <strong>{{ vendor_profile.business_name }}</strong>-->#}
             </div>
         {% elif vendor_request %}
             {% if vendor_request.status == 'pending' %}
@@ -115,7 +116,7 @@
             <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
                 <div class="card-body flex-grow-1">
                     <h5 class="card-title fw-bold">Create Brand</h5>
-                    <p class="card-text text-muted">Add and manage your shoe brand.</p>
+                    <p class="card-text text-muted">Add and manage your our shoe brand.</p>
                 </div>
                 <div>
                     <a href="{% url 'vendor_add_brand' %}" class="btn btn-outline-info" {% if not vendor_profile %}disabled{% endif %}>Add Brand</a>

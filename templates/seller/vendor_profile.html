@@ -2,11 +2,21 @@
 {% load static %}
 {% block title %}Vendor Profile{% endblock title %}
 {% block content %}
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1 class="text-center">Vendor Profile </h1>
+                    <nav class="d-flex align-items-center">
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
 <section class="container mt-5">
     <div class="card shadow-lg border-0 rounded-lg">
         <div class="card-body p-5 mt-5">
-            <h2 class="text-center mb-3 font-weight-bold text-dark">Vendor Profile</h2>
-            <table class="table table-bordered mt-5">
+            <table class="table table-bordered mt-5 text-secondary">
                 <tr><th>Business Name</th><td>{{ vendor.business_name }}</td></tr>
                 <tr><th>Phone Number</th><td>{{ vendor.phone_number }}</td></tr>
                 <tr><th>Email</th><td>{{ vendor.email }}</td></tr>
@@ -14,7 +24,7 @@
                 <tr><th>Tax ID</th><td>{{ vendor.tax_id }}</td></tr>
                 <tr><th>GST Number</th><td>{{ vendor.gst_no }}</td></tr>
                 <tr>
-                    <th>Business Logo</th>
+                    <th>Picture</th>
                     <td>
                         {% if vendor.logo %}
                             <img src="{{ vendor.logo.url }}" alt="Business Logo" width="150">

@@ -1,11 +1,12 @@
-from http.client import responses
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+
+from core.forms import ContactForm
 from core.models import  Banner, Deal, Brand
 from product.models import Product
-from django.views.generic import TemplateView, UpdateView, DetailView
+from django.views.generic import TemplateView, UpdateView, DetailView, FormView
 from django.contrib.auth.views import PasswordChangeView
 from allauth.account.views import ReauthenticateView
 from orders.models import Order
@@ -115,3 +116,25 @@ class ReauthenticateView(LoginRequiredMixin, ReauthenticateView):
         responses = super().form_invalid(form)
         messages.error(self.request, 'Please correct the error below.')
         return responses
+
+
+# New contact class-based view
+class ContactView(FormView):
+    template_name = 'contact_us/contect.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('success')
+    
+    def form_valid(self, form):
+        # Save the form data to the database
+        form.save()
+        messages.success(self.request, 'Your message has been sent successfully!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors in the form.')
+        return super().form_invalid(form)
+
+
+# New success class-based view
+class SuccessView(TemplateView):
+    template_name = 'contact_us/success.html'
