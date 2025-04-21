@@ -1,5 +1,6 @@
 # vendor/views.py
-from django.contrib.auth.views import LoginView
+from allauth.headless.account.views import ChangePasswordView
+from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordChangeDoneView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,11 +15,8 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 
-class SellerHomePageView(LoginRequiredMixin, TemplateView):
-    template_name = 'seller/seller.html'
 
-
-class SellerRegisterView(FormView):
+class SellerRegisterView(FormView):#without using the model form i can used the FormView for this is Inquery
     template_name = 'seller/seller_register.html'
     form_class = SellerRegisterForm
     success_url = reverse_lazy('vendor_register_success')
@@ -116,7 +114,6 @@ class SellerLoginView(LoginView):
     success_url = reverse_lazy('vendor_dashboard')
     
     def form_valid(self, form):
-        # Call the parent class's form_valid method to authenticate the user
         response = super().form_valid(form)
         
         # Set the user as a vendor if they're not already
@@ -355,3 +352,19 @@ class VendorOrderListView(LoginRequiredMixin, ListView):
             ).order_by('-created_at')
         except VendorProfile.DoesNotExist:
             return Order.objects.none()
+
+class VendorChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'seller/vendor_change_password.html'
+    success_url = reverse_lazy('vendor_change_password_done')
+
+    def form_valid(self, form):
+        print('-------form valid-----')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print('-------form invalid-----')
+        return super().form_invalid(form)
+
+
+class VendorChangePassworDoneView(LoginRequiredMixin, PasswordChangeDoneView):
+    template_name = 'seller/vendor_change_password_done.html'

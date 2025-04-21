@@ -3,26 +3,30 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from django.views.generic import TemplateView
-from vendor.views import SellerHomePageView, SellerRegisterView, VendorDashboardView, SellerLoginView, \
+from vendor.views import SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
     VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView, VendorSubCategoryAddView, load_subcategory, \
-    VendorOrderListView
+    VendorOrderListView, VendorChangePasswordView, VendorChangePassworDoneView
 
 urlpatterns = [
-    path('seller/', SellerHomePageView.as_view(), name='seller_register'),
-    path('seller/register/', SellerRegisterView.as_view(), name='seller_register'),
-    path('seller/login/', SellerLoginView.as_view(), name='seller_login'),
-    path('seller/dashboard/', VendorDashboardView.as_view(), name='vendor_dashboard'),
-    path('seller/profile/', VendorProfileView.as_view(), name='vendor_profile'),
-    path('seller/profile/edit/<int:pk>/', VendorProfileUpdateView.as_view(), name='vendor_profile_update'),
-    path('seller/register/success/', TemplateView.as_view(template_name='seller/vendor_register_success.html'), name='vendor_register_success'),
-    
-    #vendor - product related urls
-    path('product/product-list', VendorProductListView.as_view(), name='vendor_product_list'),
-    path('product/add-product',VendorAddProductView.as_view(), name='vendor_add_product'),
+    path('register/', SellerRegisterView.as_view(), name='seller_register'),
+    path('login/', SellerLoginView.as_view(), name='seller_login'),
 
-    path('product/edit-product/<int:pk>/',VendorUpdateProductView.as_view(), name='vendor_edit_product'),
-    path('product/delete-product/<int:pk>/',VendorDeleteProductView.as_view(), name='vendor_delete_product'),
+    path('dashboard/', VendorDashboardView.as_view(), name='vendor_dashboard'),
+    path('profile/', VendorProfileView.as_view(), name='vendor_profile'),
+    path('profile/edit/<int:pk>/', VendorProfileUpdateView.as_view(), name='vendor_profile_update'),
+    path('register/success/', TemplateView.as_view(template_name='seller/vendor_register_success.html'), name='vendor_register_success'),
+
+    path('changepassword/',VendorChangePasswordView.as_view(), name='vendor_change_password'),
+
+    path('changepassword-done',VendorChangePassworDoneView.as_view(), name='vendor_change_password_done'),
+
+    #vendor - product related urls
+    path('product-list', VendorProductListView.as_view(), name='vendor_product_list'),
+    path('add-product',VendorAddProductView.as_view(), name='vendor_add_product'),
+
+    path('edit-product/<int:pk>/',VendorUpdateProductView.as_view(), name='vendor_edit_product'),
+    path('delete-product/<int:pk>/',VendorDeleteProductView.as_view(), name='vendor_delete_product'),
 
     path('brand-add', VendorAddBrandView.as_view(), name='vendor_add_brand'),
 
@@ -31,7 +35,7 @@ urlpatterns = [
 
     path('ajax/load-subcategories/', load_subcategory, name='ajax-load-subcategories'),
 
-    path('vendor/order',VendorOrderListView.as_view(), name='vendor_orders'),
+    path('order-list',VendorOrderListView.as_view(), name='vendor_orders'),
 
 ]
 

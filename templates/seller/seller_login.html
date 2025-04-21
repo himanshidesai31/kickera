@@ -19,7 +19,7 @@
                         <form method="post" action="{% url 'seller_login' %}" class="needs-validation" novalidate>
                             {% csrf_token %}
                             <div class="form-group mb-3">
-                                <label for="email" class="font-weight-bold">Email Address</label>
+                                <label for="email" class="font-weight-bold">Email </label>
                                 <input type="email" class="form-control rounded-pill shadow-sm {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" placeholder="Enter your email" value="{{ form.email.value|default:'' }}" required>
                                 {% for error in form.email.errors %}
                                 <div class="invalid-feedback d-block">{{ error }}</div>
@@ -32,6 +32,15 @@
                                 <div class="invalid-feedback d-block">{{ error }}</div>
                                 {% endfor %}
                             </div>
+                         {% if form.non_field_errors %}
+                                <div class="col-md-12 form-group">
+                                    <ul class="text-danger">
+                                        {% for error in form.non_field_errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                             <div class="d-grid mt-4 text-center">
                                 <button type="submit" class="btn btn-lg fw-bold text-white btn-primary rounded-pill">Login</button>
                             </div>

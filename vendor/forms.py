@@ -30,7 +30,8 @@ class SellerRegisterForm(forms.Form):
 class VendorLoginForm(AuthenticationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
-    
+
+
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
         super(VendorLoginForm, self).__init__(request=request, *args, **kwargs)

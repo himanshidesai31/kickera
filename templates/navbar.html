@@ -180,23 +180,84 @@
         </div>
     </header>
 
+
     {% block content %}
     {% endblock content %}
 
-    <!-- Footer code start -->
-    <footer class="footer-area section_gap">
+    <!-- Footer Start -->
+    <footer class="footer-area bg-dark text-white pt-5">
         <div class="container">
-            <div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
-                <p class="footer-text m-0">
-                    Copyright &copy;
-                    <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is
-                    made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://kickera.com"
-                        target="_blank">Kickera Shoes Store </a>
-                </p>
+            <div class="row py-4">
+                <!-- Company Info -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase mb-4 font-weight-bold text-white">KickEra Shoes</h5>
+                    <p class="mb-4">Your one-stop destination for premium footwear. We bring you quality, comfort, and style all in one place.</p>
+                    <div class="payment-methods mb-4">
+                        <span class="mr-2"><i class="fa fa-cc-visa fa-2x"></i></span>
+                        <span class="mr-2"><i class="fa fa-cc-mastercard fa-2x"></i></span>
+                        <span class="mr-2"><i class="fa fa-cc-paypal fa-2x"></i></span>
+                        <span><i class="fa fa-cc-amex fa-2x"></i></span>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase mb-4 font-weight-bold text-white">Shop</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'category_list' %}" class="text-white">Categories</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">New Arrivals</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Best Sellers</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Deals & Discounts</a></li>
+                        <li class="mb-2"><a href="{% url 'cart_list' %}" class="text-white">Shopping Cart</a></li>
+                        <li class="mb-2"><a href="{% url 'wishlist' %}" class="text-white">Wishlist</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase mb-4 font-weight-bold text-white">Customer Service</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white">Help & FAQs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Shipping & Delivery</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Returns & Refunds</a></li>
+                        <li class="mb-2"><a href="#" class="text-white">Size Guide</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-white">Contact Us</a></li>
+                        <li class="mb-2"><a href="{% url 'seller_register' %}" class="text-white">Become a Seller</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact and Newsletter -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase mb-4 font-weight-bold text-white">Stay Connected</h5>
+                    <p><i class="fa fa-home mr-3"></i>Gujarat Vidyapith, Ahmedabad 380009, India</p>
+                    <p><i class="fa fa-envelope mr-3"></i> support@kickera.com</p>
+                    <p><i class="fa fa-phone mr-3"></i> +91 7016714801</p>
+                    <div class="social-media-icons mt-4">
+                        <a href="#" class="btn btn-outline-light btn-floating m-1"><i class="fa fa-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-floating m-1"><i class="fa fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-floating m-1"><i class="fa fa-instagram"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-floating m-1"><i class="fa fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="m-0">© {% now "Y" %} KickEra Shoes. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <a href="#" class="text-white mx-2">Privacy Policy</a>
+                        <a href="#" class="text-white mx-2">Terms of Service</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
-
+    <!-- Footer End -->
     <!-- JavaScript -->
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" crossorigin="anonymous"></script>
