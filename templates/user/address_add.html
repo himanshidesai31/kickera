@@ -2,6 +2,23 @@
 {% load i18n %}
 {% load allauth %}
 {% block content %}
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1 class="text-center">Add Address</h1>
+                    <nav class="d-flex align-items-center text-white">
+                        <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                            <a href="{% url 'address_list_view' %}"> Address List </a>
+                            <span class="lnr lnr-arrow-right mx-1"></span>
+                            <a href="{% url 'add_address_view'%}">Add New Address</a>
+                    </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
 <section class="login_box_area section_gap" style="padding-top: 190px;">
     <div class="container">
         <div class="row justify-content-center">

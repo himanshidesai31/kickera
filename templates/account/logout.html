@@ -6,7 +6,22 @@
 {% endblock head_title %}
 
 {% block content %}
-<section class="login_box_area section_gap" style="padding-top: 180px;">
+<section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1 class="text-center">Log Out</h1>
+                    <nav class="d-flex align-items-center text-white">
+                        <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                            <a href="{% url 'account_change_password' %}"> Log Out </a>
+                    </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+<section class="login_box_area section_gap" style="padding-top: 110px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6">
@@ -14,8 +29,8 @@
                     <div class="card-body p-4 text-center">
                         
                         <!-- Sign Out Header -->
-                        <h3 class="mb-3 fw-bold text-dark">{% trans "Sign Out" %}</h3>
-                        <p class="text-muted">{% trans "Are you sure you want to sign out?" %}</p>
+                        <h3 class="mb-3 fw-bold text-dark">{% trans "Log Out" %}</h3>
+                        <p class="text-muted">{% trans "Are you sure you want to log out?" %}</p>
                         
                         <!-- Sign Out Form -->
                         {% url 'account_logout' as action_url %}
@@ -29,16 +44,6 @@
                                 {% trans "Log Out" %}
                             </button>
                         </form>
-
-{#                        <!-- Extra Actions -->#}
-{#                        <div class="mt-4">#}
-{#                            <a href="{% url 'account_email' %}" class="d-block text-decoration-none fw-bold text-primary">#}
-{#                                {% trans "Change Email" %}#}
-{#                            </a>#}
-{#                            <a href="{% url 'account_change_password' %}" class="d-block text-decoration-none fw-bold text-primary">#}
-{#                                {% trans "Change Password" %}#}
-{#                            </a>#}
-{#                        </div>#}
                     </div>
                 </div>
             </div>

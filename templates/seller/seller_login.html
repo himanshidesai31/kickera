@@ -6,6 +6,26 @@
 {% endblock title %}
 
 {% block content %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="">
+                <h1 class="text-center">Vendor Login </h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}" class="text-decoration-none text-white">Home
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'seller_register' %}" class="text-decoration-none text-white">Become a Seller
+                        <span class="lnr lnr-arrow-right mx-1"></span>
+                    </a>
+                    <a href="{% url 'seller_register' %}" class="text-decoration-none text-white">Vendor Login </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
 <section class="login_box_area section_gap mt-5">
     <div class="container">
         <div class="row justify-content-center">
