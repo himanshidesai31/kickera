@@ -5,6 +5,19 @@
 {% trans 'Checkout' %}
 {% endblock %}
 {% block content %}
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Checkout Product </h1>
+					<nav class="d-flex align-items-center">
+						<a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="{% url 'checkout' %}">Checkout</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
 <section class="checkout-page" style="background: #f1f3f6; padding: 20px 0;">
     <div class="container mt-5">
         <div class="row">

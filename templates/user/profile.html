@@ -21,66 +21,144 @@
             </div>
         </div>
     </section>
-    <section class="profile_box_area section_gap mt-5">
+    <section class="profile_box_area section_gap mt-4">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card shadow-lg border-0 rounded p-4">
-                    <h1  class="text-secondary text-center">User Profile </h1>
-                        <div class="text-center mb-4">
-                            {% for i in user_list %}
-                                {% if i.picture %}
-                                    <img src="{{ i.picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                                {% else %}
-                                    <img src="{% static 'img/user_icon.png' %}" alt="Default Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                                {% endif %}
-                            {% endfor %}
+            <div class="row">
+                <!-- Sidebar with Quick Links -->
+                <div class="col-lg-3 col-md-4">
+                    <div class="card shadow-sm border-0 rounded mb-4">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
+                                <i class="fa fa-user mr-2"></i> MY PROFILE
+                            </a>
+                            <a href="{% url 'address_list_view' %}" class="list-group-item list-group-item-action">
+                                <i class="fa fa-map-marker mr-2"></i> ADDRESS
+                            </a>
+                            <a href="{% url 'user_orders' %}" class="list-group-item list-group-item-action">
+                                <i class="fa fa-shopping-bag mr-2"></i> MY ORDERS
+                            </a>
+                            <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action">
+                                <i class="fa fa-lock mr-2"></i> CHANGE PASSWORD
+                            </a>
+                            <!-- <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
+                                <i class="fa fa-envelope mr-2"></i> CHANGE EMAIL
+                            </a>
+                            <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                                <i class="fa fa-sign-out mr-2"></i> LOGOUT
+                            </a> -->
                         </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                {% for user in user_list %}
-                                <tbody>
-                                    <tr>
-                                        <th class="text-secondary">First Name</th>
-                                        <td>{{ user.first_name }}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Last Name</th>
-                                        <td>{{ user.last_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Email</th>
-                                        <td>{{ user.email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Username</th>
-                                        <td>{{ user.username }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Date of Birth</th>
-                                        <td>{{ user.birth_date|date:"F d, Y" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Mobile Number</th>
-                                        <td>{{ user.mobile }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-secondary">Gender</th>
-                                        <td>{{ user.gender|title }}</td>
-                                    </tr>
-                                </tbody>
-                                {% endfor %}
-                            </table>
+                    </div>
+                    
+                    <!-- Recent Activity Widget -->
+                    <div class="card shadow-sm border-0 rounded">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Quick Links</h5>
                         </div>
-                        <div class="text-center mt-4">
-                            <a href="{% url 'update_profile' user.id%}" class="btn btn-primary">Edit Profile</a>
+                        <div class="card-body">
+                            <a href="{% url 'cart_list' %}" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                <i class="ti-shopping-cart mr-1"></i> View Cart
+                            </a>
+                            <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm mb-2 w-100">
+                                <i class="lnr lnr-heart mr-1"></i> Wishlist
+                            </a>
+                            <a href="{% url 'category_list' %}" class="btn btn-outline-secondary btn-sm w-100">
+                                <i class="fa fa-shopping-basket mr-1"></i> Continue Shopping
+                            </a>
                         </div>
                     </div>
                 </div>
-
+                
+                <!-- Main Profile Content -->
+                <div class="col-lg-9 col-md-8">
+                    <div class="card shadow-lg border-0 rounded">
+                        <div class="card-body p-4">
+                            <h4 class="text-primary mb-4 border-bottom pb-2">Personal Information</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-4">
+                                    {% for i in user_list %}
+                                        {% if i.picture %}
+                                            <img src="{{ i.picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f8f9fa; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+                                        {% else %}
+                                            <img src="{% static 'img/user_icon.png' %}" alt="Default Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #f8f9fa; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+                                        {% endif %}
+                                        <a href="{% url 'update_profile' user.id%}" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-pencil mr-1"></i> Edit Profile
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="col-md-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            {% for user in user_list %}
+                                            <tbody>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-user-circle mr-2"></i>First Name</th>
+                                                    <td>{{ user.first_name|default:"Not provided" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-user-circle mr-2"></i>Last Name</th>
+                                                    <td>{{ user.last_name|default:"Not provided" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-envelope mr-2"></i>Email</th>
+                                                    <td>{{ user.email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-id-badge mr-2"></i>Username</th>
+                                                    <td>{{ user.username|default:"Not set" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-calendar mr-2"></i>Date of Birth</th>
+                                                    <td>{{ user.birth_date|date:"F d, Y"|default:"Not provided" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-phone mr-2"></i>Mobile Number</th>
+                                                    <td>{{ user.mobile|default:"Not provided" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-muted"><i class="fa fa-venus-mars mr-2"></i>Gender</th>
+                                                    <td>{{ user.gender|title|default:"Not specified" }}</td>
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4 d-md-none">
+                                <a href="{% url 'update_profile' user.id%}" class="btn btn-primary">
+                                    <i class="fa fa-pencil mr-1"></i> Edit Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
+{% block extra_css %}
+<style>
+    .list-group-item.active {
+        background-color: #ff9800;
+        border-color: #ff9800;
+    }
+    .list-group-item-action:hover {
+        background-color: #fff9e6;
+    }
+    .table th {
+        font-weight: 500;
+    }
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock extra_css %}
 {% endblock content %}

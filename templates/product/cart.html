@@ -3,6 +3,20 @@
 {% block title %} Shopping Cart {% endblock title %}
 
 {% block content %}
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Cart Management</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="{% url 'cart_list' %}">Cart<span class="lnr lnr-arrow-right"></span></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="cart_area" style="padding: 40px 0;">
     <div class="container">
         <div class="cart_inner" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">

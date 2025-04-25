@@ -13,142 +13,388 @@
                 <nav class="d-flex align-items-center">
                     <a href="{% url 'index' %}">Home<span class="lnr lnr-arrow-right"></span></a>
                     <a href="{% url 'category_list' %}">Shop<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="{% url 'product_detail' product.pk %}">Product Details</a>
+                    <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
                 </nav>
             </div>
         </div>
     </div>
 </section>
 
-<div class="container">
+<div class="container my-5">
     <div class="product_image_area">
-        <div class="row s_product_inner">
-            <div class="col-lg-6">
-                <div class="single-prd-item">
-                    {% if product.images.exists %}
-                        <img class="img-fluid" src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <div class="no-image-placeholder">No Image Available</div>
-                    {% endif %}
-                </div>
-                {% if product.images.count > 1 %}
-                <div class="additional-images mt-4">
-                    <div class="row">
-                        {% for image in product.images.all %}
-                        <div class="col-3">
-                            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="img-fluid">
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-lg-5 offset-lg-1">
-                <div class="s_product_text">
-                    <h1 class="product-title">{{ product.name }}</h1>
-                    <h2 class="product-price">₹{{ product.price }}</h2>
-                    <div class="original-price">
-                        {% if product.original_price %}
-                        <p class="price-detail">₹{{ product.original_price }}</p>
+        <div class="row">
+            <!-- Product Images Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-images-container">
+                    <!-- Main Image with zoom effect -->
+                    <div class="main-image-container mb-3">
+                        {% if product.images.exists %}
+                            <img id="main-product-image" class="img-fluid rounded" 
+                                 src="{{ product.images.first.image.url }}" 
+                                 alt="{{ product.name }}"
+                                 style="width: 100%; object-fit: contain; cursor: zoom-in; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        {% else %}
+                            <div class="no-image-placeholder rounded">No Image Available</div>
                         {% endif %}
                     </div>
-                    
-                    <div class="product-meta mt-4">
-                        <div class="meta-item">
-                            <span class="meta-label">Category</span>
-                            <span class="meta-value">: {{ product.category.category_name}}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Brand</span>
-                            <span class="meta-value">: {{ product.brand.brand_name }}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Availability</span>
-                            <span class="meta-value">: {% if product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}</span>
-                        </div>
-                        <div class="meta-item">
-                            <p>{{ product.description }}No description available for this product</p>
+
+                    <!-- Image Gallery -->
+                    {% if product.images.count > 1 %}
+                    <div class="image-gallery">
+                        <div class="row">
+                            {% for image in product.images.all %}
+                            <div class="col-3 mb-3">
+                                <img src="{{ image.image.url }}" 
+                                     alt="{{ product.name }}" 
+                                     class="img-thumbnail product-thumbnail" 
+                                     onclick="changeMainImage('{{ image.image.url }}')"
+                                     style="cursor: pointer; transition: all 0.3s; height: 80px; object-fit: cover;">
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    
+                    {% endif %}
+                </div>
+            </div>
 
-                    
+            <!-- Product Information Section -->
+            <div class="col-lg-6">
+                <div class="product-details p-4 rounded" style="background: #fcfcfc; box-shadow: 0 0 15px rgba(0,0,0,0.05);">
+                    <!-- Title and Rating -->
+                    <div class="mb-4">
+                        <h1 class="product-title mb-2">{{ product.name }}</h1>
+                        <div class="ratings d-flex align-items-center mb-2">
+                            <div class="stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-o text-warning"></i>
+                            </div>
+                            <span class="ml-2 text-muted">(4.5/5)</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Display -->
+                    <div class="pricing mb-4">
+                        <h2 class="product-price d-inline-block mr-2">₹{{ product.price }}</h2>
+                        {% if product.original_price %}
+                            <span class="original-price text-muted"><del>₹{{ product.original_price }}</del></span>
+                            <span class="discount badge badge-success ml-2">
+                                Save {{ product.original_price|floatformat:0|add:0|sub:product.price|floatformat:0 }} ₹
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="availability mb-3">
+                        {% if product.stock > 0 %}
+                            <span class="badge badge-success p-2"><i class="fa fa-check mr-1"></i> In Stock</span>
+                            <span class="text-muted ml-2">{{ product.stock }} units available</span>
+                        {% else %}
+                            <span class="badge badge-danger p-2"><i class="fa fa-times mr-1"></i> Out of Stock</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Product Metadata -->
+                    <div class="product-meta p-3 mb-4 rounded" style="background: #f8f9fa;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="meta-item mb-2">
+                                    <span class="meta-label text-muted"><i class="fa fa-tag mr-1"></i> Category:</span>
+                                    <span class="meta-value font-weight-semibold">{{ product.category.category_name }}</span>
+                                </div>
+                                <div class="meta-item mb-2">
+                                    <span class="meta-label text-muted"><i class="fa fa-building mr-1"></i> Brand:</span>
+                                    <span class="meta-value font-weight-semibold">{{ product.brand.brand_name }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="meta-item mb-2">
+                                    <span class="meta-label text-muted"><i class="fa fa-truck mr-1"></i> Delivery:</span>
+                                    <span class="meta-value font-weight-semibold">Free shipping</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label text-muted"><i class="fa fa-refresh mr-1"></i> Returns:</span>
+                                    <span class="meta-value font-weight-semibold">30-day returns</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Description -->
+                    <div class="product-description mb-4">
+                        <h5 class="mb-2">Description</h5>
+                        <p>{{ product.description|default:"Experience premium quality and comfort with these stylish shoes designed for everyday wear. Perfect for casual outings or formal occasions." }}</p>
+                    </div>
+
+                    <!-- Action Buttons -->
                     <div class="product-actions">
-                        <!-- Add to Cart Button -->
-                        <form id="cart-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST" class="mb-2">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                            <button type="submit" class="btn-secondary full-width-button">ADD TO CART</button>
-                        </form>
-
-                        <!-- Buy Now Button -->
-                        <form id="buy-now-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST" class="mb-2">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{% url 'checkout' %}">
-                            <button type="submit" class="btn-secondary full-width-button">BUY NOW</button>
-                        </form>
-
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <form id="cart-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                    <button type="submit" class="btn btn-outline-primary btn-lg btn-block">
+                                        <i class="fa fa-shopping-cart mr-1"></i> ADD TO CART
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <form id="buy-now-form-{{ product.pk }}" action="{% url 'cart_add' product.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% url 'checkout' %}">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                        <i class="fa fa-bolt mr-1"></i> BUY NOW
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <form id="wish-form-{{ product.pk }}" action="{% url 'add_wishlist' product.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-block">
+                                        <i class="fa fa-heart mr-1"></i> ADD TO WISHLIST
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <br>
-    <br>
-    <br>
-    {% if related_products %}
-    <section class="related-product-area section_gap_bottom">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 text-center">
-                    <div class="section-title">
-                        <h1>Related Products</h1>
-                        <p>Browse more products from the same category.</p>
+
+    <!-- Product Tabs for Additional Information -->
+    <div class="product-tabs mt-5">
+        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="specs-tab" data-toggle="tab" href="#specs" role="tab">Specifications</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab">Reviews</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="shipping-tab" data-toggle="tab" href="#shipping" role="tab">Shipping & Returns</a>
+            </li>
+        </ul>
+        <div class="tab-content p-4 border rounded" id="productTabsContent" style="border-top: none !important; background: #fcfcfc;">
+            <!-- Specifications Tab -->
+            <div class="tab-pane fade show active" id="specs" role="tabpanel">
+                <h5 class="mb-3">Product Specifications</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Material</th>
+                                    <td>Premium Quality</td>
+                                </tr>
+                                <tr>
+                                    <th>Color</th>
+                                    <td>As shown</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>Light weight</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Sole</th>
+                                    <td>Rubber</td>
+                                </tr>
+                                <tr>
+                                    <th>Style</th>
+                                    <td>Casual</td>
+                                </tr>
+                                <tr>
+                                    <th>Closure</th>
+                                    <td>Lace-up</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        {% for related in related_products %}
-                        <div class="col-lg-3 col-md-6">
-                            <div class="single-product">
-                                {% if related.images.exists %}
-                                <img class="img-fluid" src="{{ related.images.first.image.url }}" alt="{{ related.name }}">
-                                {% else %}
-                                <div class="no-image-placeholder">No Image Available</div>
-                                {% endif %}
-                                <div class="product-details">
-                                    <h6>{{ related.name }}</h6>
-                                    <div class="price">
-                                        <h6>₹{{ related.price }}</h6>
-                                        {% if related.original_price %}
-                                        <h6 class="l-through">₹{{ related.original_price }}</h6>
-                                        {% endif %}
-                                    </div>
-                                    <div class="prd-bottom">
-                                        <a href="{% url 'product_detail' related.pk %}" class="social-info">
-                                            <span class="lnr lnr-move"></span>
-                                            <p class="hover-text">View More</p>
-                                        </a>
-                                        <form  id="wish-form-{{ product.pk }}" action="{% url 'add_wishlist' product.pk %}" method="POST">
-                                            {% csrf_token %}
-                                        <a href="{% url 'add_wishlist' product.pk %}" class="social-info" onclick="document.getElementById('wish-form-{{ product.pk }}').submit(); return false;">
-                                            <span class="lnr lnr-heart"></span>
-                                            <p class="hover-text">Wishlist</p>
-                                        </a>
-                                            <a href="{% url 'cart_add' product.pk %}" class="social-info">
-                                        <span class="lnr lnr-cart"></span>
-                                        <p class="hover-text">Add to cart</p>
-                                    </a>
-                                        </form>
-                                    </div>
+            
+            <!-- Reviews Tab -->
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <h5 class="mb-3">Customer Reviews</h5>
+                <div class="review-summary mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rating-score mr-3">
+                            <span style="font-size: 48px; font-weight: bold;">4.5</span>
+                            <div class="stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-o text-warning"></i>
+                            </div>
+                            <span class="text-muted">Based on 24 reviews</span>
+                        </div>
+                        <div class="rating-bars ml-4 flex-grow-1">
+                            <div class="rating-bar d-flex align-items-center mb-2">
+                                <span class="mr-2">5</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 85%"></div>
                                 </div>
+                                <span class="ml-2">85%</span>
+                            </div>
+                            <div class="rating-bar d-flex align-items-center mb-2">
+                                <span class="mr-2">4</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 10%"></div>
+                                </div>
+                                <span class="ml-2">10%</span>
+                            </div>
+                            <div class="rating-bar d-flex align-items-center mb-2">
+                                <span class="mr-2">3</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 3%"></div>
+                                </div>
+                                <span class="ml-2">3%</span>
+                            </div>
+                            <div class="rating-bar d-flex align-items-center mb-2">
+                                <span class="mr-2">2</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" style="width: 1%"></div>
+                                </div>
+                                <span class="ml-2">1%</span>
+                            </div>
+                            <div class="rating-bar d-flex align-items-center">
+                                <span class="mr-2">1</span>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" style="width: 1%"></div>
+                                </div>
+                                <span class="ml-2">1%</span>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
+                
+                <!-- Example Reviews -->
+                <div class="review-list">
+                    <div class="review-item p-3 mb-3 border-bottom">
+                        <div class="reviewer-info d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">John D.</h6>
+                                <div class="stars">
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <div class="review-date text-muted">2 months ago</div>
+                        </div>
+                        <p class="review-text mt-2">Great quality shoes, comfortable for all-day wear. Highly recommended!</p>
+                    </div>
+                    
+                    <div class="review-item p-3 mb-3">
+                        <div class="reviewer-info d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">Sarah M.</h6>
+                                <div class="stars">
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star-o text-warning"></i>
+                                </div>
+                            </div>
+                            <div class="review-date text-muted">1 month ago</div>
+                        </div>
+                        <p class="review-text mt-2">Love the design and comfort. Size runs a bit large though.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Shipping Tab -->
+            <div class="tab-pane fade" id="shipping" role="tabpanel">
+                <h5 class="mb-3">Shipping & Returns Policy</h5>
+                <div class="shipping-info mb-4">
+                    <h6><i class="fa fa-truck mr-2"></i> Shipping</h6>
+                    <ul class="pl-4">
+                        <li>Free standard shipping on all orders over ₹999</li>
+                        <li>Standard delivery: 3-5 business days</li>
+                        <li>Express delivery: 1-2 business days (additional charges apply)</li>
+                    </ul>
+                </div>
+                <div class="returns-info">
+                    <h6><i class="fa fa-refresh mr-2"></i> Returns</h6>
+                    <ul class="pl-4">
+                        <li>Easy 30-day return policy</li>
+                        <li>Items must be unworn and in original condition with tags</li>
+                        <li>Return shipping is free for exchanges</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if related_products %}
+    <section class="related-product-area mt-5 mb-5">
+        <div class="container">
+            <div class="section-title border-bottom mb-4 pb-2">
+                <h2>Related Products</h2>
+                <p class="text-muted">You might also like these products from the same category</p>
+            </div>
+            <div class="row">
+                {% for related in related_products %}
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card product-card h-100">
+                        <div class="product-image position-relative">
+                            {% if related.images.exists %}
+                                <img src="{{ related.images.first.image.url }}" 
+                                     alt="{{ related.name }}" 
+                                     class="card-img-top" 
+                                     style="height: 200px; object-fit: contain; padding: 10px;">
+                            {% else %}
+                                <div class="no-image-placeholder" style="height: 200px;">No Image Available</div>
+                            {% endif %}
+                            <div class="product-actions-overlay">
+                                <form id="related-wish-form-{{ related.pk }}" action="{% url 'add_wishlist' related.pk %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-light rounded-circle p-2 mr-2" title="Add to Wishlist">
+                                        <i class="fa fa-heart-o text-danger"></i>
+                                    </button>
+                                </form>
+                                <form id="related-cart-form-{{ related.pk }}" action="{% url 'cart_add' related.pk %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-light rounded-circle p-2" title="Add to Cart">
+                                        <i class="fa fa-shopping-cart text-primary"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body pt-3 pb-3">
+                            <h6 class="card-title mb-1">
+                                <a href="{% url 'product_detail' related.pk %}" class="text-dark">{{ related.name }}</a>
+                            </h6>
+                            <div class="price-box d-flex align-items-center mb-2">
+                                <span class="current-price font-weight-bold">₹{{ related.price }}</span>
+                                {% if related.original_price %}
+                                    <span class="original-price text-muted ml-2"><del>₹{{ related.original_price }}</del></span>
+                                    <span class="discount text-success ml-auto">
+                                        Save ₹{{ related.original_price|floatformat:0|add:0|sub:related.price|floatformat:0 }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'product_detail' related.pk %}" class="btn btn-outline-secondary btn-sm btn-block mt-2">
+                                VIEW DETAILS
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -157,6 +403,21 @@
 
 {% block extra_css %}
 <style>
+    /* Product Image Gallery */
+    .product-thumbnail:hover {
+        border-color: #ff9800;
+        transform: translateY(-2px);
+    }
+    
+    /* Product Image Hover Effect */
+    #main-product-image {
+        transition: transform 0.3s;
+    }
+    #main-product-image:hover {
+        transform: scale(1.05);
+    }
+    
+    /* No Image Placeholder */
     .no-image-placeholder {
         height: 400px;
         background-color: #f5f5f5;
@@ -165,13 +426,13 @@
         justify-content: center;
         color: #888;
         font-size: 18px;
+        border-radius: 4px;
     }
-
-    /* Product title and price styling */
+    
+    /* Product Details */
     .product-title {
         font-size: 28px;
         font-weight: 600;
-        margin-bottom: 15px;
         color: #333;
     }
     
@@ -179,99 +440,52 @@
         font-size: 24px;
         font-weight: 700;
         color: #ff9800;
-        margin-bottom: 5px;
     }
     
-    .price-detail {
-        text-decoration: line-through;
-        color: #aaa;
-        font-size: 16px;
-        margin-bottom: 20px;
-    }
-    
-    /* Product metadata styling */
-    .product-meta {
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-        padding: 15px 0;
-    }
-    
-    .meta-item {
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-    
-    .meta-label {
-        font-weight: 600;
+    /* Tabs Styling */
+    .nav-tabs .nav-link {
+        font-weight: 500;
         color: #555;
     }
-    
-    .meta-value {
-        color: #777;
+    .nav-tabs .nav-link.active {
+        color: #ff9800;
+        background: #fcfcfc;
+        border-color: #dee2e6 #dee2e6 #fcfcfc;
     }
     
-    /* Product description */
-    .product-description {
-        color: #666;
-        line-height: 1.6;
+    /* Related Products */
+    .product-card {
+        transition: all 0.3s;
+        border: 1px solid #eee;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .product-actions-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .product-image:hover .product-actions-overlay {
+        opacity: 1;
     }
     
-    /* Action buttons styling */
-    .product-actions {
-        margin-top: 25px;
-    }
-    
-    .full-width-button {
-        display: block;
-        width: 100%;
-        padding: 12px 0;
-        background-color: #282828;
-        color: white;
-        border: none;
+    /* Font weights */
+    .font-weight-semibold {
         font-weight: 600;
-        text-transform: uppercase;
-        cursor: pointer;
-        font-size: 14px;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
-        transition: background-color 0.2s;
-    }
-    
-    .full-width-button:hover {
-        background-color: #444;
-    }
-    
-    /* Action buttons row */
-    .action-buttons-row {
-        display: flex;
-        justify-content: flex-start;
-        gap: 8px;
-        margin-top: 20px;
-    }
-    
-    .icon-button {
-        width: 45px;
-        height: 45px;
-        background-color: #7986cb;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: background-color 0.3s;
-    }
-    
-    .icon-button span {
-        font-size: 18px;
-    }
-    
-    .icon-button:hover {
-        background-color: #5c6bc0;
     }
 </style>
-{% endblock %}
+{% endblock extra_css %}
 
+{% block js %}
+<script>
+    // Function to change the main product image
+    function changeMainImage(imageUrl) {
+        document.getElementById('main-product-image').src = imageUrl;
+    }
+</script>
+{% endblock js %}
 {% endblock content %} 

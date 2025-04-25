@@ -118,6 +118,7 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 LOGIN_REDIRECT_URL = '/user/login-redirect/'
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_CHANGE_PASSWORD_REDIRECT_URL = "/accounts/password/change/done/"
+ACCOUNT_LOGOUT_ON_GET = True  # Enable direct logout without confirmation page
 SITE_NAME = "Kickera Shoes Store"
 
 
