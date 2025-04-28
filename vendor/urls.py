@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from vendor.views import SellerRegisterView, VendorDashboardView, SellerLoginView, \
     VendorProductListView, VendorAddProductView, VendorUpdateProductView, VendorDeleteProductView, VendorProfileView, \
     VendorProfileUpdateView, VendorAddBrandView, VendorCategoryAddView, VendorSubCategoryAddView, load_subcategory, \
-    VendorOrderListView, VendorChangePasswordView, VendorChangePassworDoneView
+    VendorOrderListView, VendorChangePasswordView, VendorChangePassworDoneView, VendorOrderReportView
 
 urlpatterns = [
     path('register/', SellerRegisterView.as_view(), name='seller_register'),
@@ -36,6 +36,9 @@ urlpatterns = [
     path('ajax/load-subcategories/', load_subcategory, name='ajax-load-subcategories'),
 
     path('order-list',VendorOrderListView.as_view(), name='vendor_orders'),
+
+    #vendor can generate the report for it
+    path('order-reports',VendorOrderReportView.as_view(), name='vendor_order_report'),
 
 ]
 

@@ -14,6 +14,26 @@ from users.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+# Import for report generation
+from django.http import HttpResponse
+import csv
+from django.db.models import Sum, Count, Q
+from datetime import datetime, timedelta
+import calendar
+from io import BytesIO
+from django.template.loader import get_template
+from django.views import View
+import json
+from collections import Counter
+from django.utils import timezone
+# Make sure to install these packages:
+# pip install xhtml2pdf reportlab
+
+try:
+    # For PDF generation
+    from xhtml2pdf import pisa
+except ImportError:
+    pisa = None
 
 
 class SellerRegisterView(FormView):#without using the model form i can used the FormView for this is Inquery
@@ -148,7 +168,58 @@ class VendorDashboardView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         
         try:
-            context['vendor_profile'] = VendorProfile.objects.get(user=user)
+            vendor_profile = VendorProfile.objects.get(user=user)
+            context['vendor_profile'] = vendor_profile
+            
+            # Get product statistics
+            products_count = Product.objects.filter(vendor=vendor_profile).count()
+            context['products_count'] = products_count
+            
+            # Get order statistics
+            orders = Order.objects.filter(product__vendor=vendor_profile)
+            context['orders_count'] = orders.count()
+            
+            # Calculate total sales
+            total_sales = orders.filter(is_paid='Completed').aggregate(Sum('amount'))['amount__sum'] or 0
+            context['total_sales'] = total_sales
+            
+            # Get pending orders
+            pending_orders = orders.filter(is_paid='Pending').count()
+            context['pending_orders'] = pending_orders
+            
+            # Get recent orders (last 5)
+            recent_orders = orders.order_by('-created_at')[:5]
+            context['recent_orders'] = recent_orders
+            
+            # Count orders by status
+            orders_by_status = {}
+            for status_choice in Order.payment_status:
+                status = status_choice[0]
+                count = orders.filter(is_paid=status).count()
+                orders_by_status[status] = count
+            context['orders_by_status'] = orders_by_status
+            
+            # Get monthly sales data for the current year
+            current_year = datetime.now().year
+            monthly_sales = []
+            
+            for month in range(1, 13):
+                month_start = datetime(current_year, month, 1)
+                if month == 12:
+                    month_end = datetime(current_year + 1, 1, 1) - timedelta(days=1)
+                else:
+                    month_end = datetime(current_year, month + 1, 1) - timedelta(days=1)
+                
+                month_sales = orders.filter(
+                    created_at__gte=month_start,
+                    created_at__lte=month_end,
+                    is_paid='Completed'
+                ).aggregate(Sum('amount'))['amount__sum'] or 0
+                
+                monthly_sales.append(month_sales)
+            
+            context['monthly_sales'] = monthly_sales
+            
         except VendorProfile.DoesNotExist:
             context['vendor_profile'] = None
             
@@ -352,6 +423,188 @@ class VendorOrderListView(LoginRequiredMixin, ListView):
             ).order_by('-created_at')
         except VendorProfile.DoesNotExist:
             return Order.objects.none()
+
+
+class VendorOrderReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_order_report.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            vendor_profile = request.user.vendor_profile
+            # Get all orders for this vendor
+            orders = Order.objects.filter(
+                product__vendor=vendor_profile
+            ).select_related('product', 'user').order_by('-created_at')
+
+            # Calculate statistics
+            total_amount = orders.aggregate(Sum('amount'))['amount__sum'] or 0
+            total_orders = orders.count()
+            
+            # Get payment and delivery stats
+            payment_stats = dict(Counter(order.is_paid for order in orders))
+            delivery_stats = dict(Counter(order.order_status for order in orders))
+
+            context = {
+                'orders': orders,
+                'total_amount': total_amount,
+                'total_orders': total_orders,
+                'payment_stats': payment_stats,
+                'delivery_stats': delivery_stats,
+                'current_year': timezone.now().year,
+                'current_month': timezone.now().month,
+            }
+            return render(request, self.template_name, context)
+            
+        except VendorProfile.DoesNotExist:
+            messages.error(request, "Vendor profile not found.")
+            return redirect('vendor_dashboard')
+
+    def post(self, request, *args, **kwargs):
+        report_type = request.POST.get('report_type', 'all')
+        report_format = request.POST.get('format', 'pdf')
+
+        try:
+            vendor_profile = request.user.vendor_profile
+        except VendorProfile.DoesNotExist:
+            messages.error(request, "Vendor profile not found.")
+            return redirect('vendor_dashboard')
+
+        # Base query
+        orders = Order.objects.filter(product__vendor=vendor_profile)
+
+        # Apply date filters and prepare context
+        context = {
+            'vendor': vendor_profile,
+            'report_date': timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        if report_type == 'monthly':
+            month = int(request.POST.get('month', timezone.now().month))
+            year = int(request.POST.get('year_monthly', timezone.now().year))
+            
+            # Get month name
+            month_name = calendar.month_name[month]
+            
+            # Calculate date range for the month
+            last_day = calendar.monthrange(year, month)[1]
+            start_date = datetime(year, month, 1)
+            end_date = datetime(year, month, last_day) + timedelta(days=1)
+            
+            # Filter orders for the month
+            orders = orders.filter(created_at__gte=start_date, created_at__lt=end_date)
+            
+            # Calculate statistics
+            total_amount = orders.aggregate(Sum('amount'))['amount__sum'] or 0
+            order_count = orders.count()
+            average_order_value = round(total_amount / order_count, 2) if order_count > 0 else 0
+            
+            # Payment and delivery statistics
+            payment_stats = dict(Counter(order.is_paid for order in orders))
+            delivery_stats = dict(Counter(order.order_status for order in orders))
+            
+            # Daily order counts
+            daily_orders = {}
+            for day in range(1, last_day + 1):
+                date = datetime(year, month, day)
+                count = orders.filter(created_at__date=date).count()
+                daily_orders[day] = count
+            
+            # Update context with monthly specific data
+            context.update({
+                'month_name': month_name,
+                'year': year,
+                'orders': orders,
+                'total_amount': total_amount,
+                'average_order_value': average_order_value,
+                'payment_stats': payment_stats,
+                'delivery_stats': delivery_stats,
+                'daily_orders': daily_orders,
+                'report_type': 'monthly'
+            })
+            
+            # Use monthly specific template
+            template_name = 'seller/vendor_order_report_monthly.html'
+
+        elif report_type == 'date_range':
+            start_date = request.POST.get('start_date')
+            end_date = request.POST.get('end_date')
+            if start_date and end_date:
+                end_date_obj = datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=1)
+                orders = orders.filter(created_at__gte=start_date, created_at__lt=end_date_obj)
+            else:
+                messages.warning(request, "Please select both start and end dates.")
+            template_name = 'seller/vendor_order_report_pdf.html'
+
+        elif report_type == 'yearly':
+            year = int(request.POST.get('year', timezone.now().year))
+            start_date = datetime(year, 1, 1)
+            end_date = datetime(year + 1, 1, 1)
+            orders = orders.filter(created_at__gte=start_date, created_at__lt=end_date)
+            template_name = 'seller/vendor_order_report_pdf.html'
+
+        else:
+            template_name = 'seller/vendor_order_report_pdf.html'
+
+        # Generate report based on format
+        if report_format == 'csv':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="vendor_order_report_{timezone.now().strftime("%Y%m%d")}.csv"'
+            writer = csv.writer(response)
+            
+            # Headers
+            writer.writerow([
+                'Order ID', 'Date', 'Product', 'Customer', 
+                'Payment Status', 'Order Status', 'Amount'
+            ])
+
+            # Data
+            for order in orders:
+                writer.writerow([
+                    order.id,
+                    order.created_at.strftime("%Y-%m-%d"),
+                    order.product.name if order.product else '',
+                    order.user.get_full_name() if order.user else 'Unknown',
+                    order.is_paid,
+                    order.order_status,
+                    order.amount
+                ])
+            return response
+
+        elif report_format == 'pdf' and pisa:
+            try:
+                # Add orders to context
+                context.update({
+                    'orders': orders,
+                    'total_amount': orders.aggregate(Sum('amount'))['amount__sum'] or 0,
+                })
+                
+                # Use the correct template for PDF generation
+                template = get_template('seller/vendor_order_report_pdf.html')
+                html = template.render(context)
+                result = BytesIO()
+                
+                pdf = pisa.pisaDocument(
+                    BytesIO(html.encode('UTF-8')),
+                    result,
+                    encoding='UTF-8'
+                )
+
+                if not pdf.err:
+                    response = HttpResponse(result.getvalue(), content_type='application/pdf')
+                    filename = f"vendor_order_report_{timezone.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+                    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+                    return response
+                else:
+                    print("PDF Generation Errors:", pdf.err)
+                    messages.error(request, f"Error generating PDF: {pdf.err}")
+            except Exception as e:
+                import traceback
+                print("Exception during PDF generation:", str(e))
+                print("Traceback:", traceback.format_exc())
+                messages.error(request, f"Error generating PDF: {str(e)}")
+            
+            return redirect('vendor_dashboard')
+
 
 class VendorChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'seller/vendor_change_password.html'

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Monthly Sales Report</title>
+    <style type="text/css">
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #666;
+            margin: 5px 0;
+        }
+        .summary-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .total-row {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .stats-box {
+            width: 45%;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Monthly Sales Report</h1>
+        <p>{{ month_name }} {{ year }}</p>
+        <p>Generated on: {{ report_date }}</p>
+    </div>
+
+    <div class="summary-box">
+        <h2>Vendor Information</h2>
+        <p><strong>Business Name:</strong> {{ vendor.business_name }}</p>
+        <p><strong>Email:</strong> {{ vendor.user.email }}</p>
+        <p><strong>Contact:</strong> {{ vendor.phone }}</p>
+    </div>
+
+    <div class="summary-box">
+        <h2>Monthly Summary</h2>
+        <p><strong>Total Orders:</strong> {{ orders|length }}</p>
+        <p><strong>Total Revenue:</strong> ₹{{ total_amount }}</p>
+        <p><strong>Average Order Value:</strong> ₹{{ average_order_value }}</p>
+    </div>
+
+    <h2>Order Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at|date:"d M Y" }}</td>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.user.get_full_name }}</td>
+                <td>{{ order.order_status }}</td>
+                <td>₹{{ order.amount }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="5" style="text-align: right;">Total Amount:</td>
+                <td>₹{{ total_amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="stats-container">
+        <div class="stats-box">
+            <h3>Payment Status Distribution</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status, count in payment_stats.items %}
+                    <tr>
+                        <td>{{ status }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-box">
+            <h3>Delivery Status Distribution</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status, count in delivery_stats.items %}
+                    <tr>
+                        <td>{{ status }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666;">
+        <p>This report was automatically generated from KickEra Shop.</p>
+        <p>© {% now "Y" %} KickEra. All rights reserved.</p>
+    </div>
+</body>
+</html> 

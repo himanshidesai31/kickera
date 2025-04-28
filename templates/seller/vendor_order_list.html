@@ -2,6 +2,62 @@
 {% load static %}
 {% block title %}Vendor Order List{% endblock title %}
 
+{% block css %}
+<style>
+    .order-table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .order-table th {
+        background-color: #343a40;
+        color: white;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+    .order-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .payment-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 50px;
+    }
+    .status-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 50px;
+    }
+    .address-box {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    .payment-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .payment-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .payment-canceled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .status-shipped {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+    .status-delivery {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+</style>
+{% endblock css %}
+
 {% block content %}
 
     <section class="banner-area organic-breadcrumb">
@@ -22,8 +78,8 @@
 {#        <h3 class="mb-4 text-center">Orders for Your Products</h3>#}
         {% if orders %}
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
+            <table class="table table-bordered table-striped order-table">
+                <thead>
                     <tr>
                         <th>Order ID</th>
                         <th>Product</th>
@@ -40,12 +96,12 @@
                 <tbody>
                     {% for order in orders %}
                         <tr>
-                            <td>{{ order.id }}</td>
+                            <td><strong>#{{ order.id }}</strong></td>
                             <td>{{ order.product.name }}</td>
                             <td>{{ order.user.get_full_name }}</td>
                             <td>{{ order.user.email }}</td>
                             <td>{{ order.user.mobile }}</td>
-                            <td>
+                            <td class="address-box">
                                 {% if order.address %}
                                     {{ order.address.name }}<br>
                                     {{ order.address.address }}, {{ order.address.city }}<br>
@@ -59,16 +115,36 @@
                                 {% endif %}
                             </td>
                             <td>{{ order.created_at|date:"d M Y, h:i A" }}</td>
-                            <td>{{ order.is_paid }}</td>
-                            <td>{{ order.order_status }}</td>
-                            <td>₹{{ order.amount }}</td>
+                            <td>
+                                {% if order.is_paid == 'Completed' %}
+                                    <span class="payment-badge payment-success">Payment Success</span>
+                                {% elif order.is_paid == 'Pending' %}
+                                    <span class="payment-badge payment-pending">Payment Pending</span>
+                                {% elif order.is_paid == 'Canceled' %}
+                                    <span class="payment-badge payment-canceled">Payment Canceled</span>
+                                {% else %}
+                                    {{ order.is_paid }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if order.order_status == 'Shipped' %}
+                                    <span class="status-badge status-shipped">Shipped</span>
+                                {% elif order.order_status == 'In Delivery' %}
+                                    <span class="status-badge status-delivery">In Delivery</span>
+                                {% else %}
+                                    {{ order.order_status }}
+                                {% endif %}
+                            </td>
+                            <td><strong>₹{{ order.amount }}</strong></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% else %}
-        <p class="text-center">No orders yet.</p>
+        <div class="alert alert-info text-center">
+            <i class="fa fa-info-circle me-2"></i> No orders yet.
+        </div>
         {% endif %}
     </div>
 </section>

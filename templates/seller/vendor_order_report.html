@@ -1,0 +1,387 @@
+{% extends 'seller/vendor_navbar.html' %}
+{% load static %}
+{% block title %}Order Reports - Kickera{% endblock title %}
+
+{% block css %}
+<style>
+    .order-table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .order-table th {
+        background-color: #343a40;
+        color: white;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+    .order-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .stats-card {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    .payment-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 50px;
+    }
+    .status-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 50px;
+    }
+    .payment-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .payment-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .payment-canceled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .status-shipped {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+    .status-delivery {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    .form-section {
+        display: none;
+    }
+    .form-section.active {
+        display: block;
+    }
+    .report-modal .modal-content {
+        border-radius: 15px;
+    }
+    .report-modal .modal-header {
+        background-color: #f8f9fa;
+        border-radius: 15px 15px 0 0;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1 class="text-center">Order Reports</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'vendor_dashboard' %}">Dashboard<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="{% url 'vendor_order_report' %}">Order Reports</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section_gap mt-5">
+    <div class="container">
+        {% if messages %}
+        <div class="row mb-4">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Statistics Cards -->
+{#        <div class="row mb-4">#}
+{#            <div class="col-md-3">#}
+{#                <div class="card stats-card bg-primary text-white">#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">Total Orders</h5>#}
+{#                        <h2 class="mb-0">{{ total_orders }}</h2>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-md-3">#}
+{#                <div class="card stats-card bg-success text-white">#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">Total Revenue</h5>#}
+{#                        <h2 class="mb-0">₹{{ total_amount }}</h2>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-md-3">#}
+{#                <div class="card stats-card bg-info text-white">#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">Completed Orders</h5>#}
+{#                        <h2 class="mb-0">{{ payment_stats.Completed|default:0 }}</h2>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-md-3">#}
+{#                <div class="card stats-card bg-warning text-white">#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">Pending Orders</h5>#}
+{#                        <h2 class="mb-0">{{ payment_stats.Pending|default:0 }}</h2>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+        <!-- Orders Table with Generate Report Button -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Order List</h5>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reportModal">
+                        <i class="fa fa-file-pdf mr-2"></i>Generate Report
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover order-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Product</th>
+                                <th>Customer</th>
+                                <th>Order Date</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td><strong>#{{ order.id }}</strong></td>
+                                <td>{{ order.product.name }}</td>
+                                <td>{{ order.user.get_full_name }}</td>
+                                <td>{{ order.created_at|date:"d M Y, h:i A" }}</td>
+                                <td>
+                                    {% if order.is_paid == True or order.is_paid == 'True' or order.is_paid == 'Completed' %}
+                                        <span >Payment Success</span><!--class="payment-badge payment-success"-->
+                                    {% elif order.is_paid == False or order.is_paid == 'False' or order.is_paid == 'Pending' %}
+                                        <span >Payment Pending</span><!--class="payment-badge payment-pending"-->
+                                    {% elif order.is_paid == 'Canceled' %}
+                                        <span class="payment-badge payment-canceled">Payment Canceled</span>
+                                    {% else %}
+                                        <span>{{ order.is_paid }}</span><!-- class="payment-badge payment-pending"-->
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if order.order_status == 'Shipped' %}
+                                        <span >Shipped</span><!--class="status-badge status-shipped"-->
+                                    {% elif order.order_status == 'In Delivery' %}
+                                        <span class="status-badge status-delivery">In Delivery</span>
+                                    {% else %}
+                                        <span class="status-badge">{{ order.order_status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td><strong>₹{{ order.amount }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <p class="text-muted mb-0">No orders found.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Report Generation Modal -->
+<div class="modal fade report-modal" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Generate Order Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'vendor_order_report' %}" id="reportForm">
+                    {% csrf_token %}
+                    
+                    <!-- Report Type Selection -->
+                    <div class="form-group mb-4">
+                        <label for="report_type">Report Type</label>
+                        <select name="report_type" id="report_type" class="form-control">
+                            <option value="">Select Report Type</option>
+                            <option value="all">All Orders</option>
+                            <option value="monthly">Monthly Report</option>
+                            <option value="yearly">Yearly Report</option>
+                        </select>
+                    </div>
+
+                    <!-- Monthly Report Section -->
+                    <div id="monthlySection" class="form-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="month">Select Month</label>
+                                    <select name="month" id="month" class="form-control">
+                                        {% now "n" as current_month %}
+                                        <option value="1" {% if current_month == "1" %}selected{% endif %}>January</option>
+                                        <option value="2" {% if current_month == "2" %}selected{% endif %}>February</option>
+                                        <option value="3" {% if current_month == "3" %}selected{% endif %}>March</option>
+                                        <option value="4" {% if current_month == "4" %}selected{% endif %}>April</option>
+                                        <option value="5" {% if current_month == "5" %}selected{% endif %}>May</option>
+                                        <option value="6" {% if current_month == "6" %}selected{% endif %}>June</option>
+                                        <option value="7" {% if current_month == "7" %}selected{% endif %}>July</option>
+                                        <option value="8" {% if current_month == "8" %}selected{% endif %}>August</option>
+                                        <option value="9" {% if current_month == "9" %}selected{% endif %}>September</option>
+                                        <option value="10" {% if current_month == "10" %}selected{% endif %}>October</option>
+                                        <option value="11" {% if current_month == "11" %}selected{% endif %}>November</option>
+                                        <option value="12" {% if current_month == "12" %}selected{% endif %}>December</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="year_monthly">Select Year</label>
+                                    <select name="year_monthly" id="year_monthly" class="form-control">
+                                        {% now "Y" as current_year %}
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025" selected>2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yearly Report Section -->
+                    <div id="yearlySection" class="form-section">
+                        <div class="form-group">
+                            <label for="year">Select Year</label>
+                            <select name="year" id="year" class="form-control">
+                                {% now "Y" as current_year %}
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Report Format Selection -->
+                    <div class="form-group">
+                        <label for="format">Report Format</label>
+                        <select name="format" id="format" class="form-control">
+                            <option value="pdf">PDF</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="reportForm" class="btn btn-primary">
+                    <i class="fa fa-file-pdf mr-2"></i>Generate Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reportType = document.getElementById('report_type');
+    const monthlySection = document.getElementById('monthlySection');
+    const yearlySection = document.getElementById('yearlySection');
+    const reportForm = document.getElementById('reportForm');
+
+    // Function to show/hide sections
+    function toggleSections() {
+        // Hide all sections first
+        monthlySection.classList.remove('active');
+        yearlySection.classList.remove('active');
+
+        // Show the selected section
+        switch(reportType.value) {
+            case 'monthly':
+                monthlySection.classList.add('active');
+                break;
+            case 'yearly':
+                yearlySection.classList.add('active');
+                break;
+        }
+    }
+
+    // Event listener for report type change
+    reportType.addEventListener('change', toggleSections);
+
+    // Form validation before submit
+    reportForm.addEventListener('submit', function(e) {
+        if (!reportType.value) {
+            e.preventDefault();
+            alert('Please select a report type');
+            return false;
+        }
+
+        if (reportType.value === 'monthly') {
+            const month = document.getElementById('month').value;
+            const yearMonthly = document.getElementById('year_monthly').value;
+            if (!month || !yearMonthly) {
+                e.preventDefault();
+                alert('Please select both month and year for monthly report');
+                return false;
+            }
+        }
+
+        if (reportType.value === 'yearly') {
+            const year = document.getElementById('year').value;
+            if (!year) {
+                e.preventDefault();
+                alert('Please select a year for yearly report');
+                return false;
+            }
+        }
+    });
+
+    // Initialize sections based on current selection
+    toggleSections();
+});
+</script>
+{% endblock js %}
+
+{% endblock content %} 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Report</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+        }
+        h1 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        .report-info {
+            margin-bottom: 30px;
+        }
+        .report-info p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #2d3748;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+        td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+        .total-row {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .amount {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Report</h1>
+    
+    <div class="report-info">
+        <p><strong>Generated on:</strong> {{ report_date }}</p>
+        <p><strong>Vendor:</strong> {{ vendor.business_name }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.product.name }}</td>
+                <td class="amount">₹{{ order.amount }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="2" style="text-align: right;"><strong>Total</strong></td>
+                <td class="amount"><strong>₹{{ total_amount }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html> 

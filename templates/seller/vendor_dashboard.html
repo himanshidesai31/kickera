@@ -110,6 +110,37 @@
             </div>
         </div>
 
+        <!-- Order Management -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+{#                    <i class="fa fa-shopping-cart fa-4x text-success mb-3"></i>#}
+                    <h5 class="card-title fw-bold">Order Management</h5>
+                    <p class="card-text text-muted">Manage customer orders for your products.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_orders' %}" class="btn btn-outline-success btn-block">
+                        View Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Reports -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+{#                    <i class="fa fa-file-text fa-4x text-warning mb-3"></i>#}
+                    <h5 class="card-title fw-bold">Order Reports</h5>
+                    <p class="card-text text-muted">Generate sales reports and analyze your business performance.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_order_report' %}" class="btn btn-outline-warning btn-block">
+                        Generate Reports
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <!-- Create Brand -->
         <div class="col">
