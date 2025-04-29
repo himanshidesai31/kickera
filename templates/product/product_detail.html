@@ -1,5 +1,6 @@
 {% extends 'navbar.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block title %}
 {{ product.name }} - Details
 {% endblock title %}
@@ -81,7 +82,7 @@
                         {% if product.original_price %}
                             <span class="original-price text-muted"><del>₹{{ product.original_price }}</del></span>
                             <span class="discount badge badge-success ml-2">
-                                Save {{ product.original_price|floatformat:0|add:0|sub:product.price|floatformat:0 }} ₹
+                                Save ₹{{ product.original_price|subtract:product.price|floatformat:0 }}
                             </span>
                         {% endif %}
                     </div>
@@ -384,7 +385,7 @@
                                 {% if related.original_price %}
                                     <span class="original-price text-muted ml-2"><del>₹{{ related.original_price }}</del></span>
                                     <span class="discount text-success ml-auto">
-                                        Save ₹{{ related.original_price|floatformat:0|add:0|sub:related.price|floatformat:0 }}
+                                        Save ₹{{ related.original_price|subtract:related.price|floatformat:0 }}
                                     </span>
                                 {% endif %}
                             </div>

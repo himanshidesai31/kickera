@@ -106,7 +106,7 @@ class CartListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CartItemAddView(View):
+class CartItemAddView(LoginRequiredMixin,View):
     def post(self, request, pk):
         try:
             product = get_object_or_404(Product, pk=pk)
@@ -129,7 +129,7 @@ class CartItemAddView(View):
         return redirect('cart_list')
 
 
-class CartRemoveView(View):
+class CartRemoveView(LoginRequiredMixin,View):
     def get(self, request, pk):
         try:
             cart_item = get_object_or_404(Cart, pk=pk, user=request.user)
@@ -141,7 +141,7 @@ class CartRemoveView(View):
         return redirect('cart_list')
 
 
-class CartUpdateView(View):
+class CartUpdateView(LoginRequiredMixin,View):
     def post(self, request, pk):
         try:
             cart_item = get_object_or_404(Cart, pk=pk, user=request.user)
@@ -175,7 +175,7 @@ class WishListView(LoginRequiredMixin, ListView):
         return context
 
 
-class AddWishListView(View):
+class AddWishListView(LoginRequiredMixin,View):
     def post(self, request, pk):
         try:
             product = get_object_or_404(Product, pk=pk)
@@ -197,7 +197,7 @@ class AddWishListView(View):
         return redirect('wishlist')
 
 
-class RemoveWishListView(View):
+class RemoveWishListView(View,LoginRequiredMixin):
     def get(self, request, pk):
         try:
             wish_list = get_object_or_404(WishList, pk=pk , user=request.user)
