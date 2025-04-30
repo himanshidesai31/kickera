@@ -7,12 +7,12 @@ from django.contrib.messages import constants as messages
 
 # Environment variables configuration - defaults are for development only
 # In production, these should be set in the environment
-RAZORPAY_KEY_ID = 'rzp_test_K1oQ1KX1Tbyl0c'
-RAZORPAY_KEY_SECRET = 'J511i3H83YStynKmrI3fnSmc'
+RAZORPAY_KEY_ID = 'rzp_test_LiYIro0JdpKb1h'
+RAZORPAY_KEY_SECRET = 'L9JB08EOR8kZ0ePmFjzNHwli'
 RAZORPAY_CALLBACK_URL = "http://127.0.0.1:8000/payment/callback/"
 
 # RAZOR pay integrations
-PAYMENT_VARIANTS = {'razorpay': ('django_payments_razorpay.RazorPayProvider', 
+PAYMENT_VARIANTS = {'razorpay': ('django_payments_razorpay.RazorPayProvider',
                                 {'public_key': RAZORPAY_KEY_ID,
                                  'secret_key': RAZORPAY_KEY_SECRET})}
 CHECKOUT_PAYMENT_CHOICES = ['razorpay,RazorPay']

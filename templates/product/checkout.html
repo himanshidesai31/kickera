@@ -20,6 +20,12 @@
 	</section>
 <section class="checkout-page" style="background: #f1f3f6; padding: 20px 0;">
     <div class="container mt-5">
+        <!-- Add error alert that will be displayed when needed -->
+        <div id="payment-error-alert" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none;">
+            <span id="payment-error-message"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
         <div class="row">
             <!-- Order Summary Section -->
             <div class="col-lg-8 mt-5">
@@ -106,7 +112,29 @@
                         </table>
                     </div>
                 </div>
+                
+                <!-- Address Section -->
+                <div class="address-section mt-4" style="background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 style="margin-bottom: 0; font-weight: 600;">Delivery Address</h3>
+                        <a href="{% url 'check_user_address' request.user.id %}" class="btn btn-outline-primary">Change or Select Address</a>
+                    </div>
+                    
+                    {% if selected_address %}
+                    <div class="selected-address p-3" style="background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2874f0;">
+                        <p><strong>{{ selected_address.name }}</strong> - {{ selected_address.address_type }}</p>
+                        <p>{{ selected_address.address }}, {{ selected_address.city }}, {{ selected_address.state }} - {{ selected_address.pincode }}</p>
+                        <p>Phone: {{ selected_address.mobile }}</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <p>No delivery address selected. Please select an address before proceeding to payment.</p>
+                        <a href="{% url 'check_user_address' request.user.id %}" class="btn btn-primary mt-2">Select Address</a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+            
         <!-- Price Details Section -->
         <div class="col-lg-4 mt-5">
                 <div class="price-details" style="background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -152,30 +180,52 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.getElementById("rzp-button1").addEventListener("click", async function () {
-        // Get product ID from cart or wishlist
-        {% if cart_items.0 %}
-        const productId = "{{ cart_items.0.product.id }}";
-        {% elif wishlist_items.0 %}
-        const productId = "{{ wishlist_items.0.product.id }}";
-        {% else %}
-        alert("No products available for checkout");
-        return;
-        {% endif %}
+        // Hide any previous error
+        hideError();
         
-        const cartTotal = "{{ total_price }}";
+        // Show loading indicator
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        this.disabled = true;
         
-        // Construct URL with wishlist item IDs if they exist
-        let paymentUrl = `/payment/create-payment/${productId}/`;
-        
-        {% if wishlist_items %}
-        const params = new URLSearchParams();
-        {% for item in wishlist_items %}
-        params.append('wishlist_item_id', '{{ item.id }}');
-        {% endfor %}
-        paymentUrl += '?' + params.toString();
-        {% endif %}
-
         try {
+            // Get product ID from cart or wishlist
+            {% if cart_items.0 %}
+            const productId = "{{ cart_items.0.product.id }}";
+            {% elif wishlist_items.0 %}
+            const productId = "{{ wishlist_items.0.product.id }}";
+            {% else %}
+            showError("No products available for checkout");
+            resetButton();
+            return;
+            {% endif %}
+            
+            const cartTotal = "{{ total_price }}";
+            const addressId = "{{ selected_address.id }}";
+            
+            if (!addressId) {
+                showError("Please select a delivery address before proceeding to payment");
+                window.location.href = "{% url 'check_user_address' request.user.id %}";
+                return;
+            }
+            
+            // Construct URL with wishlist item IDs if they exist
+            let paymentUrl = `/payment/create-payment/${productId}/`;
+            
+            const params = new URLSearchParams();
+            {% if wishlist_items %}
+            {% for item in wishlist_items %}
+            params.append('wishlist_item_id', '{{ item.id }}');
+            {% endfor %}
+            {% endif %}
+            params.append('address_id', addressId);
+            paymentUrl += '?' + params.toString();
+
+            console.log("Sending payment request to:", paymentUrl);
+            console.log("Request payload:", {
+                cart_total: cartTotal,
+                address_id: addressId
+            });
+
             const response = await fetch(paymentUrl, {
                 method: 'POST',
                 headers: {
@@ -183,74 +233,88 @@
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
                 body: JSON.stringify({
-                    cart_total: cartTotal
+                    cart_total: cartTotal,
+                    address_id: addressId
                 })
             });
 
-            if (response.ok) {
-                const data = await response.json();
-
-                const options = {
-                    key: data.razorpay_key_id,
-                    amount: data.amount,
-                    currency: "INR",
-                    name: "Kickera Shoes store ",
-                    description: "Cart Checkout",
-                    order_id: data.order_id,
-                    handler: function (response) {
-                        // Submit the payment details to the callback URL
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = data.razorpay_callback_url;
-                        
-                        // Add CSRF token
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = 'csrfmiddlewaretoken';
-                        csrfInput.value = '{{ csrf_token }}';
-                        form.appendChild(csrfInput);
-                        
-                        // Add payment details
-                        const orderIdInput = document.createElement('input');
-                        orderIdInput.type = 'hidden';
-                        orderIdInput.name = 'razorpay_order_id';
-                        orderIdInput.value = response.razorpay_order_id;
-                        form.appendChild(orderIdInput);
-                        
-                        const paymentIdInput = document.createElement('input');
-                        paymentIdInput.type = 'hidden';
-                        paymentIdInput.name = 'razorpay_payment_id';
-                        paymentIdInput.value = response.razorpay_payment_id;
-                        form.appendChild(paymentIdInput);
-                        
-                        const signatureInput = document.createElement('input');
-                        signatureInput.type = 'hidden';
-                        signatureInput.name = 'razorpay_signature';
-                        signatureInput.value = response.razorpay_signature;
-                        form.appendChild(signatureInput);
-                        
-                        // Submit the form
-                        document.body.appendChild(form);
-                        form.submit();
-                    },
-                    prefill: {
-                        name: "{{ request.user.get_full_name|default:request.user.username }}",
-                        email: "{{ request.user.email }}",
-                        contact: "{{ request.user.mobile|default:'' }}",
-                    },
-                    theme: {
-                        color: "#2874f0",
-                    },
-                };
-
-                const rzp1 = new Razorpay(options);
-                rzp1.open();
-            } else {
-                alert("Failed to create payment. Please try again.");
+            const responseData = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(responseData.error || 'Failed to create payment');
             }
+
+            console.log("Payment response:", responseData);
+            
+            // Initialize Razorpay
+            const options = {
+                key: responseData.razorpay_key_id,
+                amount: responseData.amount,
+                currency: "INR",
+                name: "Kickera Shoes Store",
+                description: "Cart Checkout",
+                order_id: responseData.order_id,
+                handler: function (response) {
+                    // Handle successful payment
+                    console.log("Payment successful:", response);
+                    
+                    // Construct the callback URL with all necessary parameters
+                    const callbackUrl = `${responseData.razorpay_callback_url}?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_signature=${response.razorpay_signature}`;
+                    console.log("Redirecting to:", callbackUrl);
+                    
+                    // Redirect to callback URL
+                    window.location.href = callbackUrl;
+                },
+                prefill: {
+                    name: "{{ request.user.get_full_name }}",
+                    email: "{{ request.user.email }}",
+                },
+                theme: {
+                    color: "#2874f0"
+                },
+                modal: {
+                    ondismiss: function() {
+                        resetButton();
+                    }
+                }
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                console.error("Payment failed:", response.error);
+                showError(`Payment failed: ${response.error.description}`);
+                resetButton();
+            });
+            
+            rzp1.open();
         } catch (error) {
-            console.error("Payment error:", error);
-            alert("Failed to create payment. Please try again.");
+            console.error("Payment initialization error:", error);
+            showError(error.message || "Failed to create payment. Please try again.");
+            resetButton();
+        }
+        
+        function resetButton() {
+            const button = document.getElementById("rzp-button1");
+            button.innerHTML = 'Continue to Payment';
+            button.disabled = false;
+        }
+        
+        function showError(message) {
+            const errorAlert = document.getElementById('payment-error-alert');
+            const errorMessage = document.getElementById('payment-error-message');
+            
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+            errorAlert.classList.add('show');
+            
+            // Scroll to the error message
+            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        function hideError() {
+            const errorAlert = document.getElementById('payment-error-alert');
+            errorAlert.style.display = 'none';
+            errorAlert.classList.remove('show');
         }
     });
 </script>

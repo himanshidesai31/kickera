@@ -38,7 +38,7 @@ class ConfirmationPageView(LoginRequiredMixin, TemplateView):
                         user=request.user,
                         product=product,
                         amount=product.price,
-                        is_paid=True,
+                        is_paid='Completed',
                         razorpay_order_id='test_order_id',
                         razorpay_payment_id='test_payment_id',
                         razorpay_signature='test_signature'
@@ -66,11 +66,8 @@ class ConfirmationPageView(LoginRequiredMixin, TemplateView):
         if order_id:
             # Try to get the specific order
             try:
-                order = Order.objects.get(
-                    id=order_id,
-                    user=self.request.user,
-                    is_paid=True
-                )
+                # Find the order by ID without checking the is_paid field first
+                order = Order.objects.get(id=order_id)
                 print(f"ConfirmationPageView: Found order: {order.id}, is_paid: {order.is_paid}")
             except Order.DoesNotExist:
                 print(f"ConfirmationPageView: Order not found with id {order_id}")
@@ -79,7 +76,7 @@ class ConfirmationPageView(LoginRequiredMixin, TemplateView):
             # Fallback to latest paid order if no order_id provided
             order = Order.objects.filter(
                 user=self.request.user,
-                is_paid=True
+                is_paid='Completed'
             ).order_by('-id').first()
             print(f"ConfirmationPageView: Latest paid order: {order.id if order else None}")
 

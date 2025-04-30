@@ -40,26 +40,44 @@
 										<li><strong>Order ID:</strong> {{ order.id }}</li>
 										<li><strong>Date:</strong> {{ order.created_at|date:"F d, Y" }}</li>
 										<li><strong>Payment ID:</strong> {{ order.razorpay_payment_id }}</li>
+										<li><strong>Payment Status:</strong> {{ order.is_paid }}</li>
 										<li><strong>Amount Paid:</strong> ₹{{ order.amount }}</li>
 									</ul>
-
 								</div>
 								<div class="col-md-6">
 									<h4>Product Details</h4>
 									<ul class="list-unstyled">
+										{% if order.product %}
 										<li><strong>Product:</strong> {{ order.product.name }}</li>
-										<li><strong>Status:</strong> <span class="badge badge-success">Paid</span></li>
+										{% endif %}
+										<li><strong>Status:</strong> 
+											{% if order.is_paid == 'Completed' %}
+												<span class="badge badge-success">Paid</span>
+											{% else %}
+												<span class="badge badge-warning">{{ order.is_paid }}</span>
+											{% endif %}
+										</li>
 									</ul>
-
 								</div>
 							</div>
+							
+							{% if order.is_paid == 'Completed' %}
+							<div class="alert alert-success">
+								Your payment was successful! Your order has been placed.
+							</div>
+							{% else %}
+							<div class="alert alert-warning">
+								Your order was created but the payment is not yet completed.
+							</div>
+							{% endif %}
 							
 							<div class="text-center mt-4">
 								<a href="{% url 'index' %}" class="btn btn-primary">Continue Shopping</a>
 							</div>
 						{% else %}
 							<div class="alert alert-info">
-								No Payment information found. If you just completed a payment, please refresh the page.
+								No Payment information found. If you just completed a payment, please refresh the page. <br>
+								<small>Order ID in URL: {{ request.GET.order_id }}</small>
 							</div>
 							<div class="text-center mt-4">
 								<a href="{% url 'index' %}" class="btn btn-primary">Return to Home</a>

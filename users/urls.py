@@ -1,7 +1,7 @@
 #this  is urls.py
 from django.urls import path
 from users.views import ProfileView, AddressListView, Add_AddressListView, UpdateAddressView, DeleteAddressView, \
-    UpdateProfileView, custom_login_redirect
+    UpdateProfileView, custom_login_redirect, test_email_settings
 
 urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('update-address/<int:pk>/',UpdateAddressView.as_view(), name='update_address_view'),
     path('delete-address/<int:pk>/',DeleteAddressView.as_view(),  name='delete_address_view'),
     path('login-redirect/', custom_login_redirect, name='custom_login_redirect'),
+    path('test-email/', test_email_settings, name='test_email'),
 ]

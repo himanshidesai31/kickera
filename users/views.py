@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, ListView, FormView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,6 +10,13 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 
 # profile view class
@@ -134,3 +141,16 @@ def custom_login_redirect(request):
         else:
             return redirect('index')
     return redirect('account_login')
+
+def test_email_settings(request):
+    try:
+        send_mail(
+            'Test Email from KickEra',
+            'This is a test email to verify email settings.',
+            settings.EMAIL_HOST_USER,
+            ['chaudharykamlesh185@gmail.com'],
+            fail_silently=False,
+        )
+        return JsonResponse({'status': 'success', 'message': 'Test email sent successfully'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
