@@ -36,7 +36,7 @@
                 <div class="card shadow-lg border-0 rounded-lg">
                     <div class="card-body p-5">
                         <h2 class="text-center mb-4 text-primary fw-bold">Edit Product</h2>
-                        <form method="post" action="{% url 'vendor_edit_product' product.id %}" id="categoryForm" data-subcategory-url="{% url 'ajax-load-subcategories' %}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <form method="post" action="{% url 'vendor_update_product' product.id %}" id="categoryForm" data-subcategory-url="{% url 'ajax-load-subcategories' %}" enctype="multipart/form-data" class="needs-validation" novalidate>
                             {% csrf_token %}
 
                             <!-- Product Type -->

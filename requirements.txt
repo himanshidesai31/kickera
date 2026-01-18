@@ -14,10 +14,13 @@ Pillow>=8.2.0
 python-dotenv==1.0.0
 
 # Database
-django-db-backends-sqlite3
+django-db-backends-sqlite3 #Django SQLite support built-in
 
 # Email Handling
 django-email-backend
 
 # Security
-django-csrf-protection
+django-csrf-protection #built in provided
+
+# Reporting
+reportlab>=3.6.0

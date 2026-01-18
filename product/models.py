@@ -96,3 +96,29 @@ class WishList(models.Model):
     @property
     def total_price(self):
         return self.quantity * self.product.price
+
+# Review model
+class Review(models.Model):
+    RATING_CHOICES = [
+        (1, '1 - Poor'),
+        (2, '2 - Fair'),
+        (3, '3 - Good'),
+        (4, '4 - Very Good'),
+        (5, '5 - Excellent'),
+    ]
+    
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.IntegerField(choices=RATING_CHOICES)
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_verified = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"{self.user.username if self.user else 'Anonymous'}'s review on {self.product.name}"
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Product Review"
+        verbose_name_plural = "Product Reviews"

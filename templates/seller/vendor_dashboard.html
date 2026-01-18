@@ -102,7 +102,7 @@
                     <p class="card-text text-muted">View, edit, or remove products from your store.</p>
                 </div>
                 <div>
-                 <a href="{% url 'vendor_product_list' %}" class="btn btn-outline-secondary btn-block">
+                 <a href="{% url 'vendor_products' %}" class="btn btn-outline-secondary btn-block">
                                    View Products
 {#                       <i class="fa fa-list"></i>#}
                                 </a>
@@ -126,7 +126,23 @@
             </div>
         </div>
 
-        <!-- Order Reports -->
+        <!-- Reports Dashboard -->
+        <div class="col">
+            <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <i class="fa-solid fa-chart-pie fa-4x text-info mb-3"></i>
+                    <h5 class="card-title fw-bold">Reports Dashboard</h5>
+                    <p class="card-text text-muted">Access all your business reports in one place.</p>
+                </div>
+                <div>
+                    <a href="{% url 'vendor_reports' %}" class="btn btn-outline-info btn-block">
+                        View Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legacy Order Reports (keeping for backward compatibility) -->
         <div class="col">
             <div class="card border-0 shadow h-100 text-center p-3 d-flex flex-column">
                 <div class="card-body flex-grow-1">

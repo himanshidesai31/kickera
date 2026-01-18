@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, TemplateView, UpdateView, DetailView, FormView
 from orders.models import Order
-from product.models import Product, Image, Category, Brand, SubCategory
+from product.models import Product, Image, Category, Brand, SubCategory, Review
 from vendor.models import VendorProfile, VendorRequest
 from vendor.forms import  SellerRegisterForm, VendorAddProductForm, VendorAddBrandForm, VendorAddCategoryForm, VendorProfileForm, VendorLoginForm, VendorAddSubCategoryForm
 from django.views.generic.edit import CreateView
@@ -17,7 +17,7 @@ from django.contrib.auth.hashers import make_password
 # Import for report generation
 from django.http import HttpResponse
 import csv
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, Avg
 from datetime import datetime, timedelta
 import calendar
 from io import BytesIO
@@ -34,6 +34,11 @@ try:
     from xhtml2pdf import pisa
 except ImportError:
     pisa = None
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 class SellerRegisterView(FormView):#without using the model form i can used the FormView for this is Inquery
@@ -245,7 +250,7 @@ class VendorAddProductView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'seller/vendor_add_products.html'
     form_class = VendorAddProductForm
-    success_url = reverse_lazy('vendor_product_list')
+    success_url = reverse_lazy('vendor_products')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -296,7 +301,7 @@ class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
     model = Product
     template_name = 'seller/vendor_edit_product.html'
     form_class = VendorAddProductForm
-    success_url = reverse_lazy('vendor_product_list')
+    success_url = reverse_lazy('vendor_products')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -326,7 +331,7 @@ class VendorUpdateProductView(LoginRequiredMixin, UpdateView):
 
 class VendorDeleteProductView(LoginRequiredMixin, DeleteView):
     model = Product
-    success_url = reverse_lazy('vendor_product_list')
+    success_url = reverse_lazy('vendor_products')
 
     def get_queryset(self):
         return Product.objects.filter(vendor__user=self.request.user)
@@ -621,3 +626,561 @@ class VendorChangePasswordView(LoginRequiredMixin, PasswordChangeView):
 
 class VendorChangePassworDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = 'seller/vendor_change_password_done.html'
+
+
+class VendorReportsView(LoginRequiredMixin, TemplateView):
+    template_name = 'seller/vendor_reports.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vendor_profile = get_object_or_404(VendorProfile, user=self.request.user)
+        context['vendor_profile'] = vendor_profile
+        
+        # Define report types for this vendor
+        context['report_types'] = [
+            {
+                'name': 'Sales Report',
+                'description': 'View detailed sales data for your products',
+                'url': reverse_lazy('vendor_sales_report'),
+                'icon': 'fa-chart-line',
+                'color': 'primary'
+            },
+            {
+                'name': 'Product Performance',
+                'description': 'Analyze how your products are performing',
+                'url': reverse_lazy('vendor_product_report'),
+                'icon': 'fa-box',
+                'color': 'success'
+            },
+            {
+                'name': 'Inventory Report',
+                'description': 'Check current stock levels and status',
+                'url': reverse_lazy('vendor_inventory_report'),
+                'icon': 'fa-warehouse',
+                'color': 'info'
+            },
+            {
+                'name': 'Order Report',
+                'description': 'View detailed information about customer orders',
+                'url': reverse_lazy('vendor_order_report'),
+                'icon': 'fa-shopping-cart',
+                'color': 'warning'
+            },
+            {
+                'name': 'Payment Report',
+                'description': 'Track payment transactions for your orders',
+                'url': reverse_lazy('vendor_payment_report'),
+                'icon': 'fa-credit-card',
+                'color': 'danger'
+            },
+            {
+                'name': 'Commission Report',
+                'description': 'View commission details for your sales',
+                'url': reverse_lazy('vendor_commission_report'),
+                'icon': 'fa-percent',
+                'color': 'secondary'
+            },
+            {
+                'name': 'Refund Report',
+                'description': 'Track refunds and returns',
+                'url': reverse_lazy('vendor_refund_report'),
+                'icon': 'fa-undo',
+                'color': 'dark'
+            }
+        ]
+        
+        return context
+
+
+class VendorSalesReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_sales_report.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        
+        # Get date range from request or use default (last 30 days)
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        
+        if start_date_str and end_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+                # Add 1 day to end_date to include the entire end date
+                end_date = end_date + timedelta(days=1)
+            except ValueError:
+                messages.error(request, "Invalid date format. Please use YYYY-MM-DD format.")
+                start_date = datetime.now() - timedelta(days=30)
+                end_date = datetime.now() + timedelta(days=1)
+        else:
+            # Default to last 30 days
+            start_date = datetime.now() - timedelta(days=30)
+            end_date = datetime.now() + timedelta(days=1)
+        
+        # Get vendor products
+        vendor_products = Product.objects.filter(vendor=vendor_profile)
+        
+        # Get orders for these products in the date range
+        orders = Order.objects.filter(
+            product__in=vendor_products,
+            created_at__gte=start_date,
+            created_at__lte=end_date
+        ).order_by('-created_at')
+        
+        # Calculate statistics
+        total_orders = orders.count()
+        completed_orders = orders.filter(is_paid='Completed').count()
+        total_revenue = orders.filter(is_paid='Completed').aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        # Get daily sales data for chart
+        daily_sales = orders.filter(is_paid='Completed').values('created_at__date').annotate(
+            total=Sum('amount'),
+            count=Count('id')
+        ).order_by('created_at__date')
+        
+        # Format for chart
+        date_labels = [item['created_at__date'].strftime('%Y-%m-%d') for item in daily_sales]
+        sales_values = [float(item['total']) for item in daily_sales]
+        
+        context = {
+            'vendor_profile': vendor_profile,
+            'orders': orders,
+            'total_orders': total_orders,
+            'completed_orders': completed_orders,
+            'total_revenue': total_revenue,
+            'start_date': start_date.strftime('%Y-%m-%d'),
+            'end_date': (end_date - timedelta(days=1)).strftime('%Y-%m-%d'),
+            'date_labels': json.dumps(date_labels),
+            'sales_values': json.dumps(sales_values),
+            'report_type': 'sales'
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        report_format = request.POST.get('format', 'csv')
+        start_date_str = request.POST.get('start_date')
+        end_date_str = request.POST.get('end_date')
+        
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+            # Add 1 day to end_date to include the entire end date
+            end_date = end_date + timedelta(days=1)
+        except ValueError:
+            messages.error(request, "Invalid date format. Please use YYYY-MM-DD format.")
+            return redirect('vendor_sales_report')
+        
+        # Get vendor products
+        vendor_products = Product.objects.filter(vendor=vendor_profile)
+        
+        # Get orders for these products in the date range
+        orders = Order.objects.filter(
+            product__in=vendor_products,
+            created_at__gte=start_date,
+            created_at__lte=end_date
+        ).order_by('-created_at')
+        
+        if report_format == 'csv':
+            return self.generate_csv(orders, start_date, end_date)
+        elif report_format == 'pdf':
+            return self.generate_pdf(orders, start_date, end_date, vendor_profile)
+        else:
+            messages.error(request, "Invalid report format.")
+            return redirect('vendor_sales_report')
+    
+    def generate_csv(self, orders, start_date, end_date):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename=sales-report-{datetime.now().strftime("%Y-%m-%d")}.csv'
+        
+        writer = csv.writer(response)
+        
+        # Write header row
+        writer.writerow(['Order ID', 'Date', 'Customer', 'Product', 'Amount', 'Status'])
+        
+        # Write data rows
+        for order in orders:
+            writer.writerow([
+                order.id,
+                order.created_at.strftime('%Y-%m-%d %H:%M'),
+                order.user.username if order.user else 'Guest',
+                order.product.name if order.product else 'N/A',
+                order.amount,
+                order.is_paid
+            ])
+        
+        return response
+    
+    def generate_pdf(self, orders, start_date, end_date, vendor_profile):
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        elements = []
+        
+        styles = getSampleStyleSheet()
+        title = Paragraph(f"Sales Report for {vendor_profile.business_name}", styles['Heading1'])
+        subtitle = Paragraph(f"Period: {start_date.strftime('%Y-%m-%d')} to {(end_date - timedelta(days=1)).strftime('%Y-%m-%d')}", styles['Heading3'])
+        
+        elements.append(title)
+        elements.append(subtitle)
+        elements.append(Paragraph(" ", styles['Normal']))  # Spacer
+        
+        # Add summary statistics
+        completed_orders = orders.filter(is_paid='Completed')
+        total_revenue = completed_orders.aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        elements.append(Paragraph(f"Total Orders: {orders.count()}", styles['Normal']))
+        elements.append(Paragraph(f"Completed Orders: {completed_orders.count()}", styles['Normal']))
+        elements.append(Paragraph(f"Total Revenue: ₹{total_revenue}", styles['Normal']))
+        elements.append(Paragraph(" ", styles['Normal']))  # Spacer
+        
+        # Create table for orders
+        data = [['Order ID', 'Date', 'Customer', 'Product', 'Amount', 'Status']]
+        
+        for order in orders[:50]:  # Limit to 50 orders to avoid huge PDFs
+            data.append([
+                str(order.id),
+                order.created_at.strftime('%Y-%m-%d'),
+                order.user.username if order.user else 'Guest',
+                order.product.name if order.product else 'N/A',
+                f"₹{order.amount}",
+                order.is_paid
+            ])
+        
+        # If we limited the orders, add a note
+        if orders.count() > 50:
+            elements.append(Paragraph(f"Note: Showing 50 of {orders.count()} orders", styles['Italic']))
+        
+        # Create the table
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ]))
+        
+        elements.append(table)
+        
+        # Build the PDF
+        doc.build(elements)
+        pdf = buffer.getvalue()
+        buffer.close()
+        
+        # Create response
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename=sales-report-{datetime.now().strftime("%Y-%m-%d")}.pdf'
+        response.write(pdf)
+        
+        return response
+
+
+class VendorProductPerformanceReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_product_performance.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        
+        # Get date range from request or use default (last 30 days)
+        start_date = request.GET.get('start_date', (timezone.now() - timedelta(days=30)).strftime('%Y-%m-%d'))
+        end_date = request.GET.get('end_date', timezone.now().strftime('%Y-%m-%d'))
+        
+        # Get vendor products with their performance metrics
+        products = Product.objects.filter(vendor=vendor_profile)
+        
+        product_stats = []
+        for product in products:
+            orders = Order.objects.filter(
+                product=product,
+                created_at__date__range=[start_date, end_date]
+            )
+            
+            stats = {
+                'product': product,
+                'total_orders': orders.count(),
+                'total_sales': orders.filter(is_paid='Completed').aggregate(Sum('amount'))['amount__sum'] or 0,
+                'avg_rating': Review.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or 0,
+                'review_count': Review.objects.filter(product=product).count(),
+            }
+            product_stats.append(stats)
+        
+        context = {
+            'product_stats': product_stats,
+            'start_date': start_date,
+            'end_date': end_date
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        report_format = request.POST.get('format', 'csv')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        products = Product.objects.filter(vendor=vendor_profile)
+        
+        if report_format == 'csv':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=product-performance-{timezone.now().strftime("%Y%m%d")}.csv'
+            
+            writer = csv.writer(response)
+            writer.writerow(['Product', 'Total Orders', 'Total Sales', 'Average Rating', 'Review Count'])
+            
+            for product in products:
+                orders = Order.objects.filter(
+                    product=product,
+                    created_at__date__range=[start_date, end_date]
+                )
+                
+                writer.writerow([
+                    product.name,
+                    orders.count(),
+                    orders.filter(is_paid='Completed').aggregate(Sum('amount'))['amount__sum'] or 0,
+                    Review.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or 0,
+                    Review.objects.filter(product=product).count(),
+                ])
+            
+            return response
+            
+        elif report_format == 'pdf':
+            # Implement PDF generation similar to other reports
+            pass
+        
+        return redirect('vendor_product_report')
+
+
+class VendorInventoryReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_inventory.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        
+        products = Product.objects.filter(vendor=vendor_profile).annotate(
+            total_orders=Count('order'),
+            pending_orders=Count('order', filter=Q(order__is_paid='Pending'))
+        )
+        
+        context = {
+            'products': products,
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        report_format = request.POST.get('format', 'csv')
+        
+        products = Product.objects.filter(vendor=vendor_profile).annotate(
+            total_orders=Count('order'),
+            pending_orders=Count('order', filter=Q(order__is_paid='Pending'))
+        )
+        
+        if report_format == 'csv':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=inventory-report-{timezone.now().strftime("%Y%m%d")}.csv'
+            
+            writer = csv.writer(response)
+            writer.writerow(['Product', 'Stock', 'Total Orders', 'Pending Orders'])
+            
+            for product in products:
+                writer.writerow([
+                    product.name,
+                    product.stock,
+                    product.total_orders,
+                    product.pending_orders,
+                ])
+            
+            return response
+            
+        elif report_format == 'pdf':
+            # Implement PDF generation similar to other reports
+            pass
+        
+        return redirect('vendor_inventory_report')
+
+
+class VendorPaymentReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_payment.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        
+        # Get date range from request or use default (last 30 days)
+        start_date = request.GET.get('start_date', (timezone.now() - timedelta(days=30)).strftime('%Y-%m-%d'))
+        end_date = request.GET.get('end_date', timezone.now().strftime('%Y-%m-%d'))
+        
+        orders = Order.objects.filter(
+            product__vendor=vendor_profile,
+            created_at__date__range=[start_date, end_date]
+        )
+        
+        payment_stats = {
+            'total_payments': orders.filter(is_paid='Completed').aggregate(Sum('amount'))['amount__sum'] or 0,
+            'pending_payments': orders.filter(is_paid='Pending').aggregate(Sum('amount'))['amount__sum'] or 0,
+            'completed_orders': orders.filter(is_paid='Completed').count(),
+            'pending_orders': orders.filter(is_paid='Pending').count(),
+        }
+        
+        context = {
+            'payment_stats': payment_stats,
+            'orders': orders,
+            'start_date': start_date,
+            'end_date': end_date
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        report_format = request.POST.get('format', 'csv')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        orders = Order.objects.filter(
+            product__vendor=vendor_profile,
+            created_at__date__range=[start_date, end_date]
+        )
+        
+        if report_format == 'csv':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=payment-report-{timezone.now().strftime("%Y%m%d")}.csv'
+            
+            writer = csv.writer(response)
+            writer.writerow(['Order ID', 'Date', 'Product', 'Amount', 'Status'])
+            
+            for order in orders:
+                writer.writerow([
+                    order.id,
+                    order.created_at.strftime('%Y-%m-%d'),
+                    order.product.name,
+                    order.amount,
+                    order.is_paid,
+                ])
+            
+            return response
+            
+        elif report_format == 'pdf':
+            # Implement PDF generation similar to other reports
+            pass
+        
+        return redirect('vendor_payment_report')
+
+
+class VendorCommissionReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_commission.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        
+        # Get date range from request or use default (last 30 days)
+        start_date = request.GET.get('start_date', (timezone.now() - timedelta(days=30)).strftime('%Y-%m-%d'))
+        end_date = request.GET.get('end_date', timezone.now().strftime('%Y-%m-%d'))
+        
+        # Get orders for the date range
+        orders = Order.objects.filter(
+            product__vendor=vendor_profile,
+            created_at__date__range=[start_date, end_date],
+            is_paid='Completed'  # Only include completed orders
+        ).order_by('-created_at')
+        
+        # Calculate commission for each order (assuming 10% commission rate)
+        commission_rate = 10  # This could be made dynamic based on vendor agreement
+        for order in orders:
+            order.commission_rate = commission_rate
+            order.commission_amount = (order.amount * commission_rate) / 100
+            order.net_earnings = order.amount - order.commission_amount
+        
+        # Calculate overall statistics
+        total_sales = orders.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_commission = (total_sales * commission_rate) / 100
+        net_earnings = total_sales - total_commission
+        
+        commission_stats = {
+            'total_sales': total_sales,
+            'total_commission': total_commission,
+            'net_earnings': net_earnings,
+            'commission_rate': commission_rate
+        }
+        
+        context = {
+            'vendor_profile': vendor_profile,
+            'orders': orders,
+            'commission_stats': commission_stats,
+            'start_date': start_date,
+            'end_date': end_date
+        }
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        report_format = request.POST.get('format', 'csv')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        # Get orders for the date range
+        orders = Order.objects.filter(
+            product__vendor=vendor_profile,
+            created_at__date__range=[start_date, end_date],
+            is_paid='Completed'
+        ).order_by('-created_at')
+        
+        commission_rate = 10  # This could be made dynamic
+        
+        if report_format == 'csv':
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=commission-report-{timezone.now().strftime("%Y%m%d")}.csv'
+            
+            writer = csv.writer(response)
+            writer.writerow(['Order ID', 'Date', 'Product', 'Sale Amount', 'Commission Rate', 'Commission Amount', 'Net Earnings'])
+            
+            total_sales = 0
+            total_commission = 0
+            total_earnings = 0
+            
+            for order in orders:
+                commission = (order.amount * commission_rate) / 100
+                net_earnings = order.amount - commission
+                
+                writer.writerow([
+                    order.id,
+                    order.created_at.strftime('%Y-%m-%d'),
+                    order.product.name,
+                    order.amount,
+                    f"{commission_rate}%",
+                    commission,
+                    net_earnings
+                ])
+                
+                total_sales += order.amount
+                total_commission += commission
+                total_earnings += net_earnings
+            
+            # Add summary row
+            writer.writerow([])
+            writer.writerow(['TOTAL', '', '', total_sales, '', total_commission, total_earnings])
+            
+            return response
+            
+        elif report_format == 'pdf':
+            # Implement PDF generation similar to other reports
+            pass
+        
+        return redirect('vendor_commission_report')
+
+
+class VendorRefundReportView(LoginRequiredMixin, View):
+    template_name = 'seller/vendor_report_placeholder.html'
+    
+    def get(self, request, *args, **kwargs):
+        vendor_profile = get_object_or_404(VendorProfile, user=request.user)
+        context = {
+            'vendor_profile': vendor_profile,
+            'report_type': 'refund',
+            'report_name': 'Refund & Return Report'
+        }
+        return render(request, self.template_name, context)

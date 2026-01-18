@@ -16,7 +16,7 @@
                     <a href="{% url 'vendor_dashboard' %}" class="text-decoration-none text-white">Dashboard
                         <span class="lnr lnr-arrow-right mx-1"></span>
                     </a>
-                    <a href="{% url 'vendor_product_list' %}" class="text-decoration-none text-white ">My Products
+                    <a href="{% url 'vendor_products' %}" class="text-decoration-none text-white ">My Products
                     </a>
                 </nav>
             </div>
@@ -65,7 +65,7 @@
                             <td>{{ product.brand.brand_name }}</td>
                             <td>{{ product.category.category_name }}</td>
                             <td>
-                                <a href="{% url 'vendor_edit_product' product.id %}">
+                                <a href="{% url 'vendor_update_product' product.id %}">
                                     <button type="button" class="btn btn-primary btn-sm text-white"> Edit </button>
                                 </a>
                                 <form method="post" action="{% url 'vendor_delete_product' pk=product.id %}" style="display:inline;">
