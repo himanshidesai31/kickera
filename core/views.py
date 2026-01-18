@@ -1,16 +1,16 @@
-# from django.contrib import messages
-# from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.shortcuts import redirect, render
-# from django.urls import reverse_lazy
-# from core.forms import ContactForm
-# from core.models import  Banner, Deal, Brand
-# from product.models import Product
-# from django.views.generic import TemplateView, UpdateView, DetailView, FormView
-# from django.contrib.auth.views import PasswordChangeView
-# from allauth.account.views import ReauthenticateView
-# from orders.models import Order
-# from pywin.tools.browser import template
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from core.forms import ContactForm
+from core.models import  Banner, Deal, Brand
+from product.models import Product
+from django.views.generic import TemplateView, UpdateView, DetailView, FormView
+from django.contrib.auth.views import PasswordChangeView
+from allauth.account.views import ReauthenticateView
+from orders.models import Order
+from pywin.tools.browser import template
+
 class Homepageview(TemplateView):
     template_name='index.html'
 #     #this is  use for showing the all product's  when the vendor has been added in to the there product list
