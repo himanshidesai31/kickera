@@ -1,4 +1,4 @@
-# from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -11,10 +11,9 @@ from allauth.account.views import ReauthenticateView
 from orders.models import Order
 from pywin.tools.browser import template
 
-class Homepageview(TemplateView):
+class HomePageView(TemplateView):
     template_name='index.html'
-#     #this is  use for showing the all product's  when the vendor has been added in to the there product list
-   def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(HomePageView, self).get_context_data(**kwargs)
         banners = Banner.objects.all().order_by('sort_order')
         context['banners'] = banners
@@ -130,7 +129,6 @@ class ContactView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, 'Please correct the errors in the form.')
         return super().form_invalid(form)
-
 
 # New success class-based view
 class SuccessView(TemplateView):
